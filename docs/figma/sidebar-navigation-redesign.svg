@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120">
+  <rect width="1600" height="1120" fill="#F5F8FC"/>
+
+  <text x="64" y="54" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="12" font-weight="700" letter-spacing="1.6" fill="#2563EB">VÍ MÌNH · ĐIỀU HƯỚNG</text>
+  <text x="64" y="96" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="30" font-weight="700" fill="#102A56">Menu rõ ràng, nhẹ mắt hơn</text>
+  <text x="64" y="124" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="14" fill="#71819A">Bỏ số thứ tự · gom mục theo tác vụ · giữ màu xanh dương đã duyệt</text>
+
+  <!-- Expanded sidebar -->
+  <g id="sidebar-expanded">
+    <rect x="64" y="154" width="260" height="908" rx="18" fill="#FFFFFF" stroke="#E5EAF2"/>
+    <circle cx="102" cy="194" r="20" fill="#2563EB"/>
+    <text x="102" y="201" text-anchor="middle" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">V</text>
+    <text x="132" y="190" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="16" font-weight="700" fill="#102A56">Ví Mình</text>
+    <text x="132" y="210" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="9" font-weight="600" letter-spacing="0.8" fill="#71819A">TÀI CHÍNH CÁ NHÂN</text>
+    <line x1="64" y1="234" x2="324" y2="234" stroke="#E5EAF2"/>
+
+    <text x="82" y="267" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="700" letter-spacing="0.8" fill="#95A3B8">TỔNG QUAN</text>
+    <g id="nav-overview-active">
+      <rect x="78" y="281" width="232" height="42" rx="11" fill="#EFF6FF"/>
+      <rect x="78" y="291" width="3" height="22" rx="1.5" fill="#2563EB"/>
+      <g transform="translate(92 292)" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m2 9 10-7 10 7"/><path d="M4 8v12h16V8"/><path d="M9 20v-7h6v7"/>
+      </g>
+      <text x="126" y="307" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="600" fill="#102A56">Tổng quan</text>
+    </g>
+
+    <text x="82" y="355" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="700" letter-spacing="0.8" fill="#95A3B8">QUẢN LÝ TÀI CHÍNH</text>
+    <g id="nav-transactions">
+      <g transform="translate(92 372)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2.5"/><path d="M7 7h10M7 12h10M7 17h6"/></g>
+      <text x="126" y="387" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="500" fill="#172B4D">Giao dịch</text>
+    </g>
+    <g id="nav-accounts">
+      <g transform="translate(92 417)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M2 9h20M6 15h5"/></g>
+      <text x="126" y="432" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="500" fill="#172B4D">Tài khoản</text>
+    </g>
+    <g id="nav-budgets">
+      <g transform="translate(92 462)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h19M5 18v-5M10 18V8M15 18v-7M20 18V4"/></g>
+      <text x="126" y="477" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="500" fill="#172B4D">Ngân sách</text>
+    </g>
+    <g id="nav-recurring">
+      <g transform="translate(92 507)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.7 9A7 7 0 0 1 18 6l2 6M18.3 15A7 7 0 0 1 6 18l-2-6"/></g>
+      <text x="126" y="522" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="500" fill="#172B4D">Định kỳ</text>
+    </g>
+    <g id="nav-goals">
+      <g transform="translate(92 552)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></g>
+      <text x="126" y="567" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="500" fill="#172B4D">Mục tiêu</text>
+    </g>
+    <g id="nav-categories">
+      <g transform="translate(92 597)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></g>
+      <text x="126" y="612" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="500" fill="#172B4D">Danh mục</text>
+    </g>
+
+    <text x="82" y="665" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="700" letter-spacing="0.8" fill="#95A3B8">PHÂN TÍCH</text>
+    <g id="nav-reports">
+      <g transform="translate(92 682)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V4M3 21h19"/><rect x="7" y="13" width="3" height="5" rx=".5"/><rect x="13" y="9" width="3" height="9" rx=".5"/><rect x="19" y="5" width="2" height="13" rx=".5"/></g>
+      <text x="126" y="697" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="500" fill="#172B4D">Báo cáo</text>
+    </g>
+
+    <text x="82" y="750" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="700" letter-spacing="0.8" fill="#95A3B8">TRỢ GIÚP</text>
+    <g id="nav-help">
+      <g transform="translate(92 767)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.9 1.6c-1.2 1.1-1.7 1.5-1.7 3"/><path d="M12 17h.01"/></g>
+      <text x="126" y="782" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="12" font-weight="500" fill="#172B4D">Thông tin &amp; trợ giúp</text>
+    </g>
+
+    <line x1="64" y1="984" x2="324" y2="984" stroke="#E5EAF2"/>
+    <g id="profile-settings-entry">
+      <rect x="78" y="998" width="232" height="48" rx="12" fill="#FFFFFF" stroke="#E5EAF2"/>
+      <circle cx="103" cy="1022" r="17" fill="#EFF6FF"/>
+      <text x="103" y="1026" text-anchor="middle" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="700" fill="#2563EB">KL</text>
+      <text x="130" y="1018" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" font-weight="600" fill="#172B4D">Duy Khánh Lê</text>
+      <text x="130" y="1034" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="9" fill="#71819A">Mở hồ sơ · Cài đặt</text>
+      <path d="m292 1018 5 4-5 4" fill="none" stroke="#95A3B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <!-- Compact sidebar for narrow layouts -->
+  <g id="sidebar-compact">
+    <rect x="354" y="154" width="88" height="908" rx="18" fill="#FFFFFF" stroke="#E5EAF2"/>
+    <circle cx="398" cy="194" r="20" fill="#2563EB"/>
+    <text x="398" y="201" text-anchor="middle" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF">V</text>
+    <line x1="354" y1="234" x2="442" y2="234" stroke="#E5EAF2"/>
+    <g id="compact-overview-active"><rect x="370" y="284" width="56" height="44" rx="12" fill="#EFF6FF"/><rect x="370" y="295" width="3" height="22" rx="1.5" fill="#2563EB"/><g transform="translate(386 294)" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 10-7 10 7"/><path d="M4 8v12h16V8"/><path d="M9 20v-7h6v7"/></g></g>
+    <g transform="translate(386 379)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2.5"/><path d="M7 7h10M7 12h10M7 17h6"/></g>
+    <g transform="translate(386 427)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M2 9h20M6 15h5"/></g>
+    <g transform="translate(386 475)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h19M5 18v-5M10 18V8M15 18v-7M20 18V4"/></g>
+    <g transform="translate(386 523)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.7 9A7 7 0 0 1 18 6l2 6M18.3 15A7 7 0 0 1 6 18l-2-6"/></g>
+    <g transform="translate(386 571)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></g>
+    <g transform="translate(386 619)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></g>
+    <g transform="translate(386 703)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V4M3 21h19"/><rect x="7" y="13" width="3" height="5" rx=".5"/><rect x="13" y="9" width="3" height="9" rx=".5"/><rect x="19" y="5" width="2" height="13" rx=".5"/></g>
+    <g transform="translate(386 787)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.9 1.6c-1.2 1.1-1.7 1.5-1.7 3"/><path d="M12 17h.01"/></g>
+    <line x1="354" y1="984" x2="442" y2="984" stroke="#E5EAF2"/>
+    <circle cx="398" cy="1022" r="18" fill="#EFF6FF"/>
+    <text x="398" y="1026" text-anchor="middle" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="700" fill="#2563EB">KL</text>
+  </g>
+
+  <!-- Rationale -->
+  <g id="design-rationale">
+    <rect x="490" y="154" width="1046" height="370" rx="18" fill="#FFFFFF" stroke="#E5EAF2"/>
+    <text x="522" y="193" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="20" font-weight="700" fill="#102A56">Điều hướng rõ ràng hơn</text>
+    <text x="522" y="220" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" fill="#71819A">Nhóm menu theo việc người dùng cần làm, thay vì đánh số từng dòng.</text>
+    <g id="reason-remove-numbers"><circle cx="540" cy="265" r="15" fill="#EFF6FF"/><text x="540" y="269" text-anchor="middle" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="9" font-weight="700" fill="#2563EB">01</text><text x="570" y="261" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="600" fill="#172B4D">Bỏ số thứ tự</text><text x="570" y="280" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" fill="#71819A">Icon cho biết chức năng ngay; không còn dãy số gây nhiễu.</text></g>
+    <g id="reason-group"><circle cx="540" cy="318" r="15" fill="#EFF6FF"/><text x="540" y="322" text-anchor="middle" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="9" font-weight="700" fill="#2563EB">02</text><text x="570" y="314" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="600" fill="#172B4D">Gom theo tác vụ</text><text x="570" y="333" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" fill="#71819A">Tổng quan · Quản lý tài chính · Phân tích · Trợ giúp.</text></g>
+    <g id="reason-current-state"><circle cx="540" cy="371" r="15" fill="#EFF6FF"/><text x="540" y="375" text-anchor="middle" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="9" font-weight="700" fill="#2563EB">03</text><text x="570" y="367" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="600" fill="#172B4D">Biết rõ đang ở đâu</text><text x="570" y="386" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" fill="#71819A">Nền xanh nhẹ và vạch xanh tạo điểm nhấn vừa đủ.</text></g>
+    <g id="reason-settings"><circle cx="540" cy="424" r="15" fill="#EFF6FF"/><text x="540" y="428" text-anchor="middle" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="9" font-weight="700" fill="#2563EB">04</text><text x="570" y="420" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="600" fill="#172B4D">Không lặp mục cài đặt</text><text x="570" y="439" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" fill="#71819A">Cài đặt đi cùng hồ sơ ở cuối menu, đúng với cách dùng hiện tại.</text></g>
+  </g>
+
+  <!-- Active and inactive states -->
+  <g id="states-and-colors">
+    <rect x="490" y="544" width="1046" height="222" rx="18" fill="#FFFFFF" stroke="#E5EAF2"/>
+    <text x="522" y="581" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="18" font-weight="700" fill="#102A56">Trạng thái &amp; màu sắc</text>
+    <text x="522" y="604" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="12" fill="#71819A">Giữ xanh dương đã duyệt; giảm viền dày và khối nặng.</text>
+    <g id="sample-active"><rect x="522" y="625" width="248" height="46" rx="11" fill="#EFF6FF"/><rect x="522" y="636" width="3" height="24" rx="1.5" fill="#2563EB"/><g transform="translate(538 636)" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 10-7 10 7"/><path d="M4 8v12h16V8"/><path d="M9 20v-7h6v7"/></g><text x="572" y="654" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="600" fill="#102A56">Tổng quan</text><text x="522" y="697" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="600" fill="#71819A">ĐANG CHỌN</text></g>
+    <g id="sample-default"><rect x="788" y="625" width="248" height="46" rx="11" fill="#FFFFFF"/><g transform="translate(804 636)" fill="none" stroke="#71819A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="18" height="20" rx="2.5"/><path d="M7 7h10M7 12h10M7 17h6"/></g><text x="838" y="654" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="13" font-weight="500" fill="#172B4D">Giao dịch</text><text x="788" y="697" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="600" fill="#71819A">MẶC ĐỊNH</text></g>
+    <g id="swatch-primary"><rect x="1070" y="625" width="30" height="30" rx="8" fill="#2563EB"/><text x="1112" y="638" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="600" fill="#71819A">Xanh chủ đạo</text><text x="1112" y="654" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" fill="#172B4D">#2563EB</text></g>
+    <g id="swatch-selected"><rect x="1250" y="625" width="30" height="30" rx="8" fill="#EFF6FF" stroke="#D7E7FF"/><text x="1292" y="638" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" font-weight="600" fill="#71819A">Nền chọn</text><text x="1292" y="654" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" fill="#172B4D">#EFF6FF</text></g>
+  </g>
+
+  <!-- Responsive notes -->
+  <g id="responsive-guidance">
+    <rect x="490" y="786" width="1046" height="276" rx="18" fill="#FFFFFF" stroke="#E5EAF2"/>
+    <text x="522" y="824" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="18" font-weight="700" fill="#102A56">Co giãn theo màn hình</text>
+    <text x="522" y="847" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="12" fill="#71819A">Màn hình hẹp có thể dùng thanh icon; nhãn vẫn đầy đủ ở bản mở rộng.</text>
+    <line x1="522" y1="869" x2="1504" y2="869" stroke="#E5EAF2"/>
+    <g id="target-size"><text x="522" y="906" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="16" font-weight="700" fill="#2563EB">44 px</text><text x="522" y="927" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" font-weight="600" fill="#172B4D">Vùng bấm</text><text x="522" y="947" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" fill="#71819A">Dễ thao tác trên cảm ứng</text></g>
+    <g id="nav-count"><text x="838" y="906" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="16" font-weight="700" fill="#2563EB">9 mục</text><text x="838" y="927" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" font-weight="600" fill="#172B4D">Menu chính</text><text x="838" y="947" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" fill="#71819A">Cài đặt mở từ hồ sơ</text></g>
+    <g id="icon-system"><text x="1150" y="906" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="16" font-weight="700" fill="#2563EB">20 px</text><text x="1150" y="927" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" font-weight="600" fill="#172B4D">Kích thước icon</text><text x="1150" y="947" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="10" fill="#71819A">Nét đồng nhất, ít gây nhiễu</text></g>
+    <rect x="522" y="978" width="982" height="54" rx="12" fill="#F8FAFD"/>
+    <circle cx="548" cy="1005" r="10" fill="#DBEAFE"/><path d="m544 1005 3 3 5-6" fill="none" stroke="#2563EB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="570" y="1009" font-family="Be Vietnam Pro, Inter, sans-serif" font-size="11" fill="#52647E">Menu không dùng gạch chân hoặc tô nền khi rê chuột; trạng thái chọn luôn tĩnh và dễ nhận biết.</text>
+  </g>
+</svg>

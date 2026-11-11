@@ -1,0 +1,285 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="2220" viewBox="0 0 3000 2220">
+  <defs>
+    <style>
+      text { font-family: "Be Vietnam Pro", Inter, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="3000" height="2220" fill="#f3f6fb"/>
+
+  <!-- BOARD HEADER -->
+  <text x="40" y="42" font-size="18px" fill="#1e3a8a" font-weight="700">VÍ MÌNH · THIẾT KẾ MỞ RỘNG ADMIN (BOARD 2/2: AN NINH, HỖ TRỢ, THÔNG BÁO &amp; CẤU HÌNH)</text>
+  <text x="40" y="64" font-size="11px" fill="#5e6b80" font-weight="400">Nhóm B (B2, B3, B4, B5, B6) · Royal Blue #2563EB · Không lưu IP thô · Kiểm soát bảo trì &amp; danh mục mặc định</text>
+
+  <!-- ========================================================================================= -->
+  <!-- FRAME 1: ADMIN / SECURITY EVENTS MONITOR (1440 x 1000) at (40, 86)                        -->
+  <!-- ========================================================================================= -->
+  <g id="admin-security-desktop" transform="translate(40 86)">
+    <rect width="1440" height="1000" rx="18" fill="#ffffff" stroke="#dfe6f0" stroke-width="1"/>
+    <rect width="240" height="1000" rx="18" fill="#ffffff"/>
+    <path d="M240 0L240 1000" stroke="#e1e7ef" stroke-width="1"/>
+    <circle cx="42" cy="42" r="19" fill="#2563eb"/>
+    <text x="42" y="49" font-size="21px" fill="#ffffff" font-weight="700" text-anchor="middle">V</text>
+    <text x="72" y="40" font-size="14px" fill="#172033" font-weight="700">Ví Mình</text>
+    <rect x="16" y="352" width="208" height="38" rx="10" fill="#eff6ff"/>
+    <text x="48" y="376" font-size="11px" fill="#2563eb" font-weight="700">6. An ninh đăng nhập</text>
+
+    <path d="M240 68L1440 68" stroke="#e1e7ef" stroke-width="1"/>
+    <text x="276" y="29" font-size="10px" fill="#5e6b80">Quản trị / Người dùng &amp; An ninh</text>
+    <text x="276" y="49" font-size="14px" fill="#172033" font-weight="700">Giám sát An ninh Đăng nhập, OTP &amp; Chống Brute-Force (B2)</text>
+
+    <!-- 4 Security KPIs -->
+    <rect x="276" y="92" width="268" height="100" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="298" y="118" font-size="10px" fill="#5e6b80">ĐĂNG NHẬP SAI (24H)</text>
+    <text x="298" y="156" font-size="26px" fill="#f59e0b" font-weight="700">42 lượt</text>
+    <text x="298" y="178" font-size="9px" fill="#5e6b80">Trên 11 tài khoản mục tiêu</text>
+
+    <rect x="560" y="92" width="268" height="100" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="582" y="118" font-size="10px" fill="#5e6b80">OTP BỊ KHÓA DO NHẬP SAI</text>
+    <text x="582" y="156" font-size="26px" fill="#e66b55" font-weight="700">6 sự kiện</text>
+    <text x="582" y="178" font-size="9px" fill="#e66b55" font-weight="600">Chạm ngưỡng 5/5 lần thử</text>
+
+    <rect x="844" y="92" width="268" height="100" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="866" y="118" font-size="10px" fill="#5e6b80">CHẶN RATE LIMIT (HTTP 429)</text>
+    <text x="866" y="156" font-size="26px" fill="#e66b55" font-weight="700">15 lượt</text>
+    <text x="866" y="178" font-size="9px" fill="#5e6b80">Từ 3 cụm HMAC IP ẩn danh</text>
+
+    <rect x="1128" y="92" width="276" height="100" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="1150" y="118" font-size="10px" fill="#5e6b80">YÊU CẦU ĐẶT LẠI MẬT KHẨU</text>
+    <text x="1150" y="156" font-size="26px" fill="#2563eb" font-weight="700">9 lượt</text>
+    <text x="1150" y="178" font-size="9px" fill="#157347" font-weight="600">● Không lưu IP thô (Tự xóa &gt;30 ngày)</text>
+
+    <!-- Hourly Security SVG Bar Chart -->
+    <rect x="276" y="212" width="1128" height="270" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="300" y="242" font-size="13px" fill="#172033" font-weight="700">Phân bố sự kiện an ninh theo khung giờ (24 giờ qua)</text>
+    <path d="M320 430L1360 430" stroke="#e1e7ef" stroke-width="1"/>
+    <!-- SVG Bars -->
+    <rect x="350" y="390" width="38" height="40" rx="5" fill="#93c5fd"/>
+    <rect x="440" y="370" width="38" height="60" rx="5" fill="#93c5fd"/>
+    <rect x="530" y="405" width="38" height="25" rx="5" fill="#93c5fd"/>
+    <rect x="620" y="340" width="38" height="90" rx="5" fill="#2563eb"/>
+    <rect x="710" y="280" width="38" height="150" rx="5" fill="#e66b55"/>
+    <rect x="800" y="310" width="38" height="120" rx="5" fill="#f59e0b"/>
+    <rect x="890" y="385" width="38" height="45" rx="5" fill="#93c5fd"/>
+    <rect x="980" y="360" width="38" height="70" rx="5" fill="#2563eb"/>
+    <rect x="1070" y="395" width="38" height="35" rx="5" fill="#93c5fd"/>
+    <rect x="1160" y="350" width="38" height="80" rx="5" fill="#2563eb"/>
+    <rect x="1250" y="375" width="38" height="55" rx="5" fill="#93c5fd"/>
+    <text x="729" y="270" font-size="9px" fill="#b42318" font-weight="700" text-anchor="middle">Đột biến 14:00 (28 lỗi)</text>
+
+    <!-- Security Events Log Table -->
+    <rect x="276" y="502" width="1128" height="460" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <rect x="276" y="502" width="1128" height="46" rx="14" fill="#f5f7fa"/>
+    <text x="300" y="530" font-size="9px" fill="#7b8799" font-weight="700">THỜI GIAN</text>
+    <text x="460" y="530" font-size="9px" fill="#7b8799" font-weight="700">LOẠI SỰ KIỆN</text>
+    <text x="690" y="530" font-size="9px" fill="#7b8799" font-weight="700">TÀI KHOẢN / EMAIL CHE</text>
+    <text x="950" y="530" font-size="9px" fill="#7b8799" font-weight="700">NHÓM NGUỒN (HMAC BUCKET)</text>
+    <text x="1210" y="530" font-size="9px" fill="#7b8799" font-weight="700">PHẢN ỨNG NHANH</text>
+
+    <text x="300" y="584" font-size="10px" fill="#5e6b80">22:18 hôm nay</text>
+    <rect x="460" y="566" width="140" height="24" rx="12" fill="#fdecec"/><text x="530" y="582" font-size="9px" fill="#b42318" font-weight="700" text-anchor="middle">rate_limited (429)</text>
+    <text x="690" y="584" font-size="10px" fill="#172033" font-weight="600">k••••@gmail.com</text>
+    <text x="950" y="584" font-size="10px" fill="#5e6b80">Bucket #A94F1C (12 lần/15p)</text>
+    <rect x="1210" y="564" width="160" height="28" rx="8" fill="#fdecec"/><text x="1290" y="582" font-size="9px" fill="#b42318" font-weight="700" text-anchor="middle">Khóa bảo vệ tài khoản</text>
+
+    <path d="M276 610L1404 610" stroke="#edf1f6"/>
+    <text x="300" y="648" font-size="10px" fill="#5e6b80">21:50 hôm nay</text>
+    <rect x="460" y="630" width="140" height="24" rx="12" fill="#fff8e7"/><text x="530" y="646" font-size="9px" fill="#895800" font-weight="700" text-anchor="middle">login_failed</text>
+    <text x="690" y="648" font-size="10px" fill="#172033" font-weight="600">l••••@gmail.com</text>
+    <text x="950" y="648" font-size="10px" fill="#5e6b80">Bucket #3C82D0 (4 lần)</text>
+    <rect x="1210" y="628" width="160" height="28" rx="8" fill="#eff6ff"/><text x="1290" y="646" font-size="9px" fill="#2563eb" font-weight="700" text-anchor="middle">Thu hồi mọi phiên</text>
+  </g>
+
+  <!-- ========================================================================================= -->
+  <!-- FRAME 2: ADMIN / SUPPORT TICKETS & FEEDBACK (1440 x 1000) at (1520, 86)                   -->
+  <!-- ========================================================================================= -->
+  <g id="admin-support-desktop" transform="translate(1520 86)">
+    <rect width="1440" height="1000" rx="18" fill="#ffffff" stroke="#dfe6f0" stroke-width="1"/>
+    <rect width="240" height="1000" rx="18" fill="#ffffff"/>
+    <path d="M240 0L240 1000" stroke="#e1e7ef" stroke-width="1"/>
+    <circle cx="42" cy="42" r="19" fill="#2563eb"/>
+    <text x="42" y="49" font-size="21px" fill="#ffffff" font-weight="700" text-anchor="middle">V</text>
+    <text x="72" y="40" font-size="14px" fill="#172033" font-weight="700">Ví Mình</text>
+    <rect x="16" y="418" width="208" height="38" rx="10" fill="#eff6ff"/>
+    <text x="48" y="442" font-size="11px" fill="#2563eb" font-weight="700">7. Hộp thư hỗ trợ</text>
+
+    <path d="M240 68L1440 68" stroke="#e1e7ef" stroke-width="1"/>
+    <text x="276" y="29" font-size="10px" fill="#5e6b80">Quản trị / Vận hành &amp; Hỗ trợ</text>
+    <text x="276" y="49" font-size="14px" fill="#172033" font-weight="700">Hộp thư Hỗ trợ, Báo lỗi &amp; Góp ý từ Người dùng (B5)</text>
+
+    <!-- Left: Ticket List -->
+    <rect x="276" y="92" width="660" height="870" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <rect x="296" y="112" width="620" height="44" rx="10" fill="#f5f7fa"/>
+    <text x="314" y="138" font-size="10px" fill="#7b8799">⌕ Tìm chủ đề phiếu...   |   Trạng thái: Mới (4) · Đang xử lý (2) · Đã xong (18)</text>
+
+    <!-- Ticket Card 1 (Selected) -->
+    <rect x="296" y="174" width="620" height="108" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="1.5"/>
+    <rect x="314" y="190" width="76" height="22" rx="11" fill="#fdecec"/><text x="352" y="205" font-size="8px" fill="#b42318" font-weight="700" text-anchor="middle">BÁO LỖI</text>
+    <rect x="398" y="190" width="76" height="22" rx="11" fill="#fff8e7"/><text x="436" y="205" font-size="8px" fill="#895800" font-weight="700" text-anchor="middle">MỚI (OPEN)</text>
+    <text x="896" y="205" font-size="9px" fill="#5e6b80" text-anchor="end">20 phút trước</text>
+    <text x="314" y="234" font-size="12px" fill="#172033" font-weight="700">Không nhận được mã OTP khi đổi sang email công ty</text>
+    <text x="314" y="256" font-size="10px" fill="#5e6b80">Người gửi: Nguyễn Lan (l••••@gmail.com) · Không đính kèm dữ liệu tài chính</text>
+
+    <!-- Ticket Card 2 -->
+    <rect x="296" y="298" width="620" height="108" rx="12" fill="#ffffff" stroke="#e1e7ef"/>
+    <rect x="314" y="314" width="90" height="22" rx="11" fill="#eff6ff"/><text x="359" y="329" font-size="8px" fill="#2563eb" font-weight="700" text-anchor="middle">GÓP Ý TÍNH NĂNG</text>
+    <rect x="412" y="314" width="94" height="22" rx="11" fill="#e8f8ef"/><text x="459" y="329" font-size="8px" fill="#157347" font-weight="700" text-anchor="middle">ĐÃ PHẢN HỒI</text>
+    <text x="314" y="358" font-size="12px" fill="#172033" font-weight="700">Đề xuất thêm danh mục "Học phí &amp; Khóa học" mặc định</text>
+    <text x="314" y="380" font-size="10px" fill="#5e6b80">Người gửi: Trần Minh (m••••@gmail.com)</text>
+
+    <!-- Right: Ticket Detail & Reply Form -->
+    <rect x="954" y="92" width="450" height="870" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="978" y="128" font-size="14px" fill="#172033" font-weight="700">Chi tiết &amp; Phản hồi Phiếu #TK-104</text>
+    <text x="978" y="150" font-size="10px" fill="#5e6b80">Từ: Nguyễn Lan (l••••@gmail.com) · Danh mục: Báo lỗi</text>
+
+    <rect x="978" y="170" width="402" height="140" rx="10" fill="#f5f7fa"/>
+    <text x="994" y="198" font-size="10px" fill="#172033" font-weight="600">Nội dung người dùng gửi:</text>
+    <text x="994" y="222" font-size="10px" fill="#5e6b80">"Mình bấm gửi mã xác thực tới địa chỉ email mới nhưng đợi</text>
+    <text x="994" y="240" font-size="10px" fill="#5e6b80">5 phút chưa thấy trong hộp thư đến. Nhờ Admin kiểm tra giúp."</text>
+
+    <text x="978" y="342" font-size="11px" fill="#172033" font-weight="700">Cập nhật trạng thái xử lý:</text>
+    <rect x="978" y="354" width="402" height="38" rx="8" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="994" y="378" font-size="10px" fill="#172033">Trạng thái: Đang xử lý (in_progress) ⌄</text>
+
+    <text x="978" y="422" font-size="11px" fill="#172033" font-weight="700">Nội dung phản hồi của Admin:</text>
+    <rect x="978" y="434" width="402" height="150" rx="8" fill="#ffffff" stroke="#2563eb"/>
+    <text x="994" y="462" font-size="10px" fill="#172033">Chào bạn, hệ thống SMTP vẫn hoạt động bình thường. Bạn vui</text>
+    <text x="994" y="482" font-size="10px" fill="#172033">lòng kiểm tra thư mục Spam/Quảng cáo hoặc thử gửi lại sau 60s nhé.</text>
+
+    <rect x="978" y="604" width="402" height="42" rx="10" fill="#2563eb"/>
+    <text x="1179" y="630" font-size="11px" fill="#ffffff" font-weight="700" text-anchor="middle">Gửi phản hồi &amp; Lưu nhật ký Audit</text>
+  </g>
+
+  <!-- ========================================================================================= -->
+  <!-- FRAME 3: ADMIN / SYSTEM ANNOUNCEMENTS (1440 x 1000) at (40, 1140)                         -->
+  <!-- ========================================================================================= -->
+  <g id="admin-announcements-desktop" transform="translate(40 1140)">
+    <rect width="1440" height="1000" rx="18" fill="#ffffff" stroke="#dfe6f0" stroke-width="1"/>
+    <rect width="240" height="1000" rx="18" fill="#ffffff"/>
+    <path d="M240 0L240 1000" stroke="#e1e7ef" stroke-width="1"/>
+    <circle cx="42" cy="42" r="19" fill="#2563eb"/>
+    <text x="42" y="49" font-size="21px" fill="#ffffff" font-weight="700" text-anchor="middle">V</text>
+    <text x="72" y="40" font-size="14px" fill="#172033" font-weight="700">Ví Mình</text>
+    <rect x="16" y="452" width="208" height="38" rx="10" fill="#eff6ff"/>
+    <text x="48" y="476" font-size="11px" fill="#2563eb" font-weight="700">8. Thông báo hệ thống</text>
+
+    <path d="M240 68L1440 68" stroke="#e1e7ef" stroke-width="1"/>
+    <text x="276" y="29" font-size="10px" fill="#5e6b80">Quản trị / Vận hành &amp; Hỗ trợ</text>
+    <text x="276" y="49" font-size="14px" fill="#172033" font-weight="700">Quản lý Banner Thông báo Hệ thống (System Announcements — B3)</text>
+
+    <!-- Live Banner Preview (Rule 11 compliant: solid soft background, no side accent bar) -->
+    <text x="276" y="102" font-size="11px" fill="#5e6b80" font-weight="700">XEM TRƯỚC BANNER HIỂN THỊ TRÊN DASHBOARD NGƯỜI DÙNG:</text>
+    <rect x="276" y="114" width="1128" height="58" rx="12" fill="#eff6ff"/>
+    <text x="302" y="140" font-size="11px" fill="#1e3a8a" font-weight="700">[THÔNG BÁO HỆ THỐNG] Nâng cấp tính năng Xuất báo cáo Excel &amp; PDF kèm biểu đồ</text>
+    <text x="302" y="158" font-size="10px" fill="#2563eb">Bạn đã có thể tải báo cáo giao dịch đầy đủ tại mục Báo cáo hoặc qua Trợ lý AI Coach.</text>
+    <text x="1376" y="148" font-size="11px" fill="#1e3a8a" font-weight="700" text-anchor="end">✕ Đóng</text>
+
+    <!-- Create / Edit Form + Active List -->
+    <rect x="276" y="192" width="520" height="768" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="300" y="226" font-size="14px" fill="#172033" font-weight="700">Tạo / Cập nhật Thông báo mới</text>
+
+    <text x="300" y="264" font-size="10px" fill="#172033" font-weight="600">Tiêu đề thông báo (1–120 ký tự) *</text>
+    <rect x="300" y="274" width="472" height="38" rx="8" fill="#f5f7fa" stroke="#e1e7ef"/>
+    <text x="316" y="298" font-size="10px" fill="#172033">Bảo trì nâng cấp cơ sở dữ liệu định kỳ</text>
+
+    <text x="300" y="336" font-size="10px" fill="#172033" font-weight="600">Nội dung chi tiết (1–500 ký tự) *</text>
+    <rect x="300" y="346" width="472" height="90" rx="8" fill="#f5f7fa" stroke="#e1e7ef"/>
+    <text x="316" y="372" font-size="10px" fill="#172033">Hệ thống sẽ bảo trì từ 23:00 đến 23:15 ngày 06/11/2026.</text>
+
+    <text x="300" y="464" font-size="10px" fill="#172033" font-weight="600">Mức độ hiển thị &amp; Thời gian hiệu lực</text>
+    <rect x="300" y="476" width="228" height="38" rx="8" fill="#f5f7fa" stroke="#e1e7ef"/>
+    <text x="316" y="500" font-size="10px" fill="#172033">Mức độ: Thông tin (Xanh) ⌄</text>
+    <rect x="544" y="476" width="228" height="38" rx="8" fill="#f5f7fa" stroke="#e1e7ef"/>
+    <text x="560" y="500" font-size="10px" fill="#172033">Cho phép ẩn: Có ✓</text>
+
+    <rect x="300" y="540" width="472" height="42" rx="10" fill="#2563eb"/>
+    <text x="536" y="566" font-size="11px" fill="#ffffff" font-weight="700" text-anchor="middle">+ Đăng thông báo hệ thống</text>
+
+    <!-- Right: Announcements List -->
+    <rect x="814" y="192" width="590" height="768" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="838" y="226" font-size="14px" fill="#172033" font-weight="700">Danh sách Thông báo đã tạo</text>
+
+    <rect x="838" y="250" width="542" height="106" rx="12" fill="#f5f7fa"/>
+    <rect x="856" y="266" width="84" height="22" rx="11" fill="#e8f8ef"/><text x="898" y="281" font-size="8px" fill="#157347" font-weight="700" text-anchor="middle">ĐANG HIỂN THỊ</text>
+    <text x="856" y="308" font-size="12px" fill="#172033" font-weight="700">Nâng cấp tính năng Xuất báo cáo Excel &amp; PDF</text>
+    <text x="856" y="330" font-size="9px" fill="#5e6b80">Hiệu lực: 05/11/2026 → 12/11/2026 · Mức độ: Info</text>
+    <text x="1356" y="282" font-size="10px" fill="#2563eb" font-weight="700" text-anchor="end">Sửa · Tắt · Xóa</text>
+  </g>
+
+  <!-- ========================================================================================= -->
+  <!-- FRAME 4: ADMIN / APP SETTINGS & DEFAULT CATEGORY TEMPLATES (1440 x 1000) at (1520, 1140)  -->
+  <!-- ========================================================================================= -->
+  <g id="admin-settings-and-templates-desktop" transform="translate(1520 1140)">
+    <rect width="1440" height="1000" rx="18" fill="#ffffff" stroke="#dfe6f0" stroke-width="1"/>
+    <rect width="240" height="1000" rx="18" fill="#ffffff"/>
+    <path d="M240 0L240 1000" stroke="#e1e7ef" stroke-width="1"/>
+    <circle cx="42" cy="42" r="19" fill="#2563eb"/>
+    <text x="42" y="49" font-size="21px" fill="#ffffff" font-weight="700" text-anchor="middle">V</text>
+    <text x="72" y="40" font-size="14px" fill="#172033" font-weight="700">Ví Mình</text>
+    <rect x="16" y="486" width="208" height="38" rx="10" fill="#eff6ff"/>
+    <text x="48" y="510" font-size="11px" fill="#2563eb" font-weight="700">9. Cấu hình &amp; Danh mục mẫu</text>
+
+    <path d="M240 68L1440 68" stroke="#e1e7ef" stroke-width="1"/>
+    <text x="276" y="29" font-size="10px" fill="#5e6b80">Quản trị / Vận hành &amp; Hỗ trợ</text>
+    <text x="276" y="49" font-size="14px" fill="#172033" font-weight="700">Công tắc Vận hành Hệ thống (B4) &amp; Bộ Danh mục Mặc định (B6)</text>
+
+    <!-- Left Column: Operational Switches (B4) -->
+    <rect x="276" y="92" width="520" height="870" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="300" y="126" font-size="14px" fill="#172033" font-weight="700">Công tắc Vận hành &amp; Chế độ Bảo trì (B4)</text>
+    <text x="300" y="146" font-size="9px" fill="#5e6b80">Mọi thay đổi được áp dụng tức thì và ghi vào admin_audit_logs</text>
+
+    <!-- Switch 1 -->
+    <rect x="300" y="170" width="472" height="82" rx="12" fill="#fff8e7" stroke="#fde68a"/>
+    <text x="320" y="198" font-size="11px" fill="#895800" font-weight="700">Chế độ bảo trì toàn hệ thống (maintenance_mode)</text>
+    <text x="320" y="218" font-size="9px" fill="#5e6b80">Khi bật: User thường chỉ đọc, khóa tạo/sửa/xóa. Admin vẫn hoạt động.</text>
+    <rect x="696" y="194" width="56" height="28" rx="14" fill="#cbd5e1"/><circle cx="710" cy="208" r="11" fill="#ffffff"/>
+
+    <!-- Switch 2 -->
+    <rect x="300" y="268" width="472" height="74" rx="12" fill="#f5f7fa"/>
+    <text x="320" y="296" font-size="11px" fill="#172033" font-weight="700">Cho phép đăng ký tài khoản mới (allow_registration)</text>
+    <text x="320" y="316" font-size="9px" fill="#5e6b80">Tắt khi cần chặn spam đăng ký hàng loạt</text>
+    <rect x="696" y="288" width="56" height="28" rx="14" fill="#2563eb"/><circle cx="738" cy="302" r="11" fill="#ffffff"/>
+
+    <!-- Switch 3 -->
+    <rect x="300" y="358" width="472" height="74" rx="12" fill="#f5f7fa"/>
+    <text x="320" y="386" font-size="11px" fill="#172033" font-weight="700">Quét hóa đơn OCR tại trình duyệt (enable_ocr_scanner)</text>
+    <text x="320" y="406" font-size="9px" fill="#5e6b80">Cho phép sử dụng Tesseract.js nhận diện hóa đơn</text>
+    <rect x="696" y="378" width="56" height="28" rx="14" fill="#2563eb"/><circle cx="738" cy="392" r="11" fill="#ffffff"/>
+
+    <!-- Switch 4 -->
+    <rect x="300" y="448" width="472" height="74" rx="12" fill="#f5f7fa"/>
+    <text x="320" y="476" font-size="11px" fill="#172033" font-weight="700">Trợ lý tài chính AI Coach cá nhân (enable_ai_coach)</text>
+    <text x="320" y="496" font-size="9px" fill="#5e6b80">Hiển thị nút chat phân tích tài chính theo quy tắc cục bộ</text>
+    <rect x="696" y="468" width="56" height="28" rx="14" fill="#2563eb"/><circle cx="738" cy="482" r="11" fill="#ffffff"/>
+
+    <!-- Right Column: Default Category Templates (B6) -->
+    <rect x="814" y="92" width="590" height="870" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="838" y="126" font-size="14px" fill="#172033" font-weight="700">Bộ Danh mục Mặc định cho Người dùng Mới (B6)</text>
+    <text x="838" y="146" font-size="9px" fill="#5e6b80">Tự động khởi tạo khi tài khoản mới xác minh OTP · Không ảnh hưởng user cũ</text>
+    <rect x="1234" y="108" width="146" height="34" rx="8" fill="#2563eb"/>
+    <text x="1307" y="129" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">+ Thêm danh mục mẫu</text>
+
+    <rect x="838" y="170" width="542" height="40" rx="8" fill="#f5f7fa"/>
+    <text x="856" y="194" font-size="9px" fill="#7b8799" font-weight="700">TÊN DANH MỤC MẪU</text>
+    <text x="1060" y="194" font-size="9px" fill="#7b8799" font-weight="700">LOẠI</text>
+    <text x="1160" y="194" font-size="9px" fill="#7b8799" font-weight="700">MÀU SẮC</text>
+    <text x="1280" y="194" font-size="9px" fill="#7b8799" font-weight="700">TRẠNG THÁI</text>
+
+    <!-- Template rows -->
+    <text x="856" y="242" font-size="11px" fill="#172033" font-weight="700">Ăn uống</text>
+    <rect x="1060" y="224" width="64" height="22" rx="11" fill="#fdecec"/><text x="1092" y="239" font-size="8px" fill="#b42318" font-weight="700" text-anchor="middle">CHI TIÊU</text>
+    <circle cx="1174" cy="235" r="8" fill="#ef4444"/><text x="1190" y="240" font-size="10px" fill="#5e6b80">#EF4444</text>
+    <text x="1280" y="240" font-size="10px" fill="#157347" font-weight="700">Đang bật · Sửa</text>
+
+    <path d="M838 264L1380 264" stroke="#edf1f6"/>
+    <text x="856" y="302" font-size="11px" fill="#172033" font-weight="700">Di chuyển</text>
+    <rect x="1060" y="284" width="64" height="22" rx="11" fill="#fdecec"/><text x="1092" y="299" font-size="8px" fill="#b42318" font-weight="700" text-anchor="middle">CHI TIÊU</text>
+    <circle cx="1174" cy="295" r="8" fill="#f59e0b"/><text x="1190" y="300" font-size="10px" fill="#5e6b80">#F59E0B</text>
+    <text x="1280" y="300" font-size="10px" fill="#157347" font-weight="700">Đang bật · Sửa</text>
+
+    <path d="M838 324L1380 324" stroke="#edf1f6"/>
+    <text x="856" y="362" font-size="11px" fill="#172033" font-weight="700">Lương chính</text>
+    <rect x="1060" y="344" width="64" height="22" rx="11" fill="#eff6ff"/><text x="1092" y="359" font-size="8px" fill="#2563eb" font-weight="700" text-anchor="middle">THU NHẬP</text>
+    <circle cx="1174" cy="355" r="8" fill="#2563eb"/><text x="1190" y="360" font-size="10px" fill="#5e6b80">#2563EB</text>
+    <text x="1280" y="360" font-size="10px" fill="#157347" font-weight="700">Đang bật · Sửa</text>
+  </g>
+</svg>

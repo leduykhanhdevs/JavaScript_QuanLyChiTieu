@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="980" viewBox="0 0 1440 980">
+<defs><filter id="shadow" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="5" stdDeviation="10" flood-color="#152a4d" flood-opacity=".06"/></filter></defs>
+<rect width="1440" height="980" fill="#f3f6fb"/>
+<text x="36" y="42" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#1e3a8a" letter-spacing="1.2">VÍ MÌNH · KHU VỰC QUẢN TRỊ</text>
+<text x="36" y="82" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="28" font-weight="700" fill="#172033">Trạng thái &amp; phản hồi giao diện</text>
+<text x="36" y="111" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="13" fill="#5e6b80">Các tình huống cần có trên Dashboard Admin · Dữ liệu minh họa · Màu và kiểu chữ theo trang public</text>
+<g filter="url(#shadow)"><rect x="32" y="142" width="676" height="252" rx="18" fill="#fff" stroke="#e1e7ef"/></g>
+<circle cx="58" cy="170" r="13" fill="#eff6ff"/><text x="58" y="175" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#2563eb">01</text>
+<text x="82" y="175" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">Loading · Đang tải số liệu</text>
+<rect x="52" y="195" width="636" height="178" rx="12" fill="#f8faff" stroke="#edf1f6"/>
+<rect x="72" y="215" width="120" height="7" rx="4" fill="#e1e7ef"/><rect x="72" y="234" width="210" height="10" rx="5" fill="#edf1f6"/>
+<rect x="72" y="265" width="137" height="72" rx="12" fill="#fff" stroke="#e1e7ef"/><rect x="225" y="265" width="137" height="72" rx="12" fill="#fff" stroke="#e1e7ef"/><rect x="378" y="265" width="137" height="72" rx="12" fill="#fff" stroke="#e1e7ef"/><rect x="531" y="265" width="137" height="72" rx="12" fill="#fff" stroke="#e1e7ef"/>
+<rect x="87" y="280" width="62" height="6" rx="3" fill="#edf1f6"/><rect x="87" y="298" width="83" height="12" rx="6" fill="#e1e7ef"/><rect x="240" y="280" width="62" height="6" rx="3" fill="#edf1f6"/><rect x="240" y="298" width="83" height="12" rx="6" fill="#e1e7ef"/><rect x="393" y="280" width="62" height="6" rx="3" fill="#edf1f6"/><rect x="393" y="298" width="83" height="12" rx="6" fill="#e1e7ef"/><rect x="546" y="280" width="62" height="6" rx="3" fill="#edf1f6"/><rect x="546" y="298" width="83" height="12" rx="6" fill="#e1e7ef"/>
+<circle cx="370" cy="355" r="7" fill="#2563eb"/><text x="386" y="359" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" fill="#5e6b80">Đang đồng bộ dữ liệu an toàn…</text>
+<g filter="url(#shadow)"><rect x="732" y="142" width="676" height="252" rx="18" fill="#fff" stroke="#e1e7ef"/></g>
+<circle cx="758" cy="170" r="13" fill="#eff6ff"/><text x="758" y="175" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#2563eb">02</text>
+<text x="782" y="175" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">Empty · Không có kết quả</text>
+<rect x="752" y="195" width="636" height="178" rx="12" fill="#f8faff" stroke="#edf1f6"/>
+<circle cx="1070" cy="246" r="22" fill="#eff6ff"/><circle cx="1066" cy="242" r="7" fill="none" stroke="#2563eb" stroke-width="2.5"/><path d="M1071 247l7 7" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+<text x="1070" y="286" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">Không tìm thấy tài khoản phù hợp</text>
+<text x="1070" y="307" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" fill="#5e6b80">Thử đổi từ khóa hoặc bỏ bớt bộ lọc đang chọn.</text>
+<rect x="1009" y="324" width="122" height="30" rx="9" fill="#eff6ff"/><text x="1070" y="343" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#2563eb">Xóa bộ lọc</text>
+<g filter="url(#shadow)"><rect x="32" y="414" width="676" height="252" rx="18" fill="#fff" stroke="#e1e7ef"/></g>
+<circle cx="58" cy="442" r="13" fill="#fff0ec"/><text x="58" y="447" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#c24136">03</text>
+<text x="82" y="447" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">API error · Có thể thử lại</text>
+<rect x="52" y="467" width="636" height="178" rx="12" fill="#f8faff" stroke="#edf1f6"/>
+<circle cx="370" cy="510" r="20" fill="#fff0ec"/><path d="M370 499v13m0 7v1" stroke="#c24136" stroke-width="2.5" stroke-linecap="round"/>
+<text x="370" y="548" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">Chưa thể tải dữ liệu</text>
+<text x="370" y="569" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" fill="#5e6b80">Dịch vụ đang gián đoạn. Dữ liệu chưa được cập nhật.</text>
+<rect x="323" y="587" width="94" height="32" rx="9" fill="#2563eb"/><text x="370" y="608" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#fff">Thử lại</text>
+<g filter="url(#shadow)"><rect x="732" y="414" width="676" height="252" rx="18" fill="#fff" stroke="#e1e7ef"/></g>
+<circle cx="758" cy="442" r="13" fill="#fff0ec"/><text x="758" y="447" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#c24136">04</text>
+<text x="782" y="447" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">403 · Không có quyền Admin</text>
+<rect x="752" y="467" width="636" height="178" rx="12" fill="#f8faff" stroke="#edf1f6"/>
+<path d="M1070 491l22 8v16c0 15-10 23-22 29-12-6-22-14-22-29v-16z" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/><path d="M1062 513l6 6 11-13" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="1070" y="566" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">Bạn không có quyền truy cập trang này</text>
+<text x="1070" y="587" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" fill="#5e6b80">Nếu bạn cần quyền quản trị, hãy liên hệ chủ dự án.</text>
+<rect x="1002" y="603" width="136" height="30" rx="9" fill="#2563eb"/><text x="1070" y="622" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#fff">Về trang cá nhân</text>
+<g filter="url(#shadow)"><rect x="32" y="686" width="676" height="252" rx="18" fill="#fff" stroke="#e1e7ef"/></g>
+<circle cx="58" cy="714" r="13" fill="#fff7e8"/><text x="58" y="719" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#b77900">05</text>
+<text x="82" y="719" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">Confirm · Khóa tài khoản</text>
+<rect x="52" y="739" width="636" height="178" rx="12" fill="#f8faff" stroke="#edf1f6"/>
+<rect x="180" y="752" width="380" height="150" rx="15" fill="#fff" stroke="#e1e7ef" filter="url(#shadow)"/>
+<circle cx="209" cy="779" r="13" fill="#fff7e8"/><path d="M205 779v-3a4 4 0 0 1 8 0v3m-10 0h12v10h-12z" fill="none" stroke="#b77900" stroke-width="1.7" stroke-linejoin="round"/>
+<text x="232" y="784" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">Khóa tài khoản?</text>
+<text x="205" y="813" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" fill="#5e6b80">Người dùng sẽ bị đăng xuất và không thể đăng nhập</text><text x="205" y="830" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" fill="#5e6b80">cho đến khi Admin mở khóa tài khoản.</text>
+<rect x="361" y="851" width="75" height="29" rx="8" fill="#f5f7fa"/><text x="398" y="870" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" font-weight="600" fill="#263349">Hủy</text>
+<rect x="444" y="851" width="94" height="29" rx="8" fill="#c24136"/><text x="491" y="870" text-anchor="middle" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#fff">Khóa tài khoản</text>
+<g filter="url(#shadow)"><rect x="732" y="686" width="676" height="252" rx="18" fill="#fff" stroke="#e1e7ef"/></g>
+<circle cx="758" cy="714" r="13" fill="#eff6ff"/><text x="758" y="719" text-anchor="middle" font-family="Arial" font-size="11" font-weight="700" fill="#2563eb">06</text>
+<text x="782" y="719" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="14" font-weight="700" fill="#172033">Success · Thao tác hoàn tất</text>
+<rect x="752" y="739" width="636" height="178" rx="12" fill="#f8faff" stroke="#edf1f6"/>
+<rect x="832" y="794" width="476" height="64" rx="13" fill="#fff" stroke="#dbeafe" filter="url(#shadow)"/><circle cx="860" cy="826" r="15" fill="#eff6ff"/><path d="M853 826l5 5 9-10" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="888" y="821" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#172033">Đã khóa tài khoản</text><text x="888" y="840" font-family="Be Vietnam Pro, Inter, Arial, sans-serif" font-size="10" fill="#5e6b80">Các phiên đăng nhập hiện tại đã được thu hồi.</text>
+<rect x="1260" y="813" width="2" height="25" rx="1" fill="#2563eb"/>
+</svg>

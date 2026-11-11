@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Duyệt giao diện Mini app và báo cáo Agent</title>
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#66758c; --line:#dce5f1; --blue:#2563eb; --navy:#203e91; --pale:#eff6ff; --canvas:#f5f8fc; --green:#15803d; }
+    * { box-sizing:border-box; }
+    body { margin:0; padding:20px 0 32px; color:var(--ink); font:14px/1.45 "Be Vietnam Pro",Arial,sans-serif; }
+    h1,h2,h3,p { margin:0; }
+    h1 { margin:0 0 7px; font-size:22px; letter-spacing:-.03em; }
+    .intro { margin:0 0 20px; color:var(--muted); }
+    .section-title { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin:23px 0 10px; }
+    .section-title h2 { font-size:17px; }
+    .section-title span { color:var(--muted); font-size:12px; }
+    .panel { padding:16px; border:1px solid var(--line); border-radius:16px; background:white; box-shadow:0 5px 18px #1720330a; }
+    .mini { width:min(100%,410px); margin:0 auto; padding:16px; border:1px solid var(--line); border-radius:22px; background:#fff; box-shadow:0 12px 36px #17203314; }
+    .brand { display:flex; align-items:center; gap:10px; padding-bottom:13px; border-bottom:1px solid var(--line); }
+    .mark { display:grid; width:36px; height:36px; place-items:center; border-radius:12px; background:var(--blue); color:#fff; font-weight:800; }
+    .brand strong { display:block; font-size:15px; }
+    .brand small { color:var(--muted); font-size:11px; }
+    .label { display:block; margin:15px 0 6px; font-size:12px; font-weight:700; }
+    .amount { display:flex; align-items:center; height:54px; padding:0 14px; border:1px solid var(--line); border-radius:13px; background:#fff; }
+    .amount input { width:100%; min-width:0; height:100%; padding:0; border:0; outline:0; background:transparent; color:var(--ink); font:700 20px/1 Arial,sans-serif; }
+    .amount span { color:var(--muted); font-size:12px; font-weight:700; }
+    .goal-summary { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:13px 0 10px; }
+    .goal-summary h3 { font-size:14px; }
+    .goal-summary p { margin-top:3px; color:var(--muted); font-size:11px; }
+    .text-action { padding:5px 0; border:0; background:transparent; color:var(--blue); font:700 11px Arial,sans-serif; white-space:nowrap; }
+    .goal { padding:11px 12px; border:1px solid var(--line); border-radius:13px; background:white; }
+    .goal + .goal { margin-top:7px; }
+    .goal-head { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+    .goal-head strong { font-size:13px; }
+    .goal-head small { display:block; margin-top:2px; color:var(--muted); font-size:11px; }
+    .goal-edit { color:var(--blue); font-size:11px; font-weight:600; }
+    .goal-money { display:flex; align-items:baseline; gap:5px; margin-top:9px; }
+    .goal-money strong { font-size:17px; }
+    .goal-money span { color:var(--muted); font-size:11px; }
+    .progress { height:6px; margin:8px 0 5px; overflow:hidden; border-radius:99px; background:#e6edf6; }
+    .progress i { display:block; height:100%; border-radius:inherit; background:var(--blue); }
+    .progress-meta { display:flex; justify-content:space-between; color:var(--muted); font-size:10px; }
+    .goal-actions { display:flex; gap:6px; margin-top:9px; }
+    .button { min-height:30px; padding:0 10px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); font-size:11px; font-weight:700; }
+    .button.primary { border-color:var(--blue); background:var(--blue); color:white; }
+    .button.link { border-color:transparent; color:var(--blue); }
+    .goal-note { margin-top:9px; color:var(--muted); font-size:11px; }
+    .export { padding:20px; }
+    .report-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; padding-bottom:14px; border-bottom:1px solid var(--line); }
+    .report-head h3 { color:var(--navy); font-size:20px; }
+    .report-head p { margin-top:3px; color:var(--muted); font-size:12px; }
+    .tag { padding:5px 9px; border-radius:99px; background:var(--pale); color:var(--blue); font-size:11px; font-weight:700; white-space:nowrap; }
+    .summary { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:14px 0; }
+    .metric { padding:11px; border-radius:11px; background:var(--pale); }
+    .metric small { display:block; color:var(--muted); font-size:11px; }
+    .metric strong { display:block; margin-top:3px; font-size:16px; font-variant-numeric:tabular-nums; }
+    .chart-title { margin:18px 0 8px; font-size:14px; }
+    .chart { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; align-items:end; height:148px; padding:12px 10px 4px; border-bottom:1px solid var(--line); }
+    .month { display:flex; height:100%; flex-direction:column; align-items:center; justify-content:flex-end; gap:5px; }
+    .bars { display:flex; width:100%; height:112px; align-items:flex-end; justify-content:center; gap:4px; }
+    .bar { width:13px; min-height:3px; border-radius:4px 4px 0 0; background:var(--blue); }
+    .bar.expense { background:#8db2fa; }
+    .month small { color:var(--muted); font-size:10px; }
+    .legend { display:flex; justify-content:center; gap:16px; margin-top:8px; color:var(--muted); font-size:11px; }
+    .legend i { display:inline-block; width:8px; height:8px; margin-right:5px; border-radius:2px; background:var(--blue); }
+    .legend .exp i { background:#8db2fa; }
+    .table-title { margin:18px 0 8px; font-size:14px; }
+    .table-wrap { overflow:hidden; border:1px solid var(--line); border-radius:10px; }
+    table { width:100%; border-collapse:collapse; font-size:11px; text-align:left; }
+    th { padding:8px 7px; background:var(--navy); color:#fff; font-size:10px; }
+    td { padding:8px 7px; border-bottom:1px solid #edf1f6; vertical-align:top; }
+    td.money { text-align:right; white-space:nowrap; font-weight:700; }
+    .report-foot { display:flex; justify-content:space-between; gap:10px; margin-top:11px; color:var(--muted); font-size:10px; }
+    .admin-layout { display:grid; grid-template-columns:1.1fr .9fr; gap:10px; }
+    .admin-card { padding:13px; border:1px solid var(--line); border-radius:12px; }
+    .admin-card h3 { font-size:14px; }
+    .admin-card p { margin-top:4px; color:var(--muted); font-size:11px; }
+    .mini-bars { display:flex; height:90px; align-items:flex-end; gap:10px; margin-top:12px; padding:0 6px; border-bottom:1px solid var(--line); }
+    .mini-bars i { flex:1; border-radius:4px 4px 0 0; background:#6e95f4; }
+    .admin-metrics { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:10px; }
+    .admin-metrics div { padding:8px; border-radius:9px; background:var(--canvas); }
+    .admin-metrics small { display:block; color:var(--muted); font-size:10px; }
+    .admin-metrics strong { display:block; margin-top:3px; font-size:15px; }
+    .scope { margin-top:12px; padding:10px 12px; border-radius:10px; background:#f0fdf4; color:var(--green); font-size:11px; }
+    @media(max-width:600px) { body { padding-top:12px; } .summary { grid-template-columns:1fr 1fr; } .summary .metric:last-child { grid-column:1/-1; } .export { padding:13px; } .admin-layout { grid-template-columns:1fr; } table { font-size:10px; } th,td { padding:7px 4px; } .report-head h3 { font-size:17px; } }
+  </style>
+</head>
+<body>
+  <h1>Duyệt cập nhật Mini app và Agent</h1>
+  <p class="intro">Mockup local: một viền cho ô tiền, mục tiêu gọn hơn và cỡ chữ dễ đọc; báo cáo xuất có tóm tắt, biểu đồ và đầy đủ giao dịch.</p>
+
+  <div class="section-title"><h2>Mini app</h2><span>Ô số tiền + mục tiêu tiết kiệm</span></div>
+  <section class="mini" aria-label="Mini app mockup">
+    <header class="brand"><span class="mark">V</span><div><strong>Trợ lý Ví Mình</strong><small>Ghi nhanh và theo dõi thu chi</small></div></header>
+    <label class="label" for="amount">Số tiền</label>
+    <div class="amount"><input id="amount" value="250.000" aria-label="Số tiền"><span>VND</span></div>
+    <div class="goal-summary"><div><h3>Mục tiêu tiết kiệm</h3><p>2 mục tiêu đang thực hiện</p></div><button class="text-action">+ Tạo mục tiêu</button></div>
+    <article class="goal">
+      <div class="goal-head"><div><strong>Đi chơi với ghệ</strong><small>Mục tiêu đến 27 thg 11, 2026</small></div><span class="goal-edit">Chỉnh sửa</span></div>
+      <div class="goal-money"><strong>1.800.000 ₫</strong><span>/ 50.000.000 ₫</span></div>
+      <div class="progress"><i style="width:4%"></i></div>
+      <div class="progress-meta"><span>4% hoàn thành</span><span>Còn 48.200.000 ₫</span></div>
+      <div class="goal-actions"><button class="button primary">+ Nạp tiền</button><button class="button">Rút tiền</button><button class="button link">Lưu trữ</button></div>
+    </article>
+    <article class="goal">
+      <div class="goal-head"><div><strong>Du Lịch</strong><small>Không đặt ngày hoàn thành</small></div><span class="goal-edit">Chỉnh sửa</span></div>
+      <div class="goal-money"><strong>1.000.000 ₫</strong><span>/ 1.000.000 ₫</span></div>
+      <div class="progress"><i style="width:100%"></i></div>
+      <div class="progress-meta"><span>100% hoàn thành</span><span>Đã đạt mục tiêu</span></div>
+      <div class="goal-actions"><button class="button primary">+ Nạp tiền</button><button class="button">Rút tiền</button><button class="button link">Lưu trữ</button></div>
+    </article>
+    <p class="goal-note">Các thao tác tạo, chỉnh sửa, nạp/rút và lưu trữ vẫn giữ nguyên.</p>
+  </section>
+
+  <div class="section-title"><h2>Agent User · Excel/PDF</h2><span>Toàn bộ giao dịch theo yêu cầu</span></div>
+  <section class="panel export" aria-label="User export mockup">
+    <header class="report-head"><div><h3>Tổng giao dịch thu chi</h3><p>Toàn bộ dữ liệu · từ 01/04/2026 đến 31/10/2026</p></div><span class="tag">User · riêng tư</span></header>
+    <div class="summary"><div class="metric"><small>Số giao dịch</small><strong>128</strong></div><div class="metric"><small>Tổng thu</small><strong>42.500.000 ₫</strong></div><div class="metric"><small>Tổng chi</small><strong>31.280.000 ₫</strong></div></div>
+    <h3 class="chart-title">Thu và chi theo tháng</h3>
+    <div class="chart" role="img" aria-label="Biểu đồ cột thu chi theo tháng">
+      <div class="month"><div class="bars"><i class="bar" style="height:66%"></i><i class="bar expense" style="height:45%"></i></div><small>Thg 4</small></div>
+      <div class="month"><div class="bars"><i class="bar" style="height:83%"></i><i class="bar expense" style="height:60%"></i></div><small>Thg 5</small></div>
+      <div class="month"><div class="bars"><i class="bar" style="height:73%"></i><i class="bar expense" style="height:52%"></i></div><small>Thg 6</small></div>
+      <div class="month"><div class="bars"><i class="bar" style="height:91%"></i><i class="bar expense" style="height:71%"></i></div><small>Thg 7</small></div>
+      <div class="month"><div class="bars"><i class="bar" style="height:58%"></i><i class="bar expense" style="height:63%"></i></div><small>Thg 8</small></div>
+      <div class="month"><div class="bars"><i class="bar" style="height:96%"></i><i class="bar expense" style="height:75%"></i></div><small>Thg 9</small></div>
+    </div>
+    <div class="legend"><span><i></i>Thu</span><span class="exp"><i></i>Chi</span></div>
+    <h3 class="table-title">Chi tiết giao dịch · đủ 6 trường dữ liệu</h3>
+    <div class="table-wrap"><table><thead><tr><th>Loại giao dịch</th><th>Số tiền (VND)</th><th>Ngày giao dịch</th><th>Tài khoản</th><th>Danh mục</th><th>Ghi chú</th></tr></thead><tbody>
+      <tr><td>Chi</td><td class="money">150.000</td><td>31/10/2026</td><td>Ví tiền mặt</td><td>Ăn uống</td><td>Ăn tối</td></tr>
+      <tr><td>Thu</td><td class="money">12.000.000</td><td>30/10/2026</td><td>Ngân hàng</td><td>Lương</td><td>Lương tháng 10</td></tr>
+      <tr><td>Chi</td><td class="money">220.000</td><td>29/10/2026</td><td>Ví tiền mặt</td><td>Di chuyển</td><td>—</td></tr>
+    </tbody></table></div>
+    <div class="report-foot"><span>Thứ tự mới nhất trước · bảng nhiều trang trong PDF</span><span>Excel: Tổng quan + Giao dịch</span></div>
+  </section>
+
+  <div class="section-title"><h2>Agent Admin · Excel/PDF</h2><span>Chỉ số quản trị tổng hợp</span></div>
+  <section class="panel admin-layout" aria-label="Admin export mockup">
+    <article class="admin-card"><h3>Tăng trưởng người dùng</h3><p>Lượt đăng ký theo tháng trong kỳ</p><div class="mini-bars" role="img" aria-label="Biểu đồ tăng trưởng người dùng"><i style="height:42%"></i><i style="height:56%"></i><i style="height:47%"></i><i style="height:75%"></i><i style="height:62%"></i><i style="height:90%"></i></div></article>
+    <article class="admin-card"><h3>Chỉ số hệ thống</h3><p>Không chứa số tiền hay nội dung giao dịch</p><div class="admin-metrics"><div><small>Tài khoản</small><strong>1.280</strong></div><div><small>Hoạt động</small><strong>1.104</strong></div><div><small>Giao dịch</small><strong>8.420</strong></div><div><small>DAU / MAU</small><strong>96 / 712</strong></div></div></article>
+    <div class="scope" style="grid-column:1/-1">Có thể yêu cầu xuất Chỉ số hệ thống, Tăng trưởng, Người dùng, Nhật ký quản trị hoặc Phân tích hoạt động. Email trong tệp Admin được che một phần.</div>
+  </section>
+</body>
+</html>

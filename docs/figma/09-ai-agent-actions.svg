@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1860" height="1024" viewBox="0 0 1860 1024" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">Ví Mình — AI Agent ghi giao dịch và tạo danh mục</title>
+  <desc id="desc">Bản đề xuất giao diện desktop và mobile: Agent tự ghi giao dịch rõ ý, tạo danh mục theo yêu cầu, và hỏi lại khi thiếu tài khoản.</desc>
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#1D4ED8"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="10" stdDeviation="18" flood-color="#1E293B" flood-opacity=".15"/></filter>
+    <style>
+      text { font-family: "Be Vietnam Pro", "Segoe UI", Arial, sans-serif; fill: #1E293B; }
+      .muted { fill: #64748B; }
+      .subtle { fill: #94A3B8; }
+      .blue { fill: #2563EB; }
+      .white { fill: #fff; }
+      .small { font-size: 11px; }
+      .tiny { font-size: 9px; }
+      .body { font-size: 13px; }
+      .bold { font-weight: 700; }
+      .heavy { font-weight: 800; }
+    </style>
+    <g id="brand-mark">
+      <rect x="0.5" y="0.5" width="47" height="47" rx="15" fill="url(#brand)"/>
+      <path d="m12 12 12 25 12-25" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"/>
+      <circle cx="37" cy="13" r="5.5" fill="#BFDBFE"/><circle cx="37" cy="13" r="2" fill="#1D4ED8"/>
+    </g>
+    <g id="check">
+      <circle cx="14" cy="14" r="14" fill="#D1FAE5"/>
+      <path d="m8 14 4 4 8-9" stroke="#15803D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </defs>
+
+  <rect width="1860" height="1024" fill="#EEF3FB"/>
+
+  <!-- Desktop app with the Agent panel open -->
+  <g id="desktop-artboard">
+    <rect x="24" y="24" width="1370" height="930" rx="22" fill="#fff" stroke="#DCE5F2"/>
+    <path d="M244 24v930" stroke="#E2E8F0"/>
+    <path d="M244 96h1150" stroke="#E2E8F0"/>
+    <use href="#brand-mark" x="48" y="48" width="42" height="42"/>
+    <text x="101" y="67" font-size="15" class="heavy">Ví Mình</text>
+    <text x="101" y="84" font-size="8" class="subtle bold" letter-spacing="1">TÀI CHÍNH CÁ NHÂN</text>
+    <text x="50" y="132" font-size="9" class="subtle heavy" letter-spacing="1">MENU CHÍNH</text>
+    <g class="small">
+      <rect x="40" y="148" width="190" height="38" rx="11" fill="#EFF6FF"/>
+      <circle cx="59" cy="167" r="10" fill="#DBEAFE"/><path d="m54 167 5-5 5 5v5h-4v-4h-3v4h-3z" fill="#2563EB"/>
+      <text x="79" y="171" class="blue bold">Tổng quan</text>
+      <circle cx="59" cy="212" r="10" fill="#F1F5F9"/><path d="M56 207h7v10h-7z M57.5 210h4 M57.5 213h4" stroke="#64748B" stroke-width="1.2"/>
+      <text x="79" y="216" class="muted">Giao dịch</text>
+      <circle cx="59" cy="257" r="10" fill="#F1F5F9"/><rect x="54" y="253" width="10" height="8" rx="1.5" stroke="#64748B" stroke-width="1.2"/><path d="M56 256h6" stroke="#64748B" stroke-width="1.2"/>
+      <text x="79" y="261" class="muted">Tài khoản</text>
+      <circle cx="59" cy="302" r="10" fill="#F1F5F9"/><path d="M59 295v7l5 3" stroke="#64748B" stroke-width="1.3" stroke-linecap="round"/>
+      <text x="79" y="306" class="muted">Ngân sách</text>
+      <circle cx="59" cy="347" r="10" fill="#F1F5F9"/><circle cx="59" cy="347" r="5" stroke="#64748B" stroke-width="1.2"/><circle cx="59" cy="347" r="1.5" fill="#64748B"/>
+      <text x="79" y="351" class="muted">Mục tiêu</text>
+      <circle cx="59" cy="392" r="10" fill="#F1F5F9"/><path d="m54 397 3-4 2 2 5-7" stroke="#64748B" stroke-width="1.2"/>
+      <text x="79" y="396" class="muted">Báo cáo</text>
+      <circle cx="59" cy="437" r="10" fill="#F1F5F9"/><path d="m55 435 5-5 5 5-5 5z" stroke="#64748B" stroke-width="1.2"/>
+      <text x="79" y="441" class="muted">Danh mục</text>
+      <circle cx="59" cy="482" r="10" fill="#F1F5F9"/><circle cx="59" cy="482" r="6" stroke="#64748B" stroke-width="1.2"/><text x="57" y="486" font-size="9" class="muted">?</text>
+      <text x="79" y="486" class="muted">Thông tin &amp; trợ giúp</text>
+    </g>
+    <rect x="274" y="43" width="218" height="38" rx="12" fill="#F8FAFC"/>
+    <circle cx="294" cy="62" r="5.5" stroke="#94A3B8" stroke-width="1.4"/><path d="m298 66 4 4" stroke="#94A3B8" stroke-width="1.4" stroke-linecap="round"/>
+    <text x="311" y="66" font-size="11" class="subtle">Tìm nhanh giao dịch...</text>
+    <text x="285" y="143" font-size="27" class="heavy">Tổng quan tài chính</text>
+    <text x="286" y="167" font-size="12" class="subtle">Theo dõi dòng tiền và quản lý mục tiêu của bạn</text>
+    <rect x="282" y="192" width="600" height="112" rx="16" fill="#1E3A8A"/>
+    <text x="306" y="220" font-size="10" class="white bold" letter-spacing=".6">TỔNG SỐ DƯ HIỆN TẠI</text>
+    <text x="306" y="262" font-size="28" class="white heavy">18.450.000 ₫</text>
+    <text x="306" y="286" font-size="10" fill="#DBEAFE">2 tài khoản đang hoạt động</text>
+    <rect x="898" y="192" width="208" height="112" rx="16" fill="#fff" stroke="#E2E8F0"/>
+    <text x="919" y="220" font-size="10" class="subtle">Tổng thu tháng này</text>
+    <text x="919" y="258" font-size="24" class="blue heavy">22.500.000 ₫</text>
+    <text x="919" y="284" font-size="10" class="subtle">Khoản thu đã ghi nhận</text>
+    <rect x="1122" y="192" width="238" height="112" rx="16" fill="#fff" stroke="#E2E8F0"/>
+    <text x="1143" y="220" font-size="10" class="subtle">Tổng chi tháng này</text>
+    <text x="1143" y="258" font-size="24" fill="#F07D68" class="heavy">4.050.000 ₫</text>
+    <text x="1143" y="284" font-size="10" class="subtle">Khoản chi đã ghi nhận</text>
+    <rect x="282" y="322" width="610" height="330" rx="16" fill="#fff" stroke="#E2E8F0"/>
+    <text x="306" y="352" font-size="14" class="bold">Chi tiêu theo danh mục</text>
+    <text x="306" y="372" font-size="10" class="subtle">tháng 10 năm 2026</text>
+    <circle cx="487" cy="493" r="68" stroke="#2563EB" stroke-width="18"/>
+    <path d="M487 425a68 68 0 0 1 64 45" stroke="#F1B94C" stroke-width="18"/>
+    <path d="M551 470a68 68 0 0 1-19 75" stroke="#F07D68" stroke-width="18"/>
+    <text x="487" y="491" text-anchor="middle" font-size="10" class="subtle">Tổng chi</text>
+    <text x="487" y="511" text-anchor="middle" font-size="15" class="heavy">4,05 tr ₫</text>
+    <circle cx="602" cy="458" r="4" fill="#2563EB"/><text x="614" y="462" font-size="10">Ăn uống</text><text x="842" y="462" text-anchor="end" font-size="10" class="muted">1.850.000 ₫</text>
+    <circle cx="602" cy="490" r="4" fill="#F1B94C"/><text x="614" y="494" font-size="10">Di chuyển</text><text x="842" y="494" text-anchor="end" font-size="10" class="muted">1.200.000 ₫</text>
+    <circle cx="602" cy="522" r="4" fill="#F07D68"/><text x="614" y="526" font-size="10">Hóa đơn</text><text x="842" y="526" text-anchor="end" font-size="10" class="muted">1.000.000 ₫</text>
+    <rect x="282" y="670" width="610" height="246" rx="16" fill="#fff" stroke="#E2E8F0"/>
+    <text x="306" y="700" font-size="14" class="bold">Giao dịch gần đây</text>
+    <text x="306" y="721" font-size="10" class="subtle">Các khoản thu chi đã ghi nhận trong tháng</text>
+    <path d="M306 739h560M306 791h560M306 843h560" stroke="#F1F5F9"/>
+    <circle cx="323" cy="765" r="12" fill="#FFF0EC"/><path d="M319 765h8M323 761v8" stroke="#F07D68" stroke-width="1.4"/>
+    <text x="347" y="763" font-size="11" class="bold">Ăn sáng</text><text x="347" y="779" font-size="9" class="subtle">Ăn uống · Ví tiền mặt</text><text x="848" y="772" text-anchor="end" font-size="11" fill="#F07D68" class="bold">−45.000 ₫</text>
+    <circle cx="323" cy="817" r="12" fill="#EFF6FF"/><path d="M319 818h8M323 814v8" stroke="#2563EB" stroke-width="1.4"/>
+    <text x="347" y="815" font-size="11" class="bold">Lương tháng 10</text><text x="347" y="831" font-size="9" class="subtle">Lương · Vietcombank</text><text x="848" y="824" text-anchor="end" font-size="11" class="blue bold">+18.500.000 ₫</text>
+
+    <!-- Desktop chat panel -->
+    <g id="desktop-agent-panel" filter="url(#shadow)">
+      <rect x="920" y="104" width="450" height="828" rx="20" fill="#fff" stroke="#E2E8F0"/>
+      <path d="M920 176h450" stroke="#F1F5F9"/>
+      <use href="#brand-mark" x="940" y="119" width="38" height="38"/>
+      <text x="990" y="139" font-size="13" class="bold">Trợ lý Ví Mình</text>
+      <circle cx="995" cy="155" r="3.5" fill="#22C55E"/><text x="1005" y="159" font-size="9" class="muted">Có thể giúp bạn ngay</text>
+      <circle cx="1320" cy="140" r="15" fill="#F8FAFC"/><path d="M1316 140h8" stroke="#64748B" stroke-width="1.4"/>
+      <circle cx="1350" cy="140" r="15" fill="#F8FAFC"/><path d="m1346 136 8 8m0-8-8 8" stroke="#64748B" stroke-width="1.4"/>
+      <text x="944" y="201" font-size="10" class="muted">Xin chào! Bạn có thể nhờ tôi ghi thu chi, tạo danh mục hoặc hướng dẫn sử dụng Ví Mình.</text>
+
+      <rect x="1055" y="220" width="286" height="55" rx="15" fill="#EFF6FF"/>
+      <text x="1072" y="244" font-size="11">Hôm nay 10h tôi đi ăn hết 100k.</text>
+      <text x="1072" y="260" font-size="9" class="subtle">Hôm nay · 10:04</text>
+
+      <text x="944" y="302" font-size="11">Mình hiểu bạn đã chi 100.000 ₫ cho Ăn uống</text>
+      <text x="944" y="319" font-size="11">hôm nay lúc 10:00.</text>
+      <rect x="940" y="334" width="410" height="166" rx="15" fill="#ECFDF3"/>
+      <use href="#check" x="958" y="350" width="28" height="28"/>
+      <text x="996" y="369" font-size="12" fill="#166534" class="heavy">Đã ghi nhận khoản chi</text>
+      <text x="958" y="402" font-size="10" fill="#166534">DANH MỤC</text><text x="958" y="421" font-size="12" class="bold">Ăn uống</text>
+      <text x="1090" y="402" font-size="10" fill="#166534">SỐ TIỀN</text><text x="1090" y="421" font-size="12" class="bold">100.000 ₫</text>
+      <text x="1221" y="402" font-size="10" fill="#166534">TÀI KHOẢN</text><text x="1221" y="421" font-size="11" class="bold">Ví tiền mặt</text>
+      <text x="958" y="454" font-size="10" fill="#166534">20/10/2026 · 10:00 — thời gian được lưu trong ghi chú</text>
+      <path d="M958 468h374" stroke="#CDEDD8"/>
+      <text x="958" y="488" font-size="10" fill="#166534" class="bold">Xem giao dịch  →</text>
+
+      <rect x="1055" y="517" width="286" height="57" rx="15" fill="#EFF6FF"/>
+      <text x="1072" y="541" font-size="11">Tạo danh mục chi tiêu Thú cưng.</text>
+      <text x="1072" y="558" font-size="9" class="subtle">Hôm nay · 10:05</text>
+
+      <text x="944" y="602" font-size="11">Đã tạo danh mục chi tiêu “Thú cưng”.</text>
+      <rect x="940" y="617" width="410" height="83" rx="15" fill="#ECFDF3"/>
+      <use href="#check" x="958" y="635" width="28" height="28"/>
+      <text x="996" y="651" font-size="12" fill="#166534" class="heavy">Danh mục đã sẵn sàng</text>
+      <text x="996" y="670" font-size="10" fill="#166534">Khoản chi · Thú cưng</text>
+      <text x="996" y="688" font-size="10" fill="#166534" class="bold">Mở danh mục  →</text>
+      <text x="944" y="729" font-size="9" class="subtle">Tôi sẽ hỏi lại nếu thiếu thông tin cần để ghi chính xác.</text>
+      <rect x="940" y="850" width="410" height="58" rx="15" fill="#fff" stroke="#E2E8F0"/>
+      <text x="958" y="883" font-size="11" class="subtle">Nhắn cho Ví Mình...</text>
+      <circle cx="1321" cy="879" r="18" fill="#2563EB"/><path d="m1314 879 14-7-5 15-2-6z" fill="#fff"/>
+      <text x="944" y="826" font-size="9" class="subtle">Lệnh thu chi được kiểm tra trước khi cập nhật sổ.</text>
+    </g>
+  </g>
+
+  <!-- Mobile state: ask for account when more than one is active -->
+  <g id="mobile-artboard">
+    <rect x="1434" y="24" width="402" height="930" rx="35" fill="#fff" stroke="#CBD5E1" stroke-width="2"/>
+    <rect x="1444" y="34" width="382" height="910" rx="28" fill="#F8FAFC"/>
+    <rect x="1444" y="34" width="382" height="44" rx="28" fill="#fff"/>
+    <text x="1464" y="61" font-size="10" class="bold">9:41</text><path d="M1780 55h12m5-5v10m6-8h11v8h-11z" stroke="#1E293B" stroke-width="1.3" stroke-linecap="round"/>
+    <use href="#brand-mark" x="1462" y="97" width="34" height="34"/>
+    <text x="1506" y="116" font-size="13" class="heavy">Ví Mình</text>
+    <text x="1506" y="131" font-size="8" class="subtle">TÀI CHÍNH CÁ NHÂN</text>
+    <text x="1462" y="176" font-size="20" class="heavy">Tổng quan tài chính</text>
+    <text x="1462" y="197" font-size="10" class="subtle">Theo dõi dòng tiền của bạn</text>
+    <rect x="1462" y="215" width="346" height="82" rx="14" fill="#1E3A8A"/>
+    <text x="1480" y="240" font-size="9" class="white bold">TỔNG SỐ DƯ HIỆN TẠI</text>
+    <text x="1480" y="274" font-size="23" class="white heavy">18.450.000 ₫</text>
+
+    <g filter="url(#shadow)">
+      <rect x="1444" y="326" width="382" height="618" rx="25" fill="#fff"/>
+      <path d="M1444 378h382" stroke="#F1F5F9"/>
+      <use href="#brand-mark" x="1462" y="339" width="31" height="31"/>
+      <text x="1501" y="356" font-size="12" class="bold">Trợ lý Ví Mình</text>
+      <circle cx="1505" cy="369" r="3" fill="#22C55E"/><text x="1515" y="372" font-size="8" class="muted">Đang hỗ trợ</text>
+      <circle cx="1797" cy="356" r="14" fill="#F8FAFC"/><path d="m1793 352 8 8m0-8-8 8" stroke="#64748B" stroke-width="1.3"/>
+      <text x="1462" y="408" font-size="10" class="muted">Mình đã nhận diện khoản chi:</text>
+      <rect x="1462" y="422" width="290" height="53" rx="14" fill="#EFF6FF"/>
+      <text x="1477" y="445" font-size="10">Hôm nay 10h tôi đi ăn hết 100k.</text>
+      <text x="1477" y="461" font-size="8" class="subtle">Hôm nay · 10:04</text>
+      <text x="1462" y="506" font-size="10">Khoản chi 100.000 ₫ · Ăn uống</text>
+      <text x="1462" y="522" font-size="10">· Hôm nay lúc 10:00.</text>
+      <rect x="1462" y="537" width="346" height="122" rx="14" fill="#FFF8E7"/>
+      <circle cx="1480" cy="556" r="9" fill="#FDE68A"/><text x="1477" y="560" font-size="10" fill="#92400E" class="bold">!</text>
+      <text x="1497" y="560" font-size="10" fill="#92400E" class="heavy">Chọn tài khoản để tiếp tục</text>
+      <text x="1478" y="582" font-size="9" fill="#78350F">Bạn có nhiều tài khoản đang hoạt động.</text>
+      <text x="1478" y="597" font-size="9" fill="#78350F">Giao dịch chưa được lưu.</text>
+      <rect x="1478" y="612" width="145" height="31" rx="9" fill="#fff" stroke="#E2E8F0"/>
+      <text x="1550" y="632" text-anchor="middle" font-size="9" class="bold">Ví tiền mặt</text>
+      <rect x="1632" y="612" width="158" height="31" rx="9" fill="#fff" stroke="#E2E8F0"/>
+      <text x="1711" y="632" text-anchor="middle" font-size="9" class="bold">Vietcombank</text>
+      <text x="1462" y="686" font-size="9" class="subtle">Bạn cũng có thể yêu cầu tạo danh mục thu hoặc chi.</text>
+      <rect x="1462" y="858" width="346" height="58" rx="14" fill="#fff" stroke="#E2E8F0"/>
+      <text x="1478" y="892" font-size="10" class="subtle">Nhắn cho Ví Mình...</text>
+      <circle cx="1781" cy="887" r="17" fill="#2563EB"/><path d="m1775 887 13-7-5 14-2-5z" fill="#fff"/>
+      <text x="1462" y="834" font-size="8" class="subtle">Thông tin sẽ được lưu sau khi chọn tài khoản.</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,420 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3000" height="2220" viewBox="0 0 3000 2220">
+  <defs>
+    <style>
+      text { font-family: "Be Vietnam Pro", Inter, Arial, sans-serif; }
+    </style>
+  </defs>
+  <rect width="3000" height="2220" fill="#f3f6fb"/>
+
+  <!-- BOARD HEADER -->
+  <text x="40" y="42" font-size="18px" fill="#1e3a8a" font-weight="700">VÍ MÌNH · THIẾT KẾ MỞ RỘNG ADMIN (BOARD 1/2: PHÂN TÍCH, HÀNG ĐỢI, HEALTH &amp; PHIÊN)</text>
+  <text x="40" y="64" font-size="11px" fill="#5e6b80" font-weight="400">Nhóm A (A1–A8) + Nhóm B (B1, B7, B8) · Royal Blue #2563EB · Không truy cập dữ liệu tài chính cá nhân · Số liệu minh họa</text>
+
+  <!-- ========================================================================================= -->
+  <!-- FRAME 1: ADMIN / ANALYTICS & RETENTION (1440 x 1000) at (40, 86)                          -->
+  <!-- ========================================================================================= -->
+  <g id="admin-analytics-desktop" transform="translate(40 86)">
+    <rect width="1440" height="1000" rx="18" fill="#ffffff" stroke="#dfe6f0" stroke-width="1"/>
+    <!-- Sidebar -->
+    <rect width="240" height="1000" rx="18" fill="#ffffff"/>
+    <path d="M240 0L240 1000" stroke="#e1e7ef" stroke-width="1"/>
+    <circle cx="42" cy="42" r="19" fill="#2563eb"/>
+    <text x="42" y="49" font-size="21px" fill="#ffffff" font-weight="700" text-anchor="middle">V</text>
+    <text x="72" y="40" font-size="14px" fill="#172033" font-weight="700">Ví Mình</text>
+    <text x="72" y="55" font-size="7px" fill="#5e6b80" font-weight="700">QUẢN TRỊ HỆ THỐNG</text>
+    <rect x="24" y="76" width="110" height="24" rx="12" fill="#eff6ff"/>
+    <text x="79" y="92" font-size="9px" fill="#2563eb" font-weight="700" text-anchor="middle">ADMIN PORTAL v2</text>
+
+    <text x="24" y="128" font-size="8px" fill="#7b8799" font-weight="700">GIÁM SÁT &amp; PHÂN TÍCH</text>
+    <text x="48" y="156" font-size="11px" fill="#5e6b80" font-weight="500">1. Tổng quan</text>
+    <rect x="16" y="170" width="208" height="38" rx="10" fill="#eff6ff"/>
+    <text x="48" y="194" font-size="11px" fill="#2563eb" font-weight="700">2. Hoạt động &amp; Phân tích</text>
+    <text x="48" y="232" font-size="11px" fill="#5e6b80" font-weight="500">3. Sức khỏe hệ thống</text>
+
+    <text x="24" y="272" font-size="8px" fill="#7b8799" font-weight="700">NGƯỜI DÙNG &amp; AN NINH</text>
+    <text x="48" y="300" font-size="11px" fill="#5e6b80" font-weight="500">4. Người dùng &amp; Phiên</text>
+    <text x="48" y="334" font-size="11px" fill="#5e6b80" font-weight="500">5. Hàng đợi xác minh</text>
+    <text x="48" y="368" font-size="11px" fill="#5e6b80" font-weight="500">6. An ninh đăng nhập</text>
+
+    <text x="24" y="408" font-size="8px" fill="#7b8799" font-weight="700">VẬN HÀNH &amp; HỖ TRỢ</text>
+    <text x="48" y="436" font-size="11px" fill="#5e6b80" font-weight="500">7. Hộp thư hỗ trợ</text>
+    <text x="48" y="470" font-size="11px" fill="#5e6b80" font-weight="500">8. Thông báo hệ thống</text>
+    <text x="48" y="504" font-size="11px" fill="#5e6b80" font-weight="500">9. Cấu hình &amp; Danh mục mẫu</text>
+    <text x="48" y="538" font-size="11px" fill="#5e6b80" font-weight="500">10. Nhật ký quản trị</text>
+
+    <rect x="16" y="924" width="208" height="56" rx="12" fill="#f5f7fa"/>
+    <circle cx="42" cy="952" r="15" fill="#dbeafe"/>
+    <text x="42" y="956" font-size="9px" fill="#2563eb" font-weight="700" text-anchor="middle">DK</text>
+    <text x="66" y="949" font-size="10px" fill="#172033" font-weight="700">Duy Khánh</text>
+    <text x="66" y="964" font-size="8px" fill="#5e6b80">Quản trị viên</text>
+
+    <!-- Topbar -->
+    <path d="M240 68L1440 68" stroke="#e1e7ef" stroke-width="1"/>
+    <text x="276" y="29" font-size="10px" fill="#5e6b80">Quản trị / Giám sát &amp; Phân tích</text>
+    <text x="276" y="49" font-size="14px" fill="#172033" font-weight="700">Hoạt động, Phễu chuyển đổi &amp; Mức độ dùng tính năng (A1, A2, A3, A5)</text>
+    <rect x="1110" y="16" width="160" height="36" rx="9" fill="#f5f7fa" stroke="#e1e7ef"/>
+    <text x="1190" y="38" font-size="10px" fill="#172033" font-weight="600" text-anchor="middle">Kỳ: 30 ngày qua ⌄</text>
+    <rect x="1282" y="16" width="124" height="36" rx="9" fill="#2563eb"/>
+    <text x="1344" y="38" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">↻ Làm mới</text>
+
+    <!-- 4 KPI Cards (A1) -->
+    <rect x="276" y="88" width="268" height="104" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="298" y="114" font-size="10px" fill="#5e6b80" font-weight="600">DAU · HOẠT ĐỘNG 24H</text>
+    <text x="298" y="152" font-size="26px" fill="#172033" font-weight="700">342</text>
+    <text x="298" y="174" font-size="9px" fill="#2563eb" font-weight="600">↑ 8,4% · 28,3% tổng user active</text>
+
+    <rect x="560" y="88" width="268" height="104" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="582" y="114" font-size="10px" fill="#5e6b80" font-weight="600">WAU · HOẠT ĐỘNG 7 NGÀY</text>
+    <text x="582" y="152" font-size="26px" fill="#172033" font-weight="700">784</text>
+    <text x="582" y="174" font-size="9px" fill="#2563eb" font-weight="600">65,0% tổng user active</text>
+
+    <rect x="844" y="88" width="268" height="104" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="866" y="114" font-size="10px" fill="#5e6b80" font-weight="600">MAU · HOẠT ĐỘNG 30 NGÀY</text>
+    <text x="866" y="152" font-size="26px" fill="#172033" font-weight="700">1.092</text>
+    <text x="866" y="174" font-size="9px" fill="#2563eb" font-weight="600">Tỷ lệ gắn kết DAU/MAU: 31,3%</text>
+
+    <rect x="1128" y="88" width="276" height="104" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="1150" y="114" font-size="10px" fill="#5e6b80" font-weight="600">PHIÊN ĐANG MỞ &amp; NGỦ ĐÔNG</text>
+    <text x="1150" y="152" font-size="26px" fill="#172033" font-weight="700">418 phiên</text>
+    <text x="1150" y="174" font-size="9px" fill="#f59e0b" font-weight="600">114 user &gt; 30 ngày chưa vào</text>
+
+    <!-- Row 2: Daily Active Users SVG Line Chart + Conversion Funnel (A1 + A2) -->
+    <rect x="276" y="210" width="640" height="310" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="298" y="240" font-size="13px" fill="#172033" font-weight="700">Xu hướng người dùng hoạt động theo ngày (DAU)</text>
+    <text x="298" y="258" font-size="9px" fill="#5e6b80">Tính từ sessions.last_seen_at · Ẩn nhóm &lt; 5 người dùng</text>
+    <path d="M320 300L890 300 M320 355L890 355 M320 410L890 410 M320 465L890 465" stroke="#edf1f6" stroke-width="1"/>
+    <path d="M330 430 L410 405 L490 418 L570 370 L650 350 L730 362 L810 325 L880 310 L880 465 L330 465 Z" fill="#dbeafe" opacity="0.65"/>
+    <path d="M330 430 L410 405 L490 418 L570 370 L650 350 L730 362 L810 325 L880 310" fill="none" stroke="#2563eb" stroke-width="3"/>
+    <circle cx="330" cy="430" r="4" fill="#2563eb"/>
+    <circle cx="570" cy="370" r="4" fill="#2563eb"/>
+    <circle cx="880" cy="310" r="5" fill="#ffffff" stroke="#2563eb" stroke-width="3"/>
+    <text x="330" y="488" font-size="9px" fill="#7b8799" text-anchor="middle">05/10</text>
+    <text x="490" y="488" font-size="9px" fill="#7b8799" text-anchor="middle">15/10</text>
+    <text x="650" y="488" font-size="9px" fill="#7b8799" text-anchor="middle">25/10</text>
+    <text x="880" y="488" font-size="9px" fill="#7b8799" text-anchor="middle">05/11</text>
+
+    <!-- Conversion Funnel SVG (A2) -->
+    <rect x="932" y="210" width="472" height="310" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="954" y="240" font-size="13px" fill="#172033" font-weight="700">Phễu chuyển đổi người dùng (A2)</text>
+    <text x="954" y="258" font-size="9px" fill="#5e6b80">Chỉ đếm số lượng tài khoản vượt qua từng mốc</text>
+
+    <text x="954" y="294" font-size="10px" fill="#172033" font-weight="600">1. Đăng ký tài khoản</text>
+    <text x="1380" y="294" font-size="10px" fill="#172033" font-weight="700" text-anchor="end">1.284 (100%)</text>
+    <rect x="954" y="302" width="426" height="18" rx="6" fill="#1e3a8a"/>
+
+    <text x="954" y="346" font-size="10px" fill="#172033" font-weight="600">2. Xác minh Email OTP thành công</text>
+    <text x="1380" y="346" font-size="10px" fill="#2563eb" font-weight="700" text-anchor="end">1.206 (93,9%)</text>
+    <rect x="954" y="354" width="400" height="18" rx="6" fill="#2563eb"/>
+
+    <text x="954" y="398" font-size="10px" fill="#172033" font-weight="600">3. Ghi nhận giao dịch đầu tiên</text>
+    <text x="1380" y="398" font-size="10px" fill="#2563eb" font-weight="700" text-anchor="end">1.048 (81,6%)</text>
+    <rect x="954" y="406" width="348" height="18" rx="6" fill="#3b82f6"/>
+
+    <text x="954" y="450" font-size="10px" fill="#172033" font-weight="600">4. Quay lại hoạt động sau 7 ngày</text>
+    <text x="1380" y="450" font-size="10px" fill="#2563eb" font-weight="700" text-anchor="end">862 (67,1%)</text>
+    <rect x="954" y="458" width="286" height="18" rx="6" fill="#60a5fa"/>
+
+    <!-- Row 3: Feature Adoption (A3) + Cohort & Consent Compliance (A2 + A5) -->
+    <rect x="276" y="538" width="550" height="432" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="298" y="568" font-size="13px" fill="#172033" font-weight="700">Mức độ sử dụng tính năng &amp; Phễu Bank Hub (A3)</text>
+    <text x="298" y="586" font-size="9px" fill="#5e6b80">Số người dùng có sử dụng từng tính năng (không đọc số tiền)</text>
+
+    <rect x="298" y="606" width="242" height="72" rx="10" fill="#f5f7fa"/>
+    <text x="314" y="630" font-size="10px" fill="#5e6b80">Đang lập Ngân sách tháng</text>
+    <text x="314" y="658" font-size="18px" fill="#172033" font-weight="700">642 user · 53,2%</text>
+
+    <rect x="556" y="606" width="248" height="72" rx="10" fill="#f5f7fa"/>
+    <text x="572" y="630" font-size="10px" fill="#5e6b80">Có Mục tiêu tiết kiệm</text>
+    <text x="572" y="658" font-size="18px" fill="#172033" font-weight="700">489 user · 40,5%</text>
+
+    <rect x="298" y="690" width="242" height="72" rx="10" fill="#f5f7fa"/>
+    <text x="314" y="714" font-size="10px" fill="#5e6b80">Dùng Giao dịch định kỳ</text>
+    <text x="314" y="742" font-size="18px" fill="#172033" font-weight="700">390 user · 32,3%</text>
+
+    <rect x="556" y="690" width="248" height="72" rx="10" fill="#f5f7fa"/>
+    <text x="572" y="714" font-size="10px" fill="#5e6b80">Phân bố giao dịch / user</text>
+    <text x="572" y="742" font-size="14px" fill="#2563eb" font-weight="700">TB: 14,2 GD / người dùng</text>
+
+    <text x="298" y="794" font-size="11px" fill="#172033" font-weight="700">Trạng thái liên kết SePay Bank Hub Sandbox:</text>
+    <rect x="298" y="810" width="506" height="58" rx="10" fill="#eff6ff"/>
+    <text x="316" y="834" font-size="10px" fill="#1e3a8a" font-weight="700">Ready: 18   ·   Launched: 12   ·   Linked thành công: 64   ·   Failed/Expired: 9</text>
+    <text x="316" y="852" font-size="9px" fill="#5e6b80">Chỉ đếm trạng thái attempt trong bank_link_attempts, không giải mã token</text>
+
+    <rect x="298" y="882" width="506" height="68" rx="10" fill="#f5f7fa"/>
+    <text x="316" y="906" font-size="10px" fill="#172033" font-weight="700">Chấp thuận pháp lý hiện hành v1.0.0 (A5):</text>
+    <text x="316" y="928" font-size="11px" fill="#2563eb" font-weight="700">1.206 / 1.206 user active đã ký Điều khoản &amp; Quyền riêng tư (100%)</text>
+
+    <!-- Cohort Table (A2) -->
+    <rect x="842" y="538" width="562" height="432" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="864" y="568" font-size="13px" fill="#172033" font-weight="700">Bảng giữ chân người dùng theo tháng đăng ký (Cohort Retention)</text>
+    <text x="864" y="586" font-size="9px" fill="#5e6b80">Tỷ lệ % tài khoản còn đăng nhập ở các tháng tiếp theo</text>
+
+    <rect x="864" y="606" width="518" height="36" rx="8" fill="#f5f7fa"/>
+    <text x="880" y="628" font-size="9px" fill="#7b8799" font-weight="700">THÁNG ĐK</text>
+    <text x="1000" y="628" font-size="9px" fill="#7b8799" font-weight="700">SỐ USER</text>
+    <text x="1100" y="628" font-size="9px" fill="#7b8799" font-weight="700">THÁNG +0</text>
+    <text x="1200" y="628" font-size="9px" fill="#7b8799" font-weight="700">THÁNG +1</text>
+    <text x="1300" y="628" font-size="9px" fill="#7b8799" font-weight="700">THÁNG +2</text>
+
+    <!-- Cohort rows -->
+    <text x="880" y="672" font-size="10px" fill="#172033" font-weight="600">2026-08</text>
+    <text x="1000" y="672" font-size="10px" fill="#5e6b80">210</text>
+    <rect x="1085" y="654" width="76" height="26" rx="6" fill="#1e3a8a"/><text x="1123" y="671" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">100%</text>
+    <rect x="1185" y="654" width="76" height="26" rx="6" fill="#2563eb"/><text x="1223" y="671" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">76,2%</text>
+    <rect x="1285" y="654" width="76" height="26" rx="6" fill="#60a5fa"/><text x="1323" y="671" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">64,8%</text>
+
+    <text x="880" y="716" font-size="10px" fill="#172033" font-weight="600">2026-09</text>
+    <text x="1000" y="716" font-size="10px" fill="#5e6b80">340</text>
+    <rect x="1085" y="698" width="76" height="26" rx="6" fill="#1e3a8a"/><text x="1123" y="715" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">100%</text>
+    <rect x="1185" y="698" width="76" height="26" rx="6" fill="#2563eb"/><text x="1223" y="715" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">79,4%</text>
+    <rect x="1285" y="698" width="76" height="26" rx="6" fill="#dbeafe"/><text x="1323" y="715" font-size="10px" fill="#1e3a8a" font-weight="700" text-anchor="middle">—</text>
+
+    <text x="880" y="760" font-size="10px" fill="#172033" font-weight="600">2026-10</text>
+    <text x="1000" y="760" font-size="10px" fill="#5e6b80">412</text>
+    <rect x="1085" y="742" width="76" height="26" rx="6" fill="#1e3a8a"/><text x="1123" y="759" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">100%</text>
+    <rect x="1185" y="742" width="76" height="26" rx="6" fill="#3b82f6"/><text x="1223" y="759" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">82,0%</text>
+    <rect x="1285" y="742" width="76" height="26" rx="6" fill="#dbeafe"/><text x="1323" y="759" font-size="10px" fill="#1e3a8a" font-weight="700" text-anchor="middle">—</text>
+
+    <!-- Inactive users mini list -->
+    <text x="864" y="816" font-size="11px" fill="#172033" font-weight="700">Tài khoản không hoạt động &gt; 30 ngày (A1):</text>
+    <rect x="864" y="830" width="518" height="118" rx="10" fill="#f5f7fa"/>
+    <text x="882" y="858" font-size="10px" fill="#172033" font-weight="600">1. Hoàng Nam (h••••@gmail.com)</text>
+    <text x="1364" y="858" font-size="10px" fill="#5e6b80" text-anchor="end">Lần cuối: 42 ngày trước</text>
+    <text x="882" y="888" font-size="10px" fill="#172033" font-weight="600">2. Lê Thảo (t••••@outlook.com)</text>
+    <text x="1364" y="888" font-size="10px" fill="#5e6b80" text-anchor="end">Lần cuối: 61 ngày trước</text>
+    <text x="882" y="918" font-size="10px" fill="#172033" font-weight="600">3. Trần Bình (b••••@yahoo.com)</text>
+    <text x="1364" y="918" font-size="10px" fill="#5e6b80" text-anchor="end">Lần cuối: 94 ngày trước</text>
+  </g>
+
+  <!-- ========================================================================================= -->
+  <!-- FRAME 2: ADMIN / VERIFICATION QUEUE & PURGE (1440 x 1000) at (1520, 86)                   -->
+  <!-- ========================================================================================= -->
+  <g id="admin-verification-queue-desktop" transform="translate(1520 86)">
+    <rect width="1440" height="1000" rx="18" fill="#ffffff" stroke="#dfe6f0" stroke-width="1"/>
+    <rect width="240" height="1000" rx="18" fill="#ffffff"/>
+    <path d="M240 0L240 1000" stroke="#e1e7ef" stroke-width="1"/>
+    <circle cx="42" cy="42" r="19" fill="#2563eb"/>
+    <text x="42" y="49" font-size="21px" fill="#ffffff" font-weight="700" text-anchor="middle">V</text>
+    <text x="72" y="40" font-size="14px" fill="#172033" font-weight="700">Ví Mình</text>
+    <text x="72" y="55" font-size="7px" fill="#5e6b80" font-weight="700">QUẢN TRỊ HỆ THỐNG</text>
+
+    <text x="24" y="272" font-size="8px" fill="#7b8799" font-weight="700">NGƯỜI DÙNG &amp; AN NINH</text>
+    <text x="48" y="300" font-size="11px" fill="#5e6b80" font-weight="500">4. Người dùng &amp; Phiên</text>
+    <rect x="16" y="314" width="208" height="38" rx="10" fill="#eff6ff"/>
+    <text x="48" y="338" font-size="11px" fill="#2563eb" font-weight="700">5. Hàng đợi xác minh</text>
+    <text x="48" y="372" font-size="11px" fill="#5e6b80" font-weight="500">6. An ninh đăng nhập</text>
+
+    <path d="M240 68L1440 68" stroke="#e1e7ef" stroke-width="1"/>
+    <text x="276" y="29" font-size="10px" fill="#5e6b80">Quản trị / Người dùng &amp; An ninh</text>
+    <text x="276" y="49" font-size="14px" fill="#172033" font-weight="700">Hàng đợi xác minh Email &amp; Dọn tài khoản treo (A4 + B7)</text>
+
+    <rect x="1156" y="16" width="248" height="36" rx="9" fill="#e66b55"/>
+    <text x="1280" y="38" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">Dọn tài khoản treo &gt; 7 ngày (19)</text>
+
+    <!-- 4 Queue KPIs -->
+    <rect x="276" y="92" width="268" height="96" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="298" y="118" font-size="10px" fill="#5e6b80">CHỜ XÁC MINH &lt; 24 GIỜ</text>
+    <text x="298" y="156" font-size="24px" fill="#2563eb" font-weight="700">14 tài khoản</text>
+
+    <rect x="560" y="92" width="268" height="96" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="582" y="118" font-size="10px" fill="#5e6b80">CHỜ TỪ 1 – 7 NGÀY</text>
+    <text x="582" y="156" font-size="24px" fill="#f59e0b" font-weight="700">15 tài khoản</text>
+
+    <rect x="844" y="92" width="268" height="96" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="866" y="118" font-size="10px" fill="#5e6b80">TREO QUÁ 7 NGÀY (CÓ THỂ DỌN)</text>
+    <text x="866" y="156" font-size="24px" fill="#e66b55" font-weight="700">19 tài khoản</text>
+
+    <rect x="1128" y="92" width="276" height="96" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="1150" y="118" font-size="10px" fill="#5e6b80">OTP BỊ KHÓA (5/5 LẦN THỬ)</text>
+    <text x="1150" y="156" font-size="24px" fill="#e66b55" font-weight="700">6 tài khoản</text>
+
+    <!-- Filter bar -->
+    <rect x="276" y="206" width="1128" height="64" rx="13" fill="#ffffff" stroke="#e1e7ef"/>
+    <rect x="294" y="220" width="320" height="36" rx="8" fill="#f5f7fa"/>
+    <text x="312" y="242" font-size="10px" fill="#7b8799">⌕ Tìm theo tên hoặc email chờ xác minh...</text>
+    <rect x="630" y="220" width="210" height="36" rx="8" fill="#f5f7fa"/>
+    <text x="648" y="242" font-size="10px" fill="#172033">Độ trễ: Tất cả (48) ⌄</text>
+    <rect x="856" y="220" width="220" height="36" rx="8" fill="#f5f7fa"/>
+    <text x="874" y="242" font-size="10px" fill="#172033">Trạng thái OTP: Tất cả ⌄</text>
+
+    <!-- Queue Table -->
+    <rect x="276" y="288" width="1128" height="670" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <rect x="276" y="288" width="1128" height="48" rx="14" fill="#f5f7fa"/>
+    <text x="300" y="317" font-size="9px" fill="#7b8799" font-weight="700">TÀI KHOẢN</text>
+    <text x="580" y="317" font-size="9px" fill="#7b8799" font-weight="700">THỜI GIAN ĐĂNG KÝ</text>
+    <text x="790" y="317" font-size="9px" fill="#7b8799" font-weight="700">TRẠNG THÁI MÃ OTP</text>
+    <text x="1030" y="317" font-size="9px" fill="#7b8799" font-weight="700">SỐ LẦN THỬ</text>
+    <text x="1220" y="317" font-size="9px" fill="#7b8799" font-weight="700">THAO TÁC</text>
+
+    <!-- Row 1 -->
+    <text x="300" y="374" font-size="11px" fill="#172033" font-weight="700">Minh Trần (m••••@outlook.com)</text>
+    <text x="580" y="374" font-size="10px" fill="#5e6b80">14 ngày trước (22/10/2026)</text>
+    <rect x="790" y="356" width="148" height="26" rx="12" fill="#fdecec"/>
+    <text x="864" y="373" font-size="9px" fill="#b42318" font-weight="700" text-anchor="middle">OTP bị khóa (5/5 lần)</text>
+    <text x="1030" y="374" font-size="10px" fill="#b42318" font-weight="700">5 / 5</text>
+    <rect x="1220" y="354" width="150" height="30" rx="8" fill="#fdecec"/>
+    <text x="1295" y="373" font-size="9px" fill="#b42318" font-weight="700" text-anchor="middle">Xóa tài khoản treo</text>
+
+    <!-- Row 2 -->
+    <path d="M276 404L1404 404" stroke="#edf1f6"/>
+    <text x="300" y="444" font-size="11px" fill="#172033" font-weight="700">Phạm Hương (h••••@gmail.com)</text>
+    <text x="580" y="444" font-size="10px" fill="#5e6b80">9 ngày trước (27/10/2026)</text>
+    <rect x="790" y="426" width="148" height="26" rx="12" fill="#fff8e7"/>
+    <text x="864" y="443" font-size="9px" fill="#895800" font-weight="700" text-anchor="middle">OTP đã hết hạn</text>
+    <text x="1030" y="444" font-size="10px" fill="#5e6b80">1 / 5</text>
+    <rect x="1220" y="424" width="150" height="30" rx="8" fill="#fdecec"/>
+    <text x="1295" y="443" font-size="9px" fill="#b42318" font-weight="700" text-anchor="middle">Xóa tài khoản treo</text>
+
+    <!-- Row 3 -->
+    <path d="M276 474L1404 474" stroke="#edf1f6"/>
+    <text x="300" y="514" font-size="11px" fill="#172033" font-weight="700">Lê Khoa (k••••@gmail.com)</text>
+    <text x="580" y="514" font-size="10px" fill="#5e6b80">35 phút trước (Hôm nay)</text>
+    <rect x="790" y="496" width="148" height="26" rx="12" fill="#eff6ff"/>
+    <text x="864" y="513" font-size="9px" fill="#2563eb" font-weight="700" text-anchor="middle">Đang chờ nhập OTP</text>
+    <text x="1030" y="514" font-size="10px" fill="#2563eb" font-weight="700">0 / 5</text>
+    <text x="1220" y="514" font-size="9px" fill="#5e6b80">Chưa quá hạn dọn</text>
+  </g>
+
+  <!-- ========================================================================================= -->
+  <!-- FRAME 3: ADMIN / SYSTEM HEALTH & MIGRATIONS (1440 x 1000) at (40, 1140)                   -->
+  <!-- ========================================================================================= -->
+  <g id="admin-health-desktop" transform="translate(40 1140)">
+    <rect width="1440" height="1000" rx="18" fill="#ffffff" stroke="#dfe6f0" stroke-width="1"/>
+    <rect width="240" height="1000" rx="18" fill="#ffffff"/>
+    <path d="M240 0L240 1000" stroke="#e1e7ef" stroke-width="1"/>
+    <circle cx="42" cy="42" r="19" fill="#2563eb"/>
+    <text x="42" y="49" font-size="21px" fill="#ffffff" font-weight="700" text-anchor="middle">V</text>
+    <text x="72" y="40" font-size="14px" fill="#172033" font-weight="700">Ví Mình</text>
+    <rect x="16" y="210" width="208" height="38" rx="10" fill="#eff6ff"/>
+    <text x="48" y="234" font-size="11px" fill="#2563eb" font-weight="700">3. Sức khỏe hệ thống</text>
+
+    <path d="M240 68L1440 68" stroke="#e1e7ef" stroke-width="1"/>
+    <text x="276" y="29" font-size="10px" fill="#5e6b80">Quản trị / Giám sát &amp; Phân tích</text>
+    <text x="276" y="49" font-size="14px" fill="#172033" font-weight="700">Sức khỏe Hệ thống, Connection Pool &amp; Lịch sử Migrations (A6)</text>
+
+    <!-- 4 Technical KPIs -->
+    <rect x="276" y="92" width="268" height="104" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="298" y="118" font-size="10px" fill="#5e6b80">ĐỘ TRỄ POSTGRESQL</text>
+    <text x="298" y="156" font-size="26px" fill="#157347" font-weight="700">3,8 ms</text>
+    <text x="298" y="178" font-size="9px" fill="#157347" font-weight="600">● Kết nối ổn định</text>
+
+    <rect x="560" y="92" width="268" height="104" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="582" y="118" font-size="10px" fill="#5e6b80">PG CONNECTION POOL</text>
+    <text x="582" y="156" font-size="24px" fill="#172033" font-weight="700">2 / 10 kết nối</text>
+    <text x="582" y="178" font-size="9px" fill="#5e6b80">Idle: 2 · Waiting: 0</text>
+
+    <rect x="844" y="92" width="268" height="104" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="866" y="118" font-size="10px" fill="#5e6b80">UPTIME &amp; NODE.JS RUNTIME</text>
+    <text x="866" y="156" font-size="24px" fill="#172033" font-weight="700">14 ngày 06h</text>
+    <text x="866" y="178" font-size="9px" fill="#2563eb" font-weight="600">Node v20.18.0 · RAM: 68 MB</text>
+
+    <rect x="1128" y="92" width="276" height="104" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="1150" y="118" font-size="10px" fill="#5e6b80">TÍCH HỢP DỊCH VỤ (KHÔNG LỘ KEY)</text>
+    <text x="1150" y="150" font-size="12px" fill="#157347" font-weight="700">✓ SMTP Mailer: Đã cấu hình</text>
+    <text x="1150" y="174" font-size="12px" fill="#2563eb" font-weight="700">✓ Bank Hub Sandbox: Sẵn sàng</text>
+
+    <!-- Migrations Table -->
+    <rect x="276" y="218" width="1128" height="740" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="300" y="252" font-size="13px" fill="#172033" font-weight="700">Lịch sử thực thi Database Migrations (schema_migrations)</text>
+    <text x="300" y="270" font-size="9px" fill="#5e6b80">Đảm bảo toàn vẹn cấu trúc CSDL qua các phiên bản 001 → 009</text>
+
+    <rect x="300" y="288" width="1080" height="40" rx="8" fill="#f5f7fa"/>
+    <text x="320" y="312" font-size="9px" fill="#7b8799" font-weight="700">PHIÊN BẢN</text>
+    <text x="450" y="312" font-size="9px" fill="#7b8799" font-weight="700">MÔ TẢ MIGRATION</text>
+    <text x="1020" y="312" font-size="9px" fill="#7b8799" font-weight="700">TRẠNG THÁI</text>
+    <text x="1200" y="312" font-size="9px" fill="#7b8799" font-weight="700">THỜI ĐIỂM ÁP DỤNG</text>
+
+    <text x="320" y="356" font-size="11px" fill="#2563eb" font-weight="700">009</text>
+    <text x="450" y="356" font-size="11px" fill="#172033" font-weight="600">Admin operations suite: security events, announcements, settings, support, templates</text>
+    <rect x="1020" y="338" width="90" height="24" rx="12" fill="#e8f8ef"/><text x="1065" y="354" font-size="9px" fill="#157347" font-weight="700" text-anchor="middle">Đã áp dụng</text>
+    <text x="1200" y="356" font-size="10px" fill="#5e6b80">05/11/2026 22:30</text>
+
+    <text x="320" y="400" font-size="11px" fill="#172033" font-weight="700">008</text>
+    <text x="450" y="400" font-size="11px" fill="#172033">registration email OTP verification</text>
+    <rect x="1020" y="382" width="90" height="24" rx="12" fill="#e8f8ef"/><text x="1065" y="398" font-size="9px" fill="#157347" font-weight="700" text-anchor="middle">Đã áp dụng</text>
+    <text x="1200" y="400" font-size="10px" fill="#5e6b80">25/10/2026 14:12</text>
+
+    <text x="320" y="444" font-size="11px" fill="#172033" font-weight="700">007</text>
+    <text x="450" y="444" font-size="11px" fill="#172033">SePay Bank Hub consent and single-use Hosted Link attempts</text>
+    <rect x="1020" y="426" width="90" height="24" rx="12" fill="#e8f8ef"/><text x="1065" y="442" font-size="9px" fill="#157347" font-weight="700" text-anchor="middle">Đã áp dụng</text>
+    <text x="1200" y="444" font-size="10px" fill="#5e6b80">20/10/2026 09:40</text>
+
+    <text x="320" y="488" font-size="11px" fill="#172033" font-weight="700">001 → 006</text>
+    <text x="450" y="488" font-size="11px" fill="#5e6b80">Initial schema, triggers, admin role audit, legal consents, profile avatar &amp; constraints</text>
+    <rect x="1020" y="470" width="90" height="24" rx="12" fill="#e8f8ef"/><text x="1065" y="486" font-size="9px" fill="#157347" font-weight="700" text-anchor="middle">Đã áp dụng</text>
+    <text x="1200" y="488" font-size="10px" fill="#5e6b80">16/10/2026 08:00</text>
+  </g>
+
+  <!-- ========================================================================================= -->
+  <!-- FRAME 4: USER DRAWER (A7 + B1 + B8) & FILTERABLE AUDIT LOGS (A8) at (1520, 1140)          -->
+  <!-- ========================================================================================= -->
+  <g id="admin-user-drawer-and-audit" transform="translate(1520 1140)">
+    <rect width="1440" height="1000" rx="18" fill="#ffffff" stroke="#dfe6f0" stroke-width="1"/>
+    <!-- Left side: Filterable Audit Logs (A8) -->
+    <text x="36" y="42" font-size="15px" fill="#172033" font-weight="700">Nhật ký Quản trị Tra cứu Đa chiều (A8)</text>
+    <rect x="36" y="60" width="840" height="56" rx="12" fill="#f5f7fa" stroke="#e1e7ef"/>
+    <text x="54" y="92" font-size="10px" fill="#7b8799">⌕ Tìm Admin / Đối tượng...</text>
+    <rect x="260" y="70" width="190" height="36" rx="8" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="276" y="92" font-size="10px" fill="#172033">Hành động: Tất cả ⌄</text>
+    <rect x="464" y="70" width="220" height="36" rx="8" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="480" y="92" font-size="10px" fill="#172033">01/10/2026 → 05/11/2026</text>
+    <rect x="700" y="70" width="160" height="36" rx="8" fill="#2563eb"/>
+    <text x="780" y="92" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">⬇ Xuất Excel / PDF</text>
+
+    <rect x="36" y="132" width="840" height="828" rx="14" fill="#ffffff" stroke="#e1e7ef"/>
+    <rect x="36" y="132" width="840" height="44" rx="14" fill="#f5f7fa"/>
+    <text x="56" y="158" font-size="9px" fill="#7b8799" font-weight="700">THỜI GIAN</text>
+    <text x="190" y="158" font-size="9px" fill="#7b8799" font-weight="700">ADMIN</text>
+    <text x="340" y="158" font-size="9px" fill="#7b8799" font-weight="700">LOẠI HÀNH ĐỘNG</text>
+    <text x="560" y="158" font-size="9px" fill="#7b8799" font-weight="700">ĐỐI TƯỢNG / CHI TIẾT</text>
+
+    <text x="56" y="206" font-size="10px" fill="#5e6b80">22:15 hôm nay</text>
+    <text x="190" y="206" font-size="10px" fill="#172033" font-weight="600">Duy Khánh</text>
+    <rect x="340" y="188" width="165" height="24" rx="12" fill="#eff6ff"/><text x="422" y="204" font-size="9px" fill="#2563eb" font-weight="700" text-anchor="middle">user.sessions_revoked</text>
+    <text x="560" y="206" font-size="10px" fill="#172033">Thu hồi 3 phiên của l••••@gmail.com</text>
+
+    <text x="56" y="256" font-size="10px" fill="#5e6b80">18:40 hôm nay</text>
+    <text x="190" y="256" font-size="10px" fill="#172033" font-weight="600">Duy Khánh</text>
+    <rect x="340" y="238" width="165" height="24" rx="12" fill="#fff8e7"/><text x="422" y="254" font-size="9px" fill="#895800" font-weight="700" text-anchor="middle">settings.updated</text>
+    <text x="560" y="256" font-size="10px" fill="#172033">Bật thông báo bảo trì định kỳ</text>
+
+    <text x="56" y="306" font-size="10px" fill="#5e6b80">Hôm qua</text>
+    <text x="190" y="306" font-size="10px" fill="#172033" font-weight="600">Duy Khánh</text>
+    <rect x="340" y="288" width="165" height="24" rx="12" fill="#fdecec"/><text x="422" y="304" font-size="9px" fill="#b42318" font-weight="700" text-anchor="middle">user.unverified_purged</text>
+    <text x="560" y="306" font-size="10px" fill="#172033">Dọn 19 tài khoản treo &gt; 7 ngày</text>
+
+    <!-- Right side: User Detail Drawer (A7 + B1 + B8) -->
+    <rect x="900" y="0" width="540" height="1000" rx="18" fill="#ffffff" stroke="#2563eb" stroke-width="2"/>
+    <text x="932" y="44" font-size="16px" fill="#172033" font-weight="700">Chi tiết Tài khoản (Drawer A7, B1, B8)</text>
+    <text x="932" y="64" font-size="10px" fill="#5e6b80">Không hiển thị số dư, số lượng ví hay giao dịch cá nhân</text>
+
+    <rect x="932" y="86" width="476" height="136" rx="12" fill="#f5f7fa"/>
+    <text x="952" y="114" font-size="13px" fill="#172033" font-weight="700">Nguyễn Lan · l••••@gmail.com</text>
+    <text x="952" y="138" font-size="10px" fill="#5e6b80">Role: USER · Trạng thái: Đang hoạt động · Đã xác minh OTP</text>
+    <text x="952" y="162" font-size="10px" fill="#2563eb" font-weight="600">Hoạt động cuối: 12 phút trước · Phiên đang mở: 3 thiết bị</text>
+    <text x="952" y="186" font-size="10px" fill="#157347" font-weight="600">Chấp thuận pháp lý: Điều khoản v1.0.0 &amp; Quyền riêng tư v1.0.0</text>
+
+    <!-- B1: Revoke Sessions Action -->
+    <rect x="932" y="240" width="476" height="92" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="952" y="266" font-size="11px" fill="#1e3a8a" font-weight="700">Quản lý phiên đăng nhập (B1)</text>
+    <text x="952" y="284" font-size="9px" fill="#5e6b80">Dùng khi người dùng báo mất thiết bị, không khóa tài khoản</text>
+    <rect x="952" y="294" width="240" height="28" rx="8" fill="#2563eb"/>
+    <text x="1072" y="312" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">Đăng xuất khỏi mọi thiết bị (3)</text>
+
+    <!-- B8: Role Change with Password Confirmation -->
+    <rect x="932" y="350" width="476" height="156" rx="12" fill="#fff8e7" stroke="#fde68a"/>
+    <text x="952" y="376" font-size="11px" fill="#895800" font-weight="700">Thay đổi vai trò có xác thực mật khẩu Admin (B8)</text>
+    <text x="952" y="396" font-size="9px" fill="#5e6b80">Yêu cầu nhập mật khẩu của bạn để nâng/hạ quyền Admin</text>
+    <rect x="952" y="410" width="436" height="36" rx="8" fill="#ffffff" stroke="#e1e7ef"/>
+    <text x="968" y="432" font-size="10px" fill="#7b8799">Nhập mật khẩu Admin hiện tại để xác nhận...</text>
+    <rect x="952" y="458" width="210" height="32" rx="8" fill="#1e3a8a"/>
+    <text x="1057" y="478" font-size="10px" fill="#ffffff" font-weight="700" text-anchor="middle">Chuyển thành ADMIN</text>
+
+    <!-- User Audit Timeline -->
+    <text x="932" y="540" font-size="12px" fill="#172033" font-weight="700">Dòng thời gian kiểm toán của tài khoản này:</text>
+    <rect x="932" y="556" width="476" height="160" rx="12" fill="#f5f7fa"/>
+    <text x="952" y="586" font-size="10px" fill="#172033">• 05/11/2026 22:15 — Thu hồi toàn bộ phiên đăng nhập (bởi Duy Khánh)</text>
+    <text x="952" y="616" font-size="10px" fill="#172033">• 18/10/2026 09:18 — Mở khóa tài khoản disabled → active</text>
+    <text x="952" y="646" font-size="10px" fill="#172033">• 12/10/2026 08:30 — Đăng ký và xác minh OTP thành công</text>
+  </g>
+</svg>

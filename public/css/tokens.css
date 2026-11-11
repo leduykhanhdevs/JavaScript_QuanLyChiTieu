@@ -1,0 +1,71 @@
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/assets/fonts/BeVietnamPro-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/assets/fonts/BeVietnamPro-Medium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/assets/fonts/BeVietnamPro-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/assets/fonts/BeVietnamPro-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Be Vietnam Pro";
+  src: url("/assets/fonts/BeVietnamPro-ExtraBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  --blue-950: #1e3a8a;
+  --blue-800: #1e3a8a;
+  --blue-700: #2563eb;
+  --blue-600: #2563eb;
+  --blue-500: #3b82f6;
+  --blue-400: #60a5fa;
+  --blue-100: #dbeafe;
+  --blue-50: #eff6ff;
+  --coral-600: #f07d68;
+  --coral-100: #fff0ec;
+  --amber-500: #f1b94c;
+  --purple-500: #9179d6;
+  --ink-950: #1e293b;
+  --ink-900: #1e293b;
+  --ink-800: #1e293b;
+  --ink-700: #64748b;
+  --ink-600: #64748b;
+  --ink-500: #94a3b8;
+  --ink-300: #cbd5e1;
+  --ink-200: #e2e8f0;
+  --ink-100: #f1f5f9;
+  --ink-50: #f8fafc;
+  --surface: #fff;
+  --canvas: #f1f5f9;
+  --danger: #c24136;
+  --shadow-card: 0 3px 14px rgb(30 41 59 / 4%);
+  --shadow-menu: 0 18px 45px rgb(23 32 51 / 16%);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-xl: 28px;
+  --font: "Be Vietnam Pro", "Segoe UI", Arial, sans-serif;
+}

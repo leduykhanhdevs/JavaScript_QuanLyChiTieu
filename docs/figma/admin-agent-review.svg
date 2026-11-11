@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1000" viewBox="0 0 1440 1000" fill="none">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="5" stdDeviation="11" flood-color="#17315C" flood-opacity=".055"/>
+    </filter>
+    <linearGradient id="agent-mark" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#3B82F6"/><stop offset="1" stop-color="#1E40AF"/>
+    </linearGradient>
+    <style>
+      text{font-family:'Be Vietnam Pro',Arial,sans-serif}
+      .muted{fill:#7B8799}.ink{fill:#172033}.blue{fill:#2563EB}.small{font-size:12px}.tiny{font-size:10px}
+      .card{fill:#fff;stroke:#E8EDF4;filter:url(#shadow)}
+      .outline{fill:#fff;stroke:#E1E7EF}
+    </style>
+  </defs>
+  <rect width="1440" height="1000" fill="#F3F6FB"/>
+
+  <!-- Admin navigation -->
+  <rect width="238" height="1000" fill="#fff"/>
+  <path d="M237.5 0v1000" stroke="#EDF1F6"/>
+  <image href="../../public/assets/brand-lockup.svg" x="26" y="30" width="170" height="50"/>
+  <text x="30" y="126" fill="#8B98AA" font-size="11" font-weight="800" letter-spacing="1.2">QUẢN TRỊ</text>
+  <g font-size="14" font-weight="600">
+    <rect x="15" y="143" width="208" height="44" rx="11" fill="#EFF6FF"/>
+    <rect x="26" y="150" width="30" height="30" rx="9" fill="#DBEAFE"/>
+    <path d="m35 165 6-5 6 5m-10-1v8h8v-8m-5 8v-4h3v4" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="66" y="171" fill="#1D4ED8" font-weight="800">Tổng quan</text>
+
+    <rect x="26" y="198" width="30" height="30" rx="9" fill="#EDF1F6"/>
+    <circle cx="39" cy="207" r="4" stroke="#5E6B80" stroke-width="1.5"/><path d="M31 222c.8-4.3 3.4-6.3 8-6.3s7.2 2 8 6.3m-1.5-11.7a3.5 3.5 0 0 1 0 6.8" stroke="#5E6B80" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="66" y="219" fill="#5E6B80">Người dùng</text>
+
+    <rect x="26" y="243" width="30" height="30" rx="9" fill="#EDF1F6"/>
+    <path d="M34 249h11v17H32v-13l2-4Zm2 5h5m-5 4h5m-5 4h3" stroke="#5E6B80" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="66" y="264" fill="#5E6B80">Nhật ký quản trị</text>
+
+    <rect x="26" y="288" width="30" height="30" rx="9" fill="#DBEAFE"/>
+    <path d="M39 294v9m0 0 4-4m-4 4-4-4m-5 9h18" stroke="#2563EB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="15" y="326" width="208" height="44" rx="11" fill="#EFF6FF"/>
+    <rect x="26" y="333" width="30" height="30" rx="9" fill="#DBEAFE"/>
+    <path d="M34 349a5 5 0 0 1 10-1m-10 4c0 3 2 5 5 5h4m-9-5v-2m10 2v-2m-5 7v2" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="66" y="354" fill="#1D4ED8" font-weight="800">Agent</text>
+  </g>
+  <path d="M20 390h198" stroke="#EDF1F6"/>
+  <path d="m39 411-6 6 6 6m-6-6h16" stroke="#5E6B80" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="61" y="421" fill="#5E6B80" font-size="13" font-weight="600">Về khu vực cá nhân</text>
+  <circle cx="43" cy="948" r="17" fill="#DBEAFE"/>
+  <text x="43" y="952" fill="#1E40AF" font-size="10" font-weight="800" text-anchor="middle">KL</text>
+  <text x="69" y="946" class="ink" font-size="12" font-weight="700">Quản trị viên</text>
+  <text x="69" y="963" class="muted tiny">Quản lý Ví Mình</text>
+
+  <!-- Top bar -->
+  <rect x="238" width="1202" height="68" fill="#fff"/>
+  <path d="M238 67.5h1202" stroke="#EDF1F6"/>
+  <text x="278" y="30" class="muted small">Ví Mình / Quản trị</text>
+  <text x="278" y="49" class="ink" font-size="14" font-weight="700">Agent</text>
+  <rect x="1268" y="17" width="142" height="35" rx="9" class="outline"/>
+  <text x="1281" y="39" fill="#5E6B80" font-size="12">6 tháng gần nhất</text>
+  <path d="m1392 31 5 5 5-5" stroke="#5E6B80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Page heading -->
+  <text x="286" y="117" class="ink" font-size="29" font-weight="800" letter-spacing="-.8">Agent Admin</text>
+  <text x="286" y="143" class="muted" font-size="14">Phân tích hoạt động hệ thống, tạo báo cáo và đề xuất kế hoạch quản trị.</text>
+  <rect x="1115" y="99" width="295" height="34" rx="17" fill="#EFF6FF"/>
+  <circle cx="1133" cy="116" r="4" fill="#2563EB"/>
+  <text x="1145" y="120" fill="#1E40AF" font-size="11" font-weight="700">Chỉ sử dụng dữ liệu tổng hợp Admin</text>
+
+  <!-- Main conversation -->
+  <rect x="286" y="166" width="738" height="760" rx="16" class="card"/>
+  <rect x="286" y="166" width="738" height="71" rx="16" fill="#fff"/>
+  <path d="M286 236.5h738" stroke="#EDF1F6"/>
+  <rect x="306" y="182" width="38" height="38" rx="12" fill="url(#agent-mark)"/>
+  <path d="M315 202c2-8 6-12 11-13-1 6-4 11-10 14m9-10 4-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="356" y="198" class="ink" font-size="14" font-weight="800">Agent quản trị</text>
+  <text x="356" y="216" class="muted tiny">Phân tích nội bộ · Hội thoại chỉ giữ trong phiên</text>
+  <rect x="928" y="184" width="76" height="31" rx="8" fill="#F5F7FA"/>
+  <path d="M947 194v10m0 0 4-4m-4 4-4-4m-3 9h14" stroke="#5E6B80" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="966" y="204" class="muted tiny" font-weight="700">Làm mới</text>
+
+  <rect x="501" y="260" width="497" height="55" rx="13" fill="#EFF6FF"/>
+  <text x="520" y="283" fill="#1E40AF" font-size="13" font-weight="600">Phân tích tăng trưởng và đề xuất kế hoạch</text>
+  <text x="520" y="302" fill="#7B8799" font-size="10">Bạn · vừa xong</text>
+
+  <rect x="306" y="339" width="678" height="301" rx="14" fill="#fff" stroke="#E8EDF4"/>
+  <rect x="323" y="356" width="30" height="30" rx="10" fill="#EFF6FF"/>
+  <path d="M331 372c2-6 5-9 9-10-.6 5-3.2 8.5-8 11m7-7 3-4" stroke="#2563EB" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="365" y="372" class="ink" font-size="13" font-weight="800">Phân tích tăng trưởng</text>
+  <text x="365" y="392" class="muted tiny">Dựa trên số tài khoản đăng ký theo tháng trong kỳ đã chọn.</text>
+  <text x="328" y="429" class="ink" font-size="13">Mình sẽ so sánh số đăng ký giữa các tháng, chỉ ra xu hướng và ghi rõ khi dữ</text>
+  <text x="328" y="449" class="ink" font-size="13">liệu chưa đủ để kết luận. Chưa tải số liệu trong bản xem trước này.</text>
+  <rect x="328" y="474" width="201" height="81" rx="11" fill="#F5F7FA"/>
+  <text x="344" y="497" class="muted tiny" font-weight="700">ĐĂNG KÝ KỲ TRƯỚC</text>
+  <text x="344" y="530" class="ink" font-size="25" font-weight="800">—</text>
+  <text x="328" y="541" class="muted tiny">Số liệu sẽ tải từ Admin API</text>
+  <rect x="541" y="474" width="201" height="81" rx="11" fill="#F5F7FA"/>
+  <text x="557" y="497" class="muted tiny" font-weight="700">ĐĂNG KÝ KỲ NÀY</text>
+  <text x="557" y="530" class="ink" font-size="25" font-weight="800">—</text>
+  <text x="541" y="541" class="muted tiny">Theo khoảng thời gian phía trên</text>
+  <rect x="754" y="474" width="212" height="81" rx="11" fill="#EFF6FF"/>
+  <text x="770" y="497" fill="#1E40AF" font-size="10" font-weight="700">THAY ĐỔI</text>
+  <text x="770" y="530" fill="#1E40AF" font-size="25" font-weight="800">—</text>
+  <text x="754" y="541" fill="#5575B8" font-size="10">Không suy diễn khi thiếu dữ liệu</text>
+  <rect x="328" y="578" width="194" height="39" rx="9" fill="#fff" stroke="#DBEAFE"/>
+  <text x="344" y="603" class="blue" font-size="11" font-weight="700">Xem biểu đồ tăng trưởng</text>
+  <path d="M500 593h9m-4-4 4 4-4 4" stroke="#2563EB" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="306" y="681" class="muted tiny" font-weight="700" letter-spacing=".8">GỢI Ý CÂU HỎI</text>
+  <g font-size="12" font-weight="600">
+    <rect x="306" y="697" width="217" height="43" rx="10" fill="#fff" stroke="#E1E7EF"/>
+    <text x="323" y="723" fill="#263349">Tóm tắt tình trạng hệ thống</text>
+    <rect x="534" y="697" width="218" height="43" rx="10" fill="#fff" stroke="#E1E7EF"/>
+    <text x="551" y="723" fill="#263349">Phân tích tăng trưởng</text>
+    <rect x="763" y="697" width="221" height="43" rx="10" fill="#fff" stroke="#E1E7EF"/>
+    <text x="780" y="723" fill="#263349">Lập kế hoạch cải thiện</text>
+    <rect x="306" y="750" width="217" height="43" rx="10" fill="#fff" stroke="#E1E7EF"/>
+    <text x="323" y="776" fill="#263349">Thống kê doanh thu</text>
+  </g>
+  <rect x="306" y="827" width="698" height="59" rx="13" fill="#fff" stroke="#D7E0EC"/>
+  <text x="326" y="862" fill="#9AA6B6" font-size="13">Nhập yêu cầu phân tích hoặc kế hoạch…</text>
+  <rect x="948" y="838" width="42" height="37" rx="10" fill="#2563EB"/>
+  <path d="m960 856 18-8-4 17-5-6-9-3Zm9 3 5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="306" y="910" class="muted tiny">Agent hiện phân tích theo quy tắc cục bộ; chưa dùng mô hình AI bên ngoài.</text>
+
+  <!-- Right-hand overview and boundaries -->
+  <rect x="1042" y="166" width="368" height="349" rx="16" class="card"/>
+  <text x="1064" y="198" class="ink" font-size="15" font-weight="800">Chỉ số hệ thống</text>
+  <text x="1064" y="218" class="muted tiny">Cùng khoảng thời gian đã chọn</text>
+  <rect x="1063" y="239" width="153" height="92" rx="12" fill="#F5F7FA"/>
+  <text x="1078" y="263" class="muted tiny">Tổng tài khoản</text>
+  <text x="1078" y="297" class="ink" font-size="26" font-weight="800">—</text>
+  <text x="1078" y="315" class="muted tiny">Từ dữ liệu hệ thống</text>
+  <rect x="1228" y="239" width="160" height="92" rx="12" fill="#F5F7FA"/>
+  <text x="1243" y="263" class="muted tiny">Đang hoạt động</text>
+  <text x="1243" y="297" class="ink" font-size="26" font-weight="800">—</text>
+  <text x="1243" y="315" class="muted tiny">Tài khoản hoạt động</text>
+  <rect x="1063" y="343" width="153" height="92" rx="12" fill="#F5F7FA"/>
+  <text x="1078" y="367" class="muted tiny">Giao dịch trong kỳ</text>
+  <text x="1078" y="401" class="ink" font-size="26" font-weight="800">—</text>
+  <text x="1078" y="419" class="muted tiny">Chỉ số đếm</text>
+  <rect x="1228" y="343" width="160" height="92" rx="12" fill="#F5F7FA"/>
+  <text x="1243" y="367" class="muted tiny">Dịch vụ</text>
+  <text x="1243" y="399" class="ink" font-size="15" font-weight="800">—</text>
+  <text x="1243" y="419" class="muted tiny">API · PostgreSQL</text>
+  <rect x="1063" y="452" width="325" height="43" rx="10" fill="#EFF6FF"/>
+  <path d="M1080 467v14m-5-9 5-5 5 5m-10 8h10" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1097" y="478" fill="#1E40AF" font-size="11" font-weight="700">Mở Tổng quan Admin</text>
+  <path d="M1364 469h10m-4-4 4 4-4 4" stroke="#2563EB" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="1042" y="531" width="368" height="194" rx="16" class="card"/>
+  <text x="1064" y="563" class="ink" font-size="15" font-weight="800">Công cụ quản trị</text>
+  <text x="1064" y="583" class="muted tiny">Mở màn hình thao tác có kiểm soát</text>
+  <rect x="1063" y="601" width="325" height="43" rx="10" fill="#fff" stroke="#E1E7EF"/>
+  <circle cx="1085" cy="622" r="10" fill="#EFF6FF"/>
+  <path d="M1085 618v8m-4-4h8" stroke="#2563EB" stroke-width="1.4" stroke-linecap="round"/>
+  <text x="1104" y="627" fill="#263349" font-size="12" font-weight="700">Quản lý người dùng</text>
+  <path d="m1367 618 4 4-4 4" stroke="#7B8799" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="1063" y="655" width="325" height="43" rx="10" fill="#fff" stroke="#E1E7EF"/>
+  <circle cx="1085" cy="676" r="10" fill="#EFF6FF"/>
+  <path d="M1082 671h7v10h-9v-7l2-3Zm1 3h3m-3 3h3" stroke="#2563EB" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1104" y="681" fill="#263349" font-size="12" font-weight="700">Nhật ký quản trị</text>
+  <path d="m1367 672 4 4-4 4" stroke="#7B8799" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="1042" y="741" width="368" height="185" rx="16" class="card"/>
+  <circle cx="1078" cy="777" r="15" fill="#EFF6FF"/>
+  <path d="M1078 768v10m0 5h.01m-7.5 6h15" stroke="#2563EB" stroke-width="1.6" stroke-linecap="round"/>
+  <text x="1104" y="775" class="ink" font-size="14" font-weight="800">Giới hạn dữ liệu</text>
+  <text x="1064" y="812" class="muted small">• Không đọc nội dung giao dịch cá nhân</text>
+  <text x="1064" y="835" class="muted small">• Không có số tiền doanh thu trong API Admin</text>
+  <text x="1064" y="858" class="muted small">• Không tự khóa/mở tài khoản thay Admin</text>
+  <text x="1064" y="892" fill="#1E40AF" font-size="11" font-weight="700">Mọi thay đổi vẫn cần xác nhận trong màn quản trị.</text>
+
+  <text x="286" y="970" class="muted tiny">BẢN XEM TRƯỚC LAYOUT · Các dấu “—” là vị trí số liệu tải từ API, không phải dữ liệu mẫu.</text>
+</svg>

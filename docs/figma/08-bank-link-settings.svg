@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc">
+  <title id="title">Ví Mình — Cài đặt liên kết ngân hàng, trạng thái chưa kết nối</title>
+  <desc id="desc">Thiết kế vector màn hình Cài đặt theo phong cách Ví Mình, màu xanh dương, font Be Vietnam Pro. Bản xem trước, chưa tích hợp dữ liệu ngân hàng.</desc>
+  <defs>
+    <linearGradient id="brandBlue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3B82F6"/><stop offset="1" stop-color="#1D4ED8"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#1E293B" flood-opacity=".07"/></filter>
+    <style>
+      text{font-family:'Be Vietnam Pro','Segoe UI',Arial,sans-serif;fill:#1E293B}
+      .muted{fill:#64748B}.light{fill:#94A3B8}.blue{fill:#2563EB}.tiny{font-size:9px}.small{font-size:11px}.body{font-size:12px}.label{font-size:10px;font-weight:700}.heading{font-size:21px;font-weight:700}.card-title{font-size:14px;font-weight:700}
+      .icon{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect width="1440" height="960" fill="#F1F5F9"/>
+  <rect x="20" y="16" width="1400" height="928" rx="20" fill="#FFF" stroke="#E2E8F0"/>
+  <rect x="20" y="16" width="220" height="928" rx="20" fill="#FBFCFE"/>
+  <path d="M240 16v928" stroke="#E2E8F0"/>
+  <g aria-label="Logo Ví Mình">
+    <rect x="38" y="37" width="36" height="36" rx="12" fill="url(#brandBlue)"/>
+    <path d="m48 46 8 19 8-19" fill="none" stroke="#FFF" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="66" cy="47" r="4" fill="#BFDBFE"/><circle cx="66" cy="47" r="1.5" fill="#1D4ED8"/>
+    <text x="83" y="53" font-size="16" font-weight="700">Ví Mình</text><text x="83" y="68" font-size="7" font-weight="700" letter-spacing=".45" class="muted">TÀI CHÍNH CÁ NHÂN</text>
+  </g>
+  <text x="42" y="111" class="tiny light" font-weight="700" letter-spacing=".6">MENU CHÍNH</text>
+  <g font-size="11" class="muted">
+    <circle cx="50" cy="147" r="8" fill="#F1F5F9"/><text x="69" y="151">Tổng quan</text>
+    <circle cx="50" cy="187" r="8" fill="#F1F5F9"/><text x="69" y="191">Giao dịch</text>
+    <circle cx="50" cy="227" r="8" fill="#F1F5F9"/><text x="69" y="231">Tài khoản</text>
+    <circle cx="50" cy="267" r="8" fill="#F1F5F9"/><text x="69" y="271">Ngân sách</text>
+    <circle cx="50" cy="307" r="8" fill="#F1F5F9"/><text x="69" y="311">Định kỳ</text>
+    <circle cx="50" cy="347" r="8" fill="#F1F5F9"/><text x="69" y="351">Mục tiêu</text>
+    <circle cx="50" cy="387" r="8" fill="#F1F5F9"/><text x="69" y="391">Báo cáo</text>
+    <circle cx="50" cy="427" r="8" fill="#F1F5F9"/><text x="69" y="431">Danh mục</text>
+  </g>
+  <g color="#64748B"><path class="icon" d="m45 148 5-4 5 4m-8-1v6h6v-6m-4 6v-3h2v3"/><path class="icon" d="M47 182h6v10l-2-1-1 1-1-1-2 1zM48 185h4m-4 3h4"/><path class="icon" d="M45 225a1.5 1.5 0 0 1 1.5-1.5H55v7h-8.5A1.5 1.5 0 0 1 45 229zM45 226h10m-4 2h2"/><circle cx="50" cy="267" r="5.5" class="icon"/><path class="icon" d="M50 261.5v5.5l4 2"/><path class="icon" d="M53 304a4.5 4.5 0 1 0 1.2 5m-1.2-5v-3m0 3h-3"/><circle cx="50" cy="347" r="5" class="icon"/><circle cx="50" cy="347" r="2" class="icon"/><path class="icon" d="M45 391v-8m0 8h10m-8-3 3-3 2 1 3-4m-2 0h2v2"/><path class="icon" d="M45 425v-3h4l6 6-5 5-5-5z"/><circle cx="47.5" cy="424.5" r=".7" fill="#64748B"/></g>
+  <rect x="30" y="445" width="190" height="36" rx="10" fill="#EFF6FF"/><circle cx="50" cy="463" r="8" fill="#DBEAFE"/><g transform="translate(42.5 455.5) scale(.63)" color="#2563EB"><path class="icon" d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path class="icon" d="m19.4 13.5 1.2 1-.9 2.1-1.5-.2a7.9 7.9 0 0 1-1.3 1l-.3 1.5h-2.3l-.7-1.4a8 8 0 0 1-1.6 0l-.7 1.4H9l-.3-1.5a7.9 7.9 0 0 1-1.3-1l-1.5.2L5 14.5l1.2-1a8 8 0 0 1 0-1.6l-1.2-1 .9-2.1 1.5.2a7.9 7.9 0 0 1 1.3-1L9 6.5h2.3l.7 1.4a8 8 0 0 1 1.6 0l.7-1.4h2.3l.3 1.5a7.9 7.9 0 0 1 1.3 1l1.5-.2.9 2.1-1.2 1a8 8 0 0 1 0 1.6Z"/></g><text x="69" y="467" font-size="11" font-weight="700" class="blue">Cài đặt</text>
+  <g aria-label="Thông tin tài khoản">
+    <circle cx="54" cy="902" r="17" fill="#DBEAFE"/><text x="54" y="906" text-anchor="middle" class="tiny blue" font-weight="700">KL</text>
+    <text x="80" y="899" class="small" font-weight="700">Lê Duy Khánh</text><text x="80" y="914" class="tiny light">Quản lý tài chính của riêng bạn</text>
+  </g>
+  <rect x="240" y="16" width="1180" height="64" fill="#FFF"/><path d="M240 80h1180" stroke="#E2E8F0"/>
+  <rect x="270" y="32" width="220" height="34" rx="10" fill="#F8FAFC"/><circle cx="287" cy="49" r="5" class="icon" stroke="#94A3B8"/><path d="m291 53 4 4" stroke="#94A3B8" stroke-width="1.5"/><text x="303" y="53" class="small muted">Tìm nhanh giao dịch...</text>
+  <circle cx="1382" cy="48" r="16" fill="#EFF6FF"/><text x="1382" y="52" text-anchor="middle" class="small blue" font-weight="700">KL</text>
+  <text x="270" y="124" class="heading">Cài đặt tài khoản</text><text x="270" y="146" class="small muted">Quản lý hồ sơ, bảo mật và tùy chọn hiển thị của bạn.</text>
+  <rect x="270" y="174" width="230" height="730" rx="15" fill="#FFF" stroke="#E2E8F0"/>
+  <text x="291" y="205" class="tiny light" font-weight="700" letter-spacing=".5">CÁ NHÂN</text>
+  <text x="304" y="239" class="small muted">Thông tin cá nhân</text><text x="304" y="277" class="small muted">Bảo mật &amp; mật khẩu</text>
+  <text x="291" y="322" class="tiny light" font-weight="700" letter-spacing=".5">ỨNG DỤNG</text>
+  <text x="304" y="357" class="small muted">Tùy chỉnh hiển thị</text><text x="304" y="395" class="small muted">Tài khoản &amp; dữ liệu</text>
+  <rect x="282" y="410" width="206" height="38" rx="10" fill="#EFF6FF"/>
+  <g transform="translate(291 420) scale(.67)" color="#2563EB"><path class="icon" d="m3 9 9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18M4 18h16"/></g>
+  <text x="313" y="434" class="small blue" font-weight="700">Liên kết ngân hàng</text>
+  <text x="304" y="471" class="small muted">Trợ giúp &amp; liên hệ</text>
+  <text x="530" y="199" class="heading">Liên kết ngân hàng</text>
+  <text x="530" y="222" class="small muted">Đồng bộ giao dịch để phân loại nhanh và quản lý chi tiêu chủ động hơn.</text>
+  <rect x="530" y="244" width="860" height="285" rx="16" fill="#FFF" stroke="#E2E8F0" filter="url(#shadow)"/>
+  <rect x="554" y="269" width="46" height="46" rx="14" fill="#EFF6FF"/>
+  <g transform="translate(565 280) scale(.98)" color="#2563EB"><path class="icon" d="m3 9 9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18M4 18h16"/></g>
+  <text x="615" y="286" class="card-title">Kết nối tài khoản ngân hàng</text>
+  <text x="615" y="308" class="small muted">Đưa giao dịch vào Ví Mình để bạn không phải nhập lại từng khoản.</text>
+  <rect x="1243" y="270" width="123" height="26" rx="13" fill="#F1F5F9"/><circle cx="1260" cy="283" r="4" fill="#94A3B8"/><text x="1271" y="287" class="tiny muted" font-weight="700">Chưa kết nối</text>
+  <text x="554" y="351" class="body">Sau khi bạn đồng ý, hệ thống sẽ mở trang liên kết để chọn ngân hàng và xác thực.</text>
+  <text x="554" y="373" class="body">Ví Mình chỉ nhận dữ liệu được cấp quyền; bạn có thể ngắt liên kết bất cứ lúc nào.</text>
+  <rect x="554" y="397" width="176" height="30" rx="15" fill="#EFF6FF"/><g transform="translate(566 404) scale(.68)" color="#2563EB"><path class="icon" d="M4 12 9 17 20 6"/></g><text x="585" y="416" class="tiny blue" font-weight="600">Chỉ đọc giao dịch</text>
+  <rect x="740" y="397" width="180" height="30" rx="15" fill="#F8FAFC"/><g transform="translate(752 404) scale(.68)" color="#64748B"><path class="icon" d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/></g><text x="771" y="416" class="tiny muted" font-weight="600">Không cần mật khẩu/OTP</text>
+  <rect x="554" y="455" width="196" height="43" rx="10" fill="#2563EB"/><g transform="translate(571 465) scale(.72)" color="#FFF"><path class="icon" d="m3 9 9-6 9 6M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18M4 18h16"/></g><text x="603" y="482" font-size="11" font-weight="700" fill="#FFF">Bắt đầu liên kết</text>
+  <text x="769" y="472" class="tiny muted">Danh sách ngân hàng được tải từ</text><text x="769" y="487" class="tiny muted">nhà cung cấp đã được xác minh.</text>
+  <rect x="530" y="549" width="860" height="181" rx="16" fill="#FFF" stroke="#E2E8F0"/>
+  <text x="554" y="581" class="card-title">Quy trình hoạt động</text><text x="554" y="600" class="tiny muted">Bạn kiểm soát quyền truy cập và từng khoản được nhập.</text>
+  <rect x="554" y="618" width="258" height="86" rx="12" fill="#F8FAFC"/>
+  <circle cx="578" cy="644" r="13" fill="#EFF6FF"/><text x="578" y="648" text-anchor="middle" class="tiny blue" font-weight="700">1</text><text x="600" y="642" class="small" font-weight="700">Xác thực an toàn</text><text x="600" y="662" class="tiny muted">Trên trang ngân hàng hoặc đơn vị</text><text x="600" y="677" class="tiny muted">kết nối được công bố rõ ràng.</text>
+  <rect x="831" y="618" width="258" height="86" rx="12" fill="#F8FAFC"/>
+  <circle cx="855" cy="644" r="13" fill="#EFF6FF"/><text x="855" y="648" text-anchor="middle" class="tiny blue" font-weight="700">2</text><text x="877" y="642" class="small" font-weight="700">Đồng bộ giao dịch</text><text x="877" y="662" class="tiny muted">Mỗi giao dịch chỉ được ghi nhận</text><text x="877" y="677" class="tiny muted">một lần vào sổ tài chính.</text>
+  <rect x="1108" y="618" width="258" height="86" rx="12" fill="#F8FAFC"/>
+  <circle cx="1132" cy="644" r="13" fill="#EFF6FF"/><text x="1132" y="648" text-anchor="middle" class="tiny blue" font-weight="700">3</text><text x="1154" y="642" class="small" font-weight="700">Bạn phân loại</text><text x="1154" y="662" class="tiny muted">Khoản chưa rõ sẽ chờ bạn xem lại</text><text x="1154" y="677" class="tiny muted">trong mục Giao dịch.</text>
+  <rect x="530" y="750" width="860" height="86" rx="14" fill="#EFF6FF"/>
+  <rect x="550" y="770" width="42" height="42" rx="13" fill="#FFF"/><g transform="translate(559 779) scale(.95)" color="#2563EB"><path class="icon" d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path class="icon" d="m9 12 2 2 4-4"/></g>
+  <text x="607" y="781" class="small blue" font-weight="700">Quyền riêng tư là ưu tiên</text><text x="607" y="801" class="tiny muted">Ví Mình không hỏi mật khẩu/PIN/OTP ngân hàng. Dữ liệu được dùng để quản lý tài chính của chính bạn.</text><text x="607" y="817" class="tiny muted">Consent kết nối ngân hàng là lựa chọn riêng và có thể thu hồi trong Cài đặt.</text>
+  <text x="530" y="869" class="tiny light">Bản thiết kế trạng thái chưa kết nối • Danh sách ngân hàng và quyền thực tế phụ thuộc provider được duyệt.</text>
+</svg>

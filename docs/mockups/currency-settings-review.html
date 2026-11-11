@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mockup duyệt — tiền tệ và tỷ giá</title>
+  <style>
+    :root { color-scheme: light; --blue:#2563eb; --navy:#1e3a8a; --ink:#172b4d; --muted:#71819a; --line:#dfe7f2; --soft:#f5f8fd; --pale:#eff6ff; --green:#15966a; }
+    * { box-sizing:border-box }
+    body { margin:0; background:#f7f9fc; color:var(--ink); font:14px/1.5 "Be Vietnam Pro",Inter,Arial,sans-serif }
+    .app { max-width:1440px; min-height:850px; margin:0 auto; display:grid; grid-template-columns:220px 1fr; background:#fff; border:1px solid #e4e9f1; border-radius:12px; overflow:hidden }
+    aside { border-right:1px solid var(--line); background:#fbfcfe; padding:25px 16px }
+    .brand { display:flex; align-items:center; gap:8px; color:var(--navy); font-size:22px; font-weight:800; letter-spacing:-.8px; margin:4px 12px 34px }
+    .brand-mark { width:32px;height:32px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800 }
+    .nav-label { margin:0 12px 10px;color:#94a3b8;font-size:10px;font-weight:700;letter-spacing:.08em }
+    .nav { display:grid; gap:5px }
+    .nav a { padding:10px 12px;border-radius:10px;color:#536987;text-decoration:none;font-weight:600 }
+    .nav a.active { color:var(--blue);background:var(--pale) }
+    main { min-width:0 }
+    header { height:68px;padding:0 40px;border-bottom:1px solid #edf1f6;display:flex;align-items:center;justify-content:space-between;color:var(--muted) }
+    .search { width:220px;padding:9px 13px;border-radius:10px;background:var(--soft);font-size:13px }
+    .profile { width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:#e9eef5;font-weight:700;color:var(--navy) }
+    .content { max-width:1080px;margin:36px auto;padding:0 34px 50px }
+    h1 { margin:0;font-size:28px;letter-spacing:-.8px }
+    .subtitle { margin:5px 0 26px;color:var(--muted) }
+    .settings-nav { display:flex;gap:8px;overflow:auto;border-bottom:1px solid var(--line);margin-bottom:22px }
+    .settings-nav span { white-space:nowrap;padding:11px 13px;color:#687b96;font-size:13px;font-weight:600 }
+    .settings-nav .selected { border-bottom:2px solid var(--blue);color:var(--blue) }
+    .card { background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 5px 16px rgb(25 50 90 / 4%) }
+    .preferences { padding:22px 24px 24px }
+    .card-title { margin:0;font-size:15px;font-weight:700 }
+    .card-copy { margin:4px 0 0;color:var(--muted);font-size:12px }
+    .setting-row { display:grid;grid-template-columns:minmax(220px,1fr) minmax(270px,380px);align-items:center;gap:24px;padding:24px 0 18px;border-bottom:1px solid #edf1f6 }
+    .setting-label { margin:0 0 4px;font-size:13px;font-weight:700 }
+    .setting-hint { margin:0;color:var(--muted);font-size:12px }
+    .segmented { display:grid;grid-template-columns:1fr 1fr;padding:4px;border:1px solid #d9e3f0;border-radius:11px;background:#f7f9fc }
+    .segmented button { border:0;background:transparent;border-radius:8px;padding:9px 12px;color:#60728d;font:600 13px inherit;cursor:pointer }
+    .segmented button.selected { background:#fff;color:var(--blue);box-shadow:0 1px 5px rgb(25 50 90 / 12%) }
+    .rate-card { margin-top:20px;border:1px solid #dce8fa;border-radius:14px;background:linear-gradient(120deg,#f4f8ff,#fff 62%);padding:18px 20px }
+    .rate-heading { display:flex;align-items:flex-start;justify-content:space-between;gap:16px }
+    .rate-title { margin:0;font-size:14px;font-weight:700 }
+    .rate-subtitle { margin:4px 0 0;color:var(--muted);font-size:11px }
+    .live-pill { display:inline-flex;align-items:center;gap:6px;border:1px solid #ccefe2;background:#effaf5;color:#187553;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:700;white-space:nowrap }
+    .live-pill i { width:6px;height:6px;border-radius:50%;background:#18a875 }
+    .rate-body { display:grid;grid-template-columns:minmax(240px,.9fr) minmax(340px,1.35fr);gap:24px;align-items:center;margin-top:18px }
+    .main-rate { font-size:27px;font-weight:800;letter-spacing:-.8px;color:#183974 }
+    .main-rate small { font-size:13px;font-weight:600;letter-spacing:0;color:#526a8c }
+    .reverse-rate { margin-top:5px;color:#526a8c;font-size:12px }
+    .updated { margin-top:13px;color:#8492a7;font-size:10px }
+    .chart-wrap { height:122px;position:relative;padding:8px 4px 0 }
+    .chart-wrap svg { width:100%;height:92px;overflow:visible }
+    .chart-labels { display:flex;justify-content:space-between;color:#94a3b8;font-size:9px }
+    .chart-range { display:flex;justify-content:flex-end;gap:4px;margin-bottom:2px }
+    .chart-range span { padding:3px 8px;border-radius:7px;color:#71819a;font-size:9px;font-weight:600 }
+    .chart-range .chosen { background:#e8f0ff;color:var(--blue) }
+    .convert-row { margin-top:17px;display:grid;grid-template-columns:1fr 34px 1fr;align-items:end;gap:12px;padding-top:16px;border-top:1px solid #e5edf8 }
+    .convert-field label { display:block;margin-bottom:5px;color:#71819a;font-size:10px;font-weight:600 }
+    .convert-box { height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 11px;border:1px solid #dbe4f0;border-radius:9px;background:#fff;font-size:13px;font-weight:700 }
+    .convert-box em { color:#71819a;font-style:normal;font-size:11px }
+    .swap { height:34px;width:34px;border:1px solid #dbe4f0;border-radius:9px;background:white;color:var(--blue);font-size:17px }
+    .rate-note { margin:13px 0 0;padding:9px 11px;border-radius:8px;background:#f7f9fc;color:#70819a;font-size:10px }
+    .lower { display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:17px }
+    .small-card { padding:18px 20px }
+    .small-card h3 { margin:0;font-size:13px }
+    .small-card p { margin:5px 0 0;color:var(--muted);font-size:11px }
+    .explain { margin-top:18px;padding:12px 14px;border-radius:10px;background:#f7f9fc;color:#6c7c93;font-size:11px }
+    .review-tag { display:inline-block;margin-top:22px;padding:6px 10px;border:1px solid #d9e3f0;border-radius:8px;color:#63758e;background:white;font-size:10px }
+    @media (max-width:800px) { .app{grid-template-columns:64px 1fr}.brand{font-size:0;margin:6px 0 30px;justify-content:center}.brand-mark{width:35px;height:35px}.nav-label{display:none}.nav a{font-size:0;text-align:center;padding:12px 5px}.nav a::first-letter{font-size:14px}.content{margin:24px auto;padding:0 18px 35px}header{padding:0 18px}.setting-row{grid-template-columns:1fr;gap:12px}.rate-body{grid-template-columns:1fr;gap:14px}.chart-wrap{height:112px}.lower{grid-template-columns:1fr} }
+    @media (max-width:520px) { aside{padding:18px 8px}.content{padding:0 12px 28px}h1{font-size:23px}.preferences{padding:18px 15px}.rate-card{padding:15px 13px}.rate-body{gap:8px}.convert-row{gap:6px}.convert-box{padding:0 8px}.search{width:170px} }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <div class="brand"><span class="brand-mark">V</span>Ví Mình</div>
+      <div class="nav-label">CÀI ĐẶT</div>
+      <nav class="nav" aria-label="Điều hướng mockup">
+        <a>Hồ sơ</a><a>Bảo mật</a><a class="active">Tùy chỉnh</a><a>Tài khoản & dữ liệu</a><a>Mini app</a><a>Liên kết ngân hàng</a><a>Trợ giúp</a>
+      </nav>
+    </aside>
+    <main>
+      <header><div class="search">⌕ &nbsp; Tìm nhanh giao dịch...</div><div class="profile">K</div></header>
+      <div class="content">
+        <h1>Cài đặt tài khoản</h1>
+        <p class="subtitle">Quản lý hồ sơ, bảo mật và tùy chỉnh trải nghiệm của bạn</p>
+        <nav class="settings-nav"><span>Hồ sơ</span><span>Bảo mật</span><span class="selected">Tùy chỉnh</span><span>Tài khoản & dữ liệu</span><span>Mini app</span></nav>
+        <section class="card preferences">
+          <h2 class="card-title">Tùy chỉnh ứng dụng</h2>
+          <p class="card-copy">Thiết lập cách ứng dụng nhập và hiển thị số liệu</p>
+          <div class="setting-row">
+            <div><p class="setting-label">Đơn vị tiền tệ</p><p class="setting-hint">Dùng cho giao dịch mới và số liệu hiển thị</p></div>
+            <div class="segmented" role="group" aria-label="Đơn vị tiền tệ"><button class="selected">VND · ₫</button><button>USD · $</button></div>
+          </div>
+          <section class="rate-card" aria-label="Theo dõi tỷ giá minh họa">
+            <div class="rate-heading"><div><h3 class="rate-title">Theo dõi tỷ giá USD / VND</h3><p class="rate-subtitle">Tỷ giá tham khảo hai chiều</p></div><span class="live-pill"><i></i> CẬP NHẬT THEO GÓI API</span></div>
+            <div class="rate-body">
+              <div><div class="main-rate">25.4xx <small>₫ / 1 USD</small></div><div class="reverse-rate">1 VND ≈ 0.000039xx USD</div><div class="updated">Dữ liệu minh họa · thời điểm cập nhật sẽ hiển thị tại đây</div></div>
+              <div class="chart-wrap">
+                <div class="chart-range"><span>24 giờ</span><span class="chosen">7 ngày</span><span>30 ngày</span></div>
+                <svg viewBox="0 0 520 90" role="img" aria-label="Biểu đồ minh họa biến động tỷ giá USD VND trong 7 ngày">
+                  <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b82f6" stop-opacity=".18"/><stop offset="1" stop-color="#3b82f6" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 68 L65 62 L130 66 L195 43 L260 49 L325 32 L390 39 L455 19 L520 24 L520 88 L0 88Z" fill="url(#area)"/>
+                  <path d="M0 68 L65 62 L130 66 L195 43 L260 49 L325 32 L390 39 L455 19 L520 24" fill="none" stroke="#3478ee" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="520" cy="24" r="4" fill="#fff" stroke="#2563eb" stroke-width="2"/>
+                  <path d="M0 87H520 M0 56H520 M0 25H520" fill="none" stroke="#e5edf8" stroke-dasharray="3 5"/>
+                </svg>
+                <div class="chart-labels"><span>05/11</span><span>07/11</span><span>09/11</span><span>11/11</span></div>
+              </div>
+            </div>
+            <div class="convert-row">
+              <div class="convert-field"><label>USD sang VND</label><div class="convert-box"><span>1</span><em>USD</em></div></div>
+              <button class="swap" aria-label="Đổi chiều quy đổi">⇄</button>
+              <div class="convert-field"><label>Kết quả tham khảo</label><div class="convert-box"><span>25.4xx</span><em>VND</em></div></div>
+            </div>
+            <p class="rate-note">Tỷ giá và biểu đồ trong mockup chỉ để duyệt bố cục. Tỷ giá thật cần API key; tần suất cập nhật phụ thuộc gói nhà cung cấp.</p>
+          </section>
+          <div class="lower">
+            <article class="card small-card"><h3>Đơn vị hiển thị</h3><p>Chọn USD sẽ quy đổi số liệu VND khi xem báo cáo. Giao dịch đã lưu vẫn giữ nguyên giá trị gốc.</p></article>
+            <article class="card small-card"><h3>Giao dịch mới</h3><p>Form giao dịch dùng đơn vị đã chọn; giá trị quy đổi và thời điểm lấy tỷ giá được lưu cùng giao dịch.</p></article>
+          </div>
+          <div class="explain">Biểu đồ tỷ giá được tự vẽ bằng SVG để tuân thủ yêu cầu JavaScript thuần, không dùng thư viện biểu đồ.</div>
+        </section>
+        <span class="review-tag">Mockup local · dữ liệu tỷ giá minh họa · chưa kết nối API</span>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

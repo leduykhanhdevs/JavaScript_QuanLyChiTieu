@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Trợ lý Ví Mình</title>
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/desktop/mini.css?v=20261111-compact-goals-v2">
+  <script type="module" src="/desktop/mini.js"></script>
+</head>
+<body>
+  <main class="mini-app">
+    <header class="app-header">
+      <img class="brand-mark" src="/assets/brand-mark.svg" alt="Ví Mình">
+      <div class="brand-copy">
+        <h1>Trợ lý Ví Mình</h1>
+        <p>Ghi nhanh và theo dõi thu chi</p>
+      </div>
+      <button class="icon-button" id="refresh-button" type="button" aria-label="Làm mới dữ liệu" title="Làm mới">↻</button>
+    </header>
+
+    <details id="balance-details" class="balance-disclosure">
+      <summary class="balance-card" aria-label="Mở chi tiết tổng tài sản và mục tiêu tiết kiệm">
+        <span class="balance-copy">
+          <span id="balance-heading" class="eyebrow">Tổng tài sản hiện tại</span>
+          <span id="balance-value" class="balance-value">—</span>
+          <span id="balance-meta" class="balance-meta">Đang đồng bộ số dư…</span>
+        </span>
+        <span class="balance-chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </span>
+      </summary>
+      <section class="balance-details-panel" aria-label="Chi tiết tài sản và mục tiêu tiết kiệm">
+        <div class="asset-breakdown">
+          <div><span>Số dư các ví chi tiêu</span><strong id="liquid-balance">—</strong></div>
+          <div><span>Số dư mục tiêu tiết kiệm</span><strong id="goal-balance">—</strong></div>
+          <div class="asset-total-row"><span>Tổng tài sản hiện tại</span><strong id="asset-total">—</strong></div>
+        </div>
+        <div class="goals-heading">
+          <div><h2>Mục tiêu tiết kiệm</h2><p id="goal-count">—</p></div>
+          <button id="create-goal-button" class="text-button" type="button">＋ Tạo mục tiêu</button>
+        </div>
+        <div id="goal-list" class="goal-list"></div>
+        <p id="empty-goals" class="empty-copy" hidden>Chưa có mục tiêu tiết kiệm. Tạo mục tiêu đầu tiên để bắt đầu theo dõi.</p>
+      </section>
+    </details>
+
+    <section id="status-panel" class="status-panel" role="status" aria-live="polite" hidden></section>
+
+    <section id="signed-out-panel" class="signed-out-panel" hidden>
+      <div class="empty-icon" aria-hidden="true">V</div>
+      <h2>Đăng nhập để tiếp tục</h2>
+      <p>Trợ lý dùng cùng tài khoản và dữ liệu với website Ví Mình.</p>
+      <button class="primary-button" id="open-full-app" type="button">Mở website trên trình duyệt</button>
+    </section>
+
+    <section id="entry-section" class="entry-section" hidden>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Giao dịch</p>
+          <h2>Thêm nhanh</h2>
+        </div>
+      </div>
+
+      <div class="kind-switch" role="group" aria-label="Loại giao dịch">
+        <button type="button" class="kind-button is-active" data-kind="expense" aria-pressed="true">Khoản chi</button>
+        <button type="button" class="kind-button" data-kind="income" aria-pressed="false">Khoản thu</button>
+      </div>
+
+      <form id="transaction-form" novalidate>
+        <label class="field amount-field" for="amount-input">
+          <span>Số tiền</span>
+          <span class="amount-control">
+            <input id="amount-input" name="amount" type="number" inputmode="numeric" min="1" step="1" placeholder="0" required>
+            <span id="amount-currency-label">VND</span>
+          </span>
+        </label>
+
+        <div class="field-row">
+          <div class="field">
+            <span id="account-label">Tài khoản</span>
+            <div class="dropdown" data-dropdown="transaction-account">
+              <input id="account-select" name="accountId" type="hidden">
+              <button class="dropdown-trigger" type="button" aria-labelledby="account-label" aria-haspopup="listbox" aria-expanded="false">
+                <span class="dropdown-value">Chọn tài khoản</span><span class="dropdown-arrow" aria-hidden="true"></span>
+              </button>
+              <div id="account-options" class="dropdown-options" role="listbox" aria-labelledby="account-label" hidden></div>
+            </div>
+          </div>
+          <div class="field">
+            <span id="category-label">Danh mục</span>
+            <div class="dropdown" data-dropdown="transaction-category">
+              <input id="category-select" name="categoryId" type="hidden">
+              <button class="dropdown-trigger" type="button" aria-labelledby="category-label" aria-haspopup="listbox" aria-expanded="false">
+                <span class="dropdown-value">Chọn danh mục</span><span class="dropdown-arrow" aria-hidden="true"></span>
+              </button>
+              <div id="category-options" class="dropdown-options" role="listbox" aria-labelledby="category-label" hidden></div>
+            </div>
+          </div>
+        </div>
+
+        <label class="field" for="date-input">
+          <span>Ngày giao dịch</span>
+          <input id="date-input" name="date" type="date" required>
+        </label>
+
+        <label class="field" for="note-input">
+          <span>Ghi chú <small>(không bắt buộc)</small></span>
+          <input id="note-input" name="note" type="text" maxlength="500" placeholder="Ví dụ: Ăn trưa">
+        </label>
+
+        <button id="save-button" class="primary-button save-button" type="submit">Lưu giao dịch</button>
+      </form>
+    </section>
+
+    <section id="recent-section" class="recent-section" hidden>
+      <div class="section-heading recent-heading">
+        <div>
+          <p class="eyebrow">Cập nhật gần đây</p>
+          <h2>5 giao dịch mới nhất</h2>
+        </div>
+        <button id="open-transactions" class="text-button" type="button">Mở website</button>
+      </div>
+      <div id="recent-list" class="recent-list"></div>
+      <p id="empty-transactions" class="empty-copy" hidden>Chưa có giao dịch nào. Hãy thêm giao dịch đầu tiên.</p>
+    </section>
+
+    <footer class="app-footer">
+      <span>Dữ liệu đồng bộ với tài khoản Ví Mình</span>
+      <button id="open-full-app-footer" class="footer-link" type="button">Mở website trên trình duyệt</button>
+    </footer>
+  </main>
+
+  <dialog id="goal-dialog" class="goal-dialog">
+    <form id="goal-dialog-form" novalidate>
+      <header class="dialog-header">
+        <div><p id="goal-dialog-eyebrow" class="eyebrow">Mục tiêu tiết kiệm</p><h2 id="goal-dialog-title">Tạo mục tiêu</h2></div>
+        <button id="close-goal-dialog" class="dialog-close" type="button" aria-label="Đóng">×</button>
+      </header>
+      <p id="goal-dialog-context" class="dialog-context"></p>
+
+      <section id="goal-editor-fields" class="dialog-fields" hidden>
+        <label class="field" for="goal-title-input"><span>Tên mục tiêu</span><input id="goal-title-input" name="goalTitle" type="text" maxlength="100" placeholder="Ví dụ: Du lịch Đà Lạt"></label>
+        <label class="field" for="goal-target-input"><span>Số tiền cần đạt (<span id="goal-target-currency-label">VND</span>)</span><input id="goal-target-input" name="targetAmount" type="number" inputmode="numeric" min="1" step="1" placeholder="0"></label>
+        <label class="field" for="goal-date-input"><span>Ngày mục tiêu <small>(không bắt buộc)</small></span><input id="goal-date-input" name="targetDate" type="date"></label>
+        <label class="field" for="goal-color-input"><span>Màu nhận diện</span><input id="goal-color-input" name="color" type="color" value="#2563eb"></label>
+      </section>
+
+      <section id="goal-movement-fields" class="dialog-fields" hidden>
+        <div class="field">
+          <span id="goal-account-label">Tài khoản</span>
+          <div class="dropdown" data-dropdown="goal-account">
+            <input id="goal-account-select" name="goalAccountId" type="hidden">
+            <button class="dropdown-trigger" type="button" aria-labelledby="goal-account-label" aria-haspopup="listbox" aria-expanded="false">
+              <span class="dropdown-value">Chọn tài khoản</span><span class="dropdown-arrow" aria-hidden="true"></span>
+            </button>
+            <div id="goal-account-options" class="dropdown-options" role="listbox" aria-labelledby="goal-account-label" hidden></div>
+          </div>
+        </div>
+        <label class="field" for="goal-movement-amount"><span>Số tiền (<span id="goal-movement-currency-label">VND</span>)</span><input id="goal-movement-amount" name="movementAmount" type="number" inputmode="numeric" min="1" step="1" placeholder="0"></label>
+        <label class="field" for="goal-movement-date"><span>Ngày giao dịch</span><input id="goal-movement-date" name="movementDate" type="date"></label>
+        <label class="field" for="goal-movement-note"><span>Ghi chú <small>(không bắt buộc)</small></span><input id="goal-movement-note" name="movementNote" type="text" maxlength="500"></label>
+      </section>
+
+      <p id="goal-archive-message" class="archive-message" hidden></p>
+      <div id="goal-dialog-error" class="dialog-error" role="alert" hidden></div>
+      <footer class="dialog-actions">
+        <button id="cancel-goal-dialog" class="secondary-button" type="button">Hủy</button>
+        <button id="save-goal-dialog" class="primary-button" type="submit">Lưu mục tiêu</button>
+      </footer>
+    </form>
+  </dialog>
+</body>
+</html>
