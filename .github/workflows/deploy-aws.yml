@@ -1,0 +1,116 @@
+name: Deploy API to AWS ECS Express
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'server/**'
+      - '.github/workflows/deploy-aws.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: vi-minh-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main' && vars.AWS_ECS_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Configure AWS credentials with GitHub OIDC
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Verify AWS account and deployment settings
+        env:
+          EXPECTED_ACCOUNT_ID: ${{ vars.AWS_ACCOUNT_ID }}
+          ECR_REPOSITORY: ${{ vars.AWS_ECR_REPOSITORY }}
+          ECS_SERVICE_NAME: ${{ vars.AWS_ECS_SERVICE_NAME }}
+          RUNTIME_SECRET_ARN: ${{ vars.AWS_RUNTIME_SECRET_ARN }}
+          DATABASE_HOST: ${{ vars.AWS_DATABASE_HOST }}
+          DATABASE_NAME: ${{ vars.AWS_DATABASE_NAME }}
+          DATABASE_USER: ${{ vars.AWS_DATABASE_USER }}
+          APP_BASE_URL: ${{ vars.APP_BASE_URL }}
+          ECS_SUBNET_IDS: ${{ vars.AWS_ECS_SUBNET_IDS }}
+          ECS_TASK_SECURITY_GROUP_ID: ${{ vars.AWS_ECS_TASK_SECURITY_GROUP_ID }}
+        run: |
+          set -euo pipefail
+          actual_account_id="$(aws sts get-caller-identity --query Account --output text)"
+          test -n "$EXPECTED_ACCOUNT_ID"
+          test "$actual_account_id" = "$EXPECTED_ACCOUNT_ID"
+          test -n "$ECR_REPOSITORY"
+          test -n "$ECS_SERVICE_NAME"
+          test -n "$RUNTIME_SECRET_ARN"
+          test -n "$DATABASE_HOST"
+          test -n "$DATABASE_NAME"
+          test -n "$DATABASE_USER"
+          test -n "$APP_BASE_URL"
+          test -n "$ECS_SUBNET_IDS"
+          test -n "$ECS_TASK_SECURITY_GROUP_ID"
+
+      - name: Log in to Amazon ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push API image
+        id: image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:${{ github.sha }}
+
+      - name: Deploy ECS Express service
+        uses: aws-actions/amazon-ecs-deploy-express-service@v1
+        with:
+          service-name: ${{ vars.AWS_ECS_SERVICE_NAME }}
+          image: ${{ steps.ecr.outputs.registry }}/${{ vars.AWS_ECR_REPOSITORY }}:${{ github.sha }}
+          execution-role-arn: ${{ vars.AWS_TASK_EXECUTION_ROLE_ARN }}
+          infrastructure-role-arn: ${{ vars.AWS_ECS_INFRASTRUCTURE_ROLE_ARN }}
+          cluster: ${{ vars.AWS_ECS_CLUSTER || 'default' }}
+          container-port: 3000
+          cpu: 256
+          memory: 512
+          health-check-path: /healthz
+          min-task-count: 1
+          max-task-count: 1
+          subnets: ${{ vars.AWS_ECS_SUBNET_IDS }}
+          security-groups: ${{ vars.AWS_ECS_TASK_SECURITY_GROUP_ID }}
+          environment-variables: >-
+            [
+              {"name":"NODE_ENV","value":"production"},
+              {"name":"PORT","value":"3000"},
+              {"name":"APP_BASE_URL","value":"${{ vars.APP_BASE_URL }}"},
+              {"name":"DATABASE_HOST","value":"${{ vars.AWS_DATABASE_HOST }}"},
+              {"name":"DATABASE_PORT","value":"5432"},
+              {"name":"DATABASE_NAME","value":"${{ vars.AWS_DATABASE_NAME }}"},
+              {"name":"DATABASE_USER","value":"${{ vars.AWS_DATABASE_USER }}"},
+              {"name":"DATABASE_SSL","value":"true"},
+              {"name":"SMTP_PORT","value":"587"},
+              {"name":"SMTP_SECURE","value":"false"},
+              {"name":"SMTP_FROM_NAME","value":"Ví Mình"}
+            ]
+          secrets: >-
+            [
+              {"name":"DATABASE_PASSWORD","valueFrom":"${{ vars.AWS_RUNTIME_SECRET_ARN }}:DATABASE_PASSWORD::"},
+              {"name":"EDGE_PROXY_SECRET","valueFrom":"${{ vars.AWS_RUNTIME_SECRET_ARN }}:EDGE_PROXY_SECRET::"},
+              {"name":"SMTP_HOST","valueFrom":"${{ vars.AWS_RUNTIME_SECRET_ARN }}:SMTP_HOST::"},
+              {"name":"SMTP_USER","valueFrom":"${{ vars.AWS_RUNTIME_SECRET_ARN }}:SMTP_USER::"},
+              {"name":"SMTP_PASSWORD","valueFrom":"${{ vars.AWS_RUNTIME_SECRET_ARN }}:SMTP_PASSWORD::"},
+              {"name":"SMTP_FROM_EMAIL","valueFrom":"${{ vars.AWS_RUNTIME_SECRET_ARN }}:SMTP_FROM_EMAIL::"},
+              {"name":"CURRENCYAPI_API_KEY","valueFrom":"${{ vars.AWS_RUNTIME_SECRET_ARN }}:CURRENCYAPI_API_KEY::"}
+            ]
