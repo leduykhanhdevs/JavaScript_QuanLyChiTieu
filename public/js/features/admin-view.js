@@ -83,6 +83,7 @@ export const adminUi = {
   savingRole: false,
   roleError: ''
 };
+let adminLocale = 'vi-VN';
 
 const viewPaths = new Map([
   ['/admin', 'admin-overview'],
@@ -235,18 +236,18 @@ export async function loadAdminView(view = adminUi.view) {
   return adminUi.error;
 }
 
-function number(value) { return new Intl.NumberFormat('vi-VN').format(Number(value || 0)); }
+function number(value) { return new Intl.NumberFormat(adminLocale).format(Number(value || 0)); }
 
 function dateLabel(value, options = { day: '2-digit', month: 'short', year: 'numeric' }) {
   if (!value) return '—';
   const date = new Date(/^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T12:00:00` : value);
   if (Number.isNaN(date.valueOf())) return '—';
-  return new Intl.DateTimeFormat('vi-VN', options).format(date);
+  return new Intl.DateTimeFormat(adminLocale, options).format(date);
 }
 
 function monthLabel(value) {
   const [year, month] = value.split('-').map(Number);
-  return new Intl.DateTimeFormat('vi-VN', { month: 'short', timeZone: 'UTC' }).format(new Date(Date.UTC(year, month - 1, 1)));
+  return new Intl.DateTimeFormat(adminLocale, { month: 'short', timeZone: 'UTC' }).format(new Date(Date.UTC(year, month - 1, 1)));
 }
 
 function statusLabel(status) {
@@ -354,7 +355,7 @@ function recentActivity(rows) {
 
 function serviceRow(label, status, description, iconName = 'database') {
   const available = status === 'available';
-  return `<div class="admin-service-row"><span class="admin-service-icon" aria-hidden="true">${icon(iconName, 16)}</span><div><strong>${label}</strong><small>${description}</small></div><span class="admin-service-status ${available ? 'is-ready' : 'is-unavailable'}"><i></i>${available ? 'Sẵn sàng' : 'Chưa sẵn sàng'}</span></div>`;
+  return `<div class="admin-service-row"><span class="admin-service-icon" aria-hidden="true">${icon(iconName, 16)}</span><div><strong>${label}</strong><small>${description}</small></div><span class="admin-service-status ${available ? 'is-ready' : 'is-unavailable'}">${available ? 'Sẵn sàng' : 'Chưa sẵn sàng'}</span></div>`;
 }
 
 function periodControl() {
@@ -510,9 +511,9 @@ function verificationPage() {
   const actions = `<button class="admin-button admin-button-danger" data-action="admin-purge-unverified" ${adminUi.purgingQueue ? 'disabled' : ''}>${icon('trash', 15)}<span>${adminUi.purgingQueue ? 'Đang dọn dẹp…' : 'Dọn tài khoản chờ > 7 ngày'}</span></button><button class="admin-button admin-button-secondary" data-action="admin-refresh">${icon('refresh', 16)}<span>Làm mới</span></button>`;
 
   const otpBadge = (state, attempts) => {
-    if (state === 'active') return `<span class="admin-status-badge is-active"><i></i>Còn hạn (${attempts}/5 lần thử)</span>`;
-    if (state === 'locked') return `<span class="admin-status-badge is-disabled"><i></i>Khóa OTP (5/5 lần sai)</span>`;
-    if (state === 'expired') return `<span class="admin-status-badge is-pending"><i></i>Đã hết hạn (${attempts}/5)</span>`;
+    if (state === 'active') return `<span class="admin-status-badge is-active">Còn hạn (${attempts}/5 lần thử)</span>`;
+    if (state === 'locked') return `<span class="admin-status-badge is-disabled">Khóa OTP (5/5 lần sai)</span>`;
+    if (state === 'expired') return `<span class="admin-status-badge is-pending">Đã hết hạn (${attempts}/5)</span>`;
     return `<span class="admin-status-badge">Chưa có mã</span>`;
   };
 
@@ -562,7 +563,7 @@ function securityPage() {
       rate_limited: ['Rate Limited (429)', 'is-disabled']
     };
     const [label, cls] = map[type] || [type, ''];
-    return `<span class="admin-status-badge ${cls}"><i></i>${label}</span>`;
+    return `<span class="admin-status-badge ${cls}">${label}</span>`;
   };
 
   return `${pageHeading('An ninh đăng nhập & Tần suất (B2)', 'Giám sát sự kiện xác thực và giới hạn tần suất 24h qua. Địa chỉ IP được băm ẩn danh một chiều theo ngày (HMAC Bucket).', `<button class="admin-button admin-button-secondary" data-action="admin-refresh">${icon('refresh', 16)}<span>Làm mới</span></button>`)}${errorPanel()}${adminUi.loading && !data ? loadingBlock() : data ? `
@@ -597,9 +598,9 @@ function supportPage() {
   const tickets = data?.tickets || [];
   const topicLabel = (t) => ({ bug: 'Báo lỗi kỹ thuật', account: 'Hỗ trợ tài khoản', feature: 'Góp ý tính năng', other: 'Khác' })[t] || t;
   const ticketBadge = (s) => ({
-    open: '<span class="admin-status-badge is-pending"><i></i>Mới tiếp nhận</span>',
-    in_progress: '<span class="admin-status-badge is-active"><i></i>Đang xử lý</span>',
-    resolved: '<span class="admin-status-badge"><i></i>Đã giải quyết</span>'
+    open: '<span class="admin-status-badge is-pending">Mới tiếp nhận</span>',
+    in_progress: '<span class="admin-status-badge is-active">Đang xử lý</span>',
+    resolved: '<span class="admin-status-badge">Đã giải quyết</span>'
   })[s] || s;
 
   return `${pageHeading('Hộp thư hỗ trợ & Phản hồi (B5)', 'Tiếp nhận và phản hồi yêu cầu hỗ trợ kỹ thuật của người dùng mà không truy cập dữ liệu tài chính cá nhân.', `<button class="admin-button admin-button-secondary" data-action="admin-refresh">${icon('refresh', 16)}<span>Làm mới</span></button>`)}${errorPanel()}${adminUi.loading && !data ? loadingBlock() : data ? `
@@ -687,7 +688,7 @@ function announcementsPage() {
           ${list.map((item) => `<div class="admin-announcement-item ${item.isActive ? 'is-active' : ''}">
             <div>
               <div class="admin-announcement-top">
-                <span class="admin-status-badge ${item.isActive ? 'is-active' : ''}"><i></i>${item.isActive ? 'Đang hiển thị' : 'Đã tắt'}</span>
+                <span class="admin-status-badge ${item.isActive ? 'is-active' : ''}">${item.isActive ? 'Đang hiển thị' : 'Đã tắt'}</span>
                 <span class="admin-role-badge">${item.severity === 'warn' ? 'CẢNH BÁO' : 'THÔNG TIN'}</span>
               </div>
               <strong>${escapeHtml(item.title)}</strong>
@@ -1054,7 +1055,7 @@ function adminAgentPage() {
         <header class="admin-agent-chat-header">
           <span class="admin-agent-avatar" aria-hidden="true">${icon('api', 19)}</span>
           <div><h2>Agent quản trị</h2><p>Phân tích nội bộ · Hội thoại chỉ giữ trong phiên</p></div>
-          <span class="admin-agent-data-badge"><i></i>Số liệu tổng hợp Admin</span>
+          <span class="admin-agent-data-badge">Số liệu tổng hợp Admin</span>
           <button type="button" class="admin-agent-clear" data-action="admin-agent-clear" aria-label="Xóa cuộc trò chuyện" title="Xóa cuộc trò chuyện">${icon('refresh', 16)}</button>
         </header>
         <div class="admin-agent-thread" id="admin-agent-thread" role="log" aria-live="polite" aria-relevant="additions text">
@@ -1140,7 +1141,7 @@ function userAction(user) {
 }
 
 function userStatus(user) {
-  return `<span class="admin-status-badge ${statusClass(user.status)}"><i></i>${statusLabel(user.status)}</span>`;
+  return `<span class="admin-status-badge ${statusClass(user.status)}">${statusLabel(user.status)}</span>`;
 }
 
 function desktopUserRows(users) {
@@ -1256,6 +1257,7 @@ function navLink(view, label, iconName, badge = 0) {
 
 export function renderAdminApp(appState) {
   adminUi.actorId = appState.user?.id || null;
+  adminLocale = appState.user?.language === 'zh' ? 'zh-CN' : appState.user?.language === 'en' ? 'en-US' : 'vi-VN';
   const titles = {
     'admin-overview': 'Tổng quan',
     'admin-analytics': 'Hoạt động & Phân tích',

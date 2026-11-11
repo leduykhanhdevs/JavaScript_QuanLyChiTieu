@@ -1,4 +1,5 @@
 import { createDropdown } from '/desktop/dropdown.js';
+import { applyTranslations, observeTranslations } from '/js/i18n.js';
 
 const elements = {
   status: document.querySelector('#status-panel'),
@@ -57,10 +58,10 @@ const goalAccountDropdown = createDropdown(document.querySelector('[data-dropdow
   emptyMessage: 'Chưa có tài khoản thu/chi hoạt động'
 });
 
-const vndMoney = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 });
-const usdMoney = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const dateFormatter = new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: 'short' });
-const fullDateFormatter = new Intl.DateTimeFormat('vi-VN', { day: 'numeric', month: 'short', year: 'numeric' });
+let vndMoney = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 });
+let usdMoney = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+let dateFormatter = new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: 'short' });
+let fullDateFormatter = new Intl.DateTimeFormat('vi-VN', { day: 'numeric', month: 'short', year: 'numeric' });
 let activeKind = 'expense';
 let bootstrapData = null;
 let activeSpendingAccounts = [];
@@ -70,6 +71,17 @@ let statusTimer = null;
 let selectedCurrency = 'VND';
 let usdVndRate = null;
 let usdRateUsable = false;
+let interfaceLanguage = 'vi';
+
+function configureLocale(language) {
+  interfaceLanguage = ['en', 'zh'].includes(language) ? language : 'vi';
+  const locale = interfaceLanguage === 'zh' ? 'zh-CN' : interfaceLanguage === 'en' ? 'en-US' : 'vi-VN';
+  document.documentElement.lang = locale;
+  vndMoney = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+  usdMoney = new Intl.NumberFormat(locale, { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  dateFormatter = new Intl.DateTimeFormat(locale, { day: '2-digit', month: 'short' });
+  fullDateFormatter = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' });
+}
 
 function localDateValue(date = new Date()) {
   const offset = date.getTimezoneOffset() * 60000;
@@ -164,6 +176,7 @@ function renderGoal(goal) {
   const titleBlock = document.createElement('div');
   const title = document.createElement('strong');
   title.className = 'goal-title';
+  title.setAttribute('data-no-translate', '');
   title.textContent = goal.title;
   const date = document.createElement('span');
   date.className = 'goal-date';
@@ -234,8 +247,10 @@ function renderRecent(transactions) {
     const copy = document.createElement('div');
     copy.className = 'transaction-copy';
     const title = document.createElement('strong');
+    title.setAttribute('data-no-translate', '');
     title.textContent = transaction.categoryName || (transaction.kind === 'income' ? 'Khoản thu' : 'Khoản chi');
     const details = document.createElement('span');
+    details.setAttribute('data-no-translate', '');
     details.textContent = [transaction.accountName, formatDate(transaction.date, dateFormatter), transaction.note].filter(Boolean).join(' · ');
     copy.append(title, details);
 
@@ -249,6 +264,7 @@ function renderRecent(transactions) {
 
 function render(data) {
   bootstrapData = data;
+  configureLocale(data.user?.language || 'vi');
   configureCurrency();
   const activeAccounts = (data.accounts || []).filter((account) => !account.isArchived);
   activeSpendingAccounts = activeAccounts.filter((account) => account.kind !== 'goal');
@@ -269,6 +285,7 @@ function render(data) {
     .map(({ id, name }) => ({ id, name })));
   renderGoals(goals);
   renderRecent(data.transactions || []);
+  applyTranslations(document, interfaceLanguage);
   elements.balanceDetails.hidden = false;
   elements.signedOut.hidden = true;
   elements.entry.hidden = false;
@@ -499,6 +516,18 @@ document.addEventListener('visibilitychange', () => {
 elements.date.value = localDateValue();
 window.desktop.onQuickKind(updateKind);
 window.desktop.onRefresh(() => loadData({ quiet: true }));
+window.addEventListener('storage', (event) => {
+  if (!bootstrapData?.user?.id || event.key !== `vi-minh:v1:user:${bootstrapData.user.id}:preferences`) return;
+  try {
+    const preferences = JSON.parse(event.newValue || '{}');
+    if (['vi', 'en', 'zh'].includes(preferences.language) && preferences.language !== interfaceLanguage) {
+      configureLocale(preferences.language);
+      if (bootstrapData) render(bootstrapData);
+    }
+  } catch { /* A damaged preference cache must not interrupt the mini app. */ }
+});
+observeTranslations(document.body, () => interfaceLanguage);
+applyTranslations(document, interfaceLanguage);
 const requestedKind = new URLSearchParams(window.location.search).get('kind');
 if (requestedKind) updateKind(requestedKind);
 loadData();

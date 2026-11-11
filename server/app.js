@@ -1,4 +1,5 @@
 import { createReadStream, existsSync } from 'node:fs';
+import { timingSafeEqual } from 'node:crypto';
 import { stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { extname, resolve, sep } from 'node:path';
@@ -30,6 +31,8 @@ const attempts = new Map();
 const RATE_LIMITS = new Map([
   ['/api/auth/login', [20, 15 * 60_000]], ['/api/auth/register', [8, 60 * 60_000]], ['/api/auth/forgot-password', [5, 15 * 60_000]],
   ['/api/auth/resend-verification', [5, 15 * 60_000]], ['/api/auth/verify-email-code', [10, 15 * 60_000]], ['/api/auth/reset-password', [10, 15 * 60_000]],
+  ['/api/settings/profile/email-change/authorization', [3, 15 * 60_000]], ['/api/settings/profile/email-change/authorization/confirm', [10, 15 * 60_000]],
+  ['/api/settings/profile/email-change/cancel', [5, 15 * 60_000]],
   ['/api/settings/profile/email-verification', [3, 15 * 60_000]], ['/api/settings/profile/email-verification/confirm', [10, 15 * 60_000]],
   ['/api/bank-hub/connections/start', [3, 15 * 60_000]], ['/api/bank-hub/attempt/status', [10, 60_000]],
   ['/api/support-tickets', [5, 15 * 60_000]]
@@ -71,6 +74,21 @@ function checkOrigin(req) {
   if (parsed.origin !== new URL(env.appBaseUrl).origin) throw new AppError(403, 'INVALID_ORIGIN', 'Yêu cầu phải được gửi từ website Ví Mình.');
 }
 
+function hasValidEdgeProxySecret(req) {
+  if (!env.edgeProxySecret) return !env.nodeEnv || env.nodeEnv !== 'production';
+  const receivedSecret = req.headers['x-edge-proxy-secret'];
+  if (typeof receivedSecret !== 'string') return false;
+  const expected = Buffer.from(env.edgeProxySecret);
+  const received = Buffer.from(receivedSecret);
+  return expected.length === received.length && timingSafeEqual(expected, received);
+}
+
+function requestClientIp(req) {
+  const forwardedIp = req.headers['x-edge-client-ip'];
+  if (env.edgeProxySecret && typeof forwardedIp === 'string' && forwardedIp.length <= 64) return forwardedIp;
+  return req.socket.remoteAddress || 'local';
+}
+
 async function sendStatic(pathname, res) {
   let decoded;
   try { decoded = decodeURIComponent(pathname); } catch { return false; }
@@ -104,8 +122,9 @@ async function handler(req, res) {
       if (await sendStatic(url.pathname, res)) return;
       return sendJson(res, 404, { error: { code: 'NOT_FOUND', message: 'Không tìm thấy trang.' } });
     }
+    if (!hasValidEdgeProxySecret(req)) throw new AppError(403, 'EDGE_PROXY_REQUIRED', 'Yêu cầu API phải đi qua Cloudflare.');
     checkOrigin(req);
-    checkRateLimit(url.pathname, req.socket.remoteAddress || 'local');
+    checkRateLimit(url.pathname, requestClientIp(req));
     const body = ['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method) ? await readJson(req) : {};
     let user = null;
     if (url.pathname === '/api/auth/me' || (url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/auth/'))) {

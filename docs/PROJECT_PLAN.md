@@ -3,7 +3,7 @@
 **Tên sản phẩm dự kiến:** Ví Mình  
 **Mục tiêu tài liệu:** chốt phạm vi, luồng nghiệp vụ, kiến trúc và tiêu chí nghiệm thu trước khi lập trình.  
 **Nguồn yêu cầu:** [`ASSIGNMENT_REQUIREMENTS.md`](ASSIGNMENT_REQUIREMENTS.md).  
-**Trạng thái:** người dùng đã duyệt layout Figma public, Admin và Agent export; source sản phẩm cốt lõi cùng trang Admin đã được triển khai. Xuất Excel/PDF hiện có trong Agent cá nhân và Agent Admin; API kiểm tra phiên/quyền ở server. Migration 005 bổ sung ảnh đại diện và OTP đổi email, 006 siết constraint hồ sơ, 007 thêm consent/attempt Hosted Link Bank Hub, 008 bổ sung OTP xác minh email đăng ký; migrations 001–008 đã áp dụng. Trang Điều khoản/Thông báo quyền riêng tư và ghi nhận chấp thuận đã được thêm; nội dung là bản dự thảo cho đồ án. Kết nối ngân hàng là phạm vi P2 trong [BANK_INTEGRATION_PLAN.md](BANK_INTEGRATION_PLAN.md); Settings có bộ chọn 10 ngân hàng cá nhân Bank Hub công bố, nhưng CTA kết nối vẫn khóa do chưa có onboarding/provider sandbox và dữ liệu giao dịch ngân hàng thật. Các kiểm tra UI/SMTP và demo quyền Admin thật vẫn còn mở.
+**Trạng thái:** người dùng đã duyệt layout Figma public, Admin và Agent export; với phần ngôn ngữ, Mini app và email hiện tại, đã duyệt mockup local do giới hạn lượt Figma. Source sản phẩm cốt lõi, trang Admin và Mini app đã được triển khai. Xuất Excel/PDF hiện có trong Agent cá nhân và Agent Admin; API kiểm tra phiên/quyền ở server. Migration 011 lưu ngôn ngữ giao diện `vi`/`en`/`zh` và dữ liệu cho quy trình đổi email hai bước; migrations 001–011 được quản lý theo version. Trang Điều khoản/Thông báo quyền riêng tư và ghi nhận chấp thuận đã được thêm; nội dung là bản dự thảo cho đồ án. Kết nối ngân hàng là phạm vi P2 trong [BANK_INTEGRATION_PLAN.md](BANK_INTEGRATION_PLAN.md); Settings có bộ chọn 10 ngân hàng cá nhân Bank Hub công bố, nhưng CTA kết nối vẫn khóa do chưa có onboarding/provider sandbox và dữ liệu giao dịch ngân hàng thật. Email SMTP end-to-end, demo quyền Admin thật và kiểm tra viewport vẫn còn mở.
 
 ## 1. Tầm nhìn và mục tiêu
 
@@ -157,7 +157,7 @@ Admin chỉ xem số liệu tổng hợp và metadata tài khoản cần thiết
 | Định kỳ | Danh sách quy tắc, bật/tắt, tạo/sửa | Không có quy tắc, sinh kỳ lỗi/trùng an toàn |
 | Mục tiêu | Danh sách, tiến độ, tạo/sửa, nạp/rút qua chuyển | Chưa có mục tiêu, đạt mục tiêu |
 | Báo cáo | Bộ lọc kỳ, biểu đồ, phân rã và tổng | Kỳ không dữ liệu, lỗi tải |
-| Cài đặt | Hồ sơ, ảnh đại diện, đổi email bằng OTP, đổi mật khẩu (nếu làm trong phạm vi), đăng xuất có xác nhận | Đang tải ảnh/mã, email chờ xác nhận/đã xác nhận, lỗi API, lưu thành công/lỗi |
+| Cài đặt | Hồ sơ, ảnh đại diện, đổi email qua OTP email hiện tại rồi OTP email mới, VND/USD, Tiếng Việt/Anh/Trung, đăng xuất có xác nhận | Đang tải ảnh/mã, chờ xác minh từng bước, mã đã xác nhận nhưng chưa lưu, lỗi API, lưu thành công/lỗi |
 | Thông tin/trợ giúp | Mô tả cách sử dụng, ý nghĩa thống kê và liên hệ | Link nội bộ hợp lệ |
 
 Desktop dùng thanh điều hướng bên; tablet/mobile thu gọn menu và ưu tiên thao tác một tay. Bảng giao dịch chuyển thành danh sách/card hoặc cuộn có kiểm soát trên màn nhỏ.
@@ -279,18 +279,19 @@ Tệp Agent được tạo phía server bằng ExcelJS/PDFKit; phần giao diệ
 
 | Mốc | Công việc | Bằng chứng để qua mốc |
 |---|---|---|
-| 0. Yêu cầu và thiết kế dữ liệu | Đọc đề, docs, self-review, schema và migration | Schema core có; migrations 001–008 đã áp dụng vào `quan_ly_chi_tieu_dev`; snapshot tài khoản/consent bên dưới là ảnh chụp ngày 16/10/2026 |
+| 0. Yêu cầu và thiết kế dữ liệu | Đọc đề, docs, self-review, schema và migration | Schema core có; migrations 001–011 đã áp dụng theo trạng thái DB local sau lần migrate gần nhất; snapshot tài khoản/consent cũ vẫn mang ngày ghi nhận riêng |
 | 1. Thiết kế Figma | Design system, dashboard, các trang nghiệp vụ/auth và responsive | Public và Admin đã được người dùng duyệt. Admin có overview desktop/tablet/mobile, users desktop/mobile và 6 trạng thái trên trang `08 · Admin`; SVG vector có thể chọn/sửa, chưa phải thư viện native Auto Layout/component |
 | 2. Dựng vỏ ứng dụng | Server khởi động, static UI, navigation, CSS responsive, toast/dialog | Source đã có; server static trả trang 200; renderer xác nhận 10 trang, 11 modal và 7 trạng thái auth. Đã xem login desktop; tablet/mobile chưa kiểm tra trực tiếp |
-| 3. Auth và tài khoản | Session, chấp thuận, đổi email OTP, avatar, logout xác nhận, CRUD account/category | Migrations 005–006 cho profile; API OTP/avatar, xác minh server-side, OTP tối đa 5 lần sai; email thật cần SMTP và demo |
+| 3. Auth và tài khoản | Session, chấp thuận, đổi email hai bước, avatar, logout xác nhận, CRUD account/category | Migration 011 tách OTP xác minh email hiện tại và OTP email mới; email chỉ đổi khi lưu hồ sơ; SMTP thật vẫn cần demo |
 | 4. Giao dịch và cache | Transaction CRUD, validation, search/filter/sort, LocalStorage | CRUD, validation server và ràng buộc số dư đã qua API checks; cache theo user đã triển khai. Chưa chạy kịch bản reload/cache trực tiếp trên trình duyệt |
 | 5. Nghiệp vụ mở rộng | Transfer, budget, recurring, goals | Transfer nguyên tử, ngân sách trùng, recurring idempotent, mục tiêu và số dư không âm đã qua API checks |
 | 6. Dashboard/báo cáo | Tổng hợp thực và biểu đồ SVG/canvas | API báo cáo, reducer thống kê và chart SVG đã có; kiểm tra đối chiếu UI với số liệu trên tài khoản demo còn chờ cấu hình môi trường chính |
-| 7. Hoàn thiện và demo | Rà soát link/button/form, responsive, console, README/demo | README và source đã cập nhật; cú pháp 27 module, renderer, audit dependency đều đạt. Còn cần cấu hình DB/SMTP và rà thủ công đủ luồng/viewport |
+| 7. Hoàn thiện và demo | Rà soát link/button/form, responsive, console, README/demo | Source có chọn locale, cập nhật icon Mini app và hoàn thiện profile email; kiểm tra cú pháp/health hiện tại được ghi trong `PLAN_REVIEW.md`. Email tới inbox và rà viewport vẫn cần demo |
 | 8. Admin và thống kê hệ thống | Migration role/audit, API RBAC/aggregate, user management và dashboard responsive | Migration, routes, service và UI đã triển khai; frame Figma đã duyệt. Còn cần bootstrap user Admin để demo 401/403, đối chiếu dữ liệu và thao tác khóa/audit |
 | 9. Kết nối ngân hàng P2 | Theo `BANK_INTEGRATION_PLAN.md` mục 11: quản lý consent/Hosted Link attempt ở Settings; khảo sát provider, sandbox, lịch sử/webhook và hợp đồng trước khi nhập dữ liệu/sync | Migration 007 có consent và attempt Hosted Link sandbox, nhưng chưa có onboarding, credentials, API provider, linked accounts/feed/sync hay dữ liệu thật. CTA vẫn khóa; P2 chưa được xác nhận là phạm vi chấm |
+| 10. Tùy chọn hiển thị và hồ sơ email | Tiếng Việt/Anh/Trung cho User, Admin, Mini app; dùng chung logo website; đổi email xác minh hai bước | Mockup local đã được duyệt; migration 011 và source triển khai, trạng thái kiểm tra được ghi trong `PLAN_REVIEW.md` |
 
-**Cổng hiện tại:** source cốt lõi, Admin, avatar, OTP đổi email, OTP xác minh đăng ký và xác nhận đăng xuất đã được triển khai. Migrations 005–006 chứa schema/constraint hồ sơ, migration 007 chứa Bank Hub, migration 008 lưu OTP đăng ký. DB có một user active nhưng chưa có Admin; cần xác nhận đúng tài khoản trước khi bootstrap quyền Admin. OTP thật phụ thuộc SMTP; cần demo OTP/avatar ở UI và xác nhận thư đến hộp thư khi chạy thật. Không đưa credential vào chat hoặc commit.
+**Cổng hiện tại:** source cốt lõi, Admin, Mini app, avatar, đổi email hai bước, OTP xác minh đăng ký, locale và xác nhận đăng xuất đã được triển khai. DB migration 011 hỗ trợ locale/grant OTP; trạng thái DB và kiểm tra cụ thể được ghi trong `PLAN_REVIEW.md`. DB có một user active nhưng chưa có Admin; cần xác nhận đúng tài khoản trước khi bootstrap quyền Admin. OTP thật phụ thuộc SMTP; cần demo OTP/avatar ở UI và xác nhận thư đến hộp thư khi chạy thật. Không đưa credential vào chat hoặc commit.
 
 ## 13. Kịch bản demo bảo vệ
 

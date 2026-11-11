@@ -1,6 +1,6 @@
 import { AppError, notFound } from '../lib/errors.js';
 import { objectBody, uuid } from '../lib/validation.js';
-import { confirmProfileEmailCode, createAccount, createBudget, createCategory, createGoal, createSupportTicket, createTransfer, deleteRecurringRule, deleteTransaction, getBootstrap, getProfileAvatar, getReportData, getTransactions, goalMovement, runDueRecurring, saveRecurringRule, saveTransaction, sendProfileEmailCode, updateAccount, updateBudget, updateCategory, updateCurrencyPreference, updateGoal, updateProfile } from '../services/finance-service.js';
+import { cancelProfileEmailChange, confirmEmailChangeAuthorizationCode, confirmProfileEmailCode, createAccount, createBudget, createCategory, createGoal, createSupportTicket, createTransfer, deleteRecurringRule, deleteTransaction, getBootstrap, getProfileAvatar, getReportData, getTransactions, goalMovement, runDueRecurring, saveRecurringRule, saveTransaction, sendEmailChangeAuthorizationCode, sendProfileEmailCode, updateAccount, updateBudget, updateCategory, updateCurrencyPreference, updateGoal, updateProfile, updateUiLanguage } from '../services/finance-service.js';
 import { sendBuffer } from '../lib/http.js';
 import { createUserExport } from '../services/export-service.js';
 import { convertMoneyFieldsToVnd, getFxRateSummary, requireUsableFxRate } from '../services/fx-rate-service.js';
@@ -88,9 +88,15 @@ export async function handleFinanceRoute(ctx) {
   if (req.method === 'PATCH' && pathname === '/api/settings/profile') return [200, { user: await updateProfile(db, user.id, body()) }];
   if (req.method === 'PATCH' && pathname === '/api/settings/preferences') {
     const preferences = body();
+    if (Object.hasOwn(preferences, 'language')) return [200, { user: await updateUiLanguage(db, user.id, preferences.language) }];
     if (String(preferences.currency || '').trim().toUpperCase() === 'USD') await requireUsableFxRate(db);
     return [200, { user: await updateCurrencyPreference(db, user.id, preferences.currency) }];
   }
+  if (req.method === 'POST' && pathname === '/api/settings/profile/email-change/authorization') return [200, await sendEmailChangeAuthorizationCode(db, user.id)];
+  if (req.method === 'POST' && pathname === '/api/settings/profile/email-change/authorization/confirm') {
+    return [200, await confirmEmailChangeAuthorizationCode(db, user.id, body().code)];
+  }
+  if (req.method === 'POST' && pathname === '/api/settings/profile/email-change/cancel') return [200, await cancelProfileEmailChange(db, user.id)];
   if (req.method === 'POST' && pathname === '/api/settings/profile/email-verification') return [200, await sendProfileEmailCode(db, user.id, body().email)];
   if (req.method === 'POST' && pathname === '/api/settings/profile/email-verification/confirm') {
     const data = body();

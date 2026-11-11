@@ -17,7 +17,7 @@ export function donutChart(items, label = 'Phân bổ chi tiêu') {
     offset += length;
     return circle;
   }).join('');
-  const legend = rows.slice(0, 6).map((item, index) => `<div class="legend-item"><span class="legend-dot" style="background:${chartColors[index % chartColors.length]}"></span><span>${escapeHtml(item.name)}</span><span class="legend-amount">${formatCompactMoney(item.amount)}</span></div>`).join('');
+  const legend = rows.slice(0, 6).map((item, index) => `<div class="legend-item"><span class="legend-dot" style="background:${chartColors[index % chartColors.length]}"></span><span data-no-translate>${escapeHtml(item.name)}</span><span class="legend-amount">${formatCompactMoney(item.amount)}</span></div>`).join('');
   return `<div class="donut-layout"><svg class="donut-chart" viewBox="0 0 160 160" role="img" aria-label="${escapeHtml(label)}"><circle cx="80" cy="80" r="54" fill="none" stroke="#e8edf4" stroke-width="17"/>${circles}<text x="80" y="77" text-anchor="middle" font-size="11" fill="#7b8799">Tổng chi</text><text x="80" y="95" text-anchor="middle" font-size="13" font-weight="700" fill="#172033">${escapeHtml(formatCompactMoney(total))}</text></svg><div class="legend-list">${legend}</div></div>`;
 }
 
@@ -32,7 +32,7 @@ export function trendChart(rows) {
     const barWidth = Math.min(19, groupWidth * .24);
     const incomeHeight = (row.income / maximum) * plotHeight;
     const expenseHeight = (row.expense / maximum) * plotHeight;
-    const label = new Intl.DateTimeFormat('vi-VN', { month: 'short' }).format(new Date(`${row.month}-01T00:00:00`));
+    const label = new Intl.DateTimeFormat(document.documentElement.lang || 'vi-VN', { month: 'short' }).format(new Date(`${row.month}-01T00:00:00`));
     return `<rect x="${x + groupWidth * .25}" y="${top + plotHeight - incomeHeight}" width="${barWidth}" height="${incomeHeight}" rx="4" fill="#3b82f6"><title>Thu ${escapeHtml(formatCompactMoney(row.income))}</title></rect><rect x="${x + groupWidth * .25 + barWidth + 5}" y="${top + plotHeight - expenseHeight}" width="${barWidth}" height="${expenseHeight}" rx="4" fill="#f07d68"><title>Chi ${escapeHtml(formatCompactMoney(row.expense))}</title></rect><text x="${x + groupWidth / 2}" y="${height - 9}" text-anchor="middle" font-size="11" fill="#7b8799">${escapeHtml(label)}</text>`;
   }).join('');
   const guides = [0, .5, 1].map((ratio) => {

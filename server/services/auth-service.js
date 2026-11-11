@@ -22,6 +22,7 @@ function userView(row) {
     fullName: row.fullName,
     role: row.role,
     currency: row.currency || 'VND',
+    language: row.language || 'vi',
     emailVerifiedAt: row.emailVerifiedAt,
     avatarUrl: row.hasAvatar && version ? `/api/settings/profile/avatar?v=${version}` : null,
     ...(row.status ? { status: row.status } : {})
@@ -269,7 +270,7 @@ export async function login(db, payload, clientIp = 'local') {
   const { normalized } = validateEmail(payload.email);
   if (typeof payload.password !== 'string' || !payload.password) throw new AppError(400, 'VALIDATION_ERROR', 'Hãy nhập mật khẩu.', { password: 'Trường này là bắt buộc.' });
   const user = (await db.query(
-    `SELECT id, email, full_name AS "fullName", password_hash, status, role, currency,
+    `SELECT id, email, full_name AS "fullName", password_hash, status, role, currency, ui_language AS language,
             email_verified_at AS "emailVerifiedAt", (avatar_data IS NOT NULL) AS "hasAvatar", avatar_updated_at AS "avatarUpdatedAt"
      FROM users WHERE email_normalized = $1`, [normalized]
   )).rows[0];
@@ -307,7 +308,7 @@ export async function login(db, payload, clientIp = 'local') {
 export async function authenticate(db, token) {
   if (!token || token.length < 32) throw unauthorized();
   const result = await db.query(
-    `SELECT u.id, u.email, u.full_name AS "fullName", u.status, u.role, u.currency,
+    `SELECT u.id, u.email, u.full_name AS "fullName", u.status, u.role, u.currency, u.ui_language AS language,
             u.email_verified_at AS "emailVerifiedAt", (u.avatar_data IS NOT NULL) AS "hasAvatar", u.avatar_updated_at AS "avatarUpdatedAt"
      FROM sessions s JOIN users u ON u.id = s.user_id
      WHERE s.token_hash = $1 AND s.revoked_at IS NULL AND s.expires_at > now() AND u.status = 'active'`,

@@ -1,14 +1,27 @@
 let displayCurrency = 'VND';
 let usdVndRate = null;
+let displayLocale = 'vi-VN';
+const currencyOptions = (currency) => ({
+  style: 'currency',
+  currency,
+  minimumFractionDigits: currency === 'USD' ? 2 : 0,
+  maximumFractionDigits: currency === 'USD' ? 2 : 0
+});
+let vndFormatter = new Intl.NumberFormat(displayLocale, currencyOptions('VND'));
+let usdFormatter = new Intl.NumberFormat(displayLocale, currencyOptions('USD'));
+let compactFormatter = new Intl.NumberFormat(displayLocale, { notation: 'compact', maximumFractionDigits: 1 });
 
-const vndFormatter = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 });
-const usdFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const compact = new Intl.NumberFormat('vi-VN', { notation: 'compact', maximumFractionDigits: 1 });
-
-export function setMoneyDisplay(currency = 'VND', rate = null) {
+export function setMoneyDisplay(currency = 'VND', rate = null, locale = document.documentElement.lang || 'vi') {
   displayCurrency = currency === 'USD' ? 'USD' : 'VND';
   const parsedRate = Number(rate);
   usdVndRate = Number.isFinite(parsedRate) && parsedRate > 0 ? parsedRate : null;
+  const nextLocale = locale === 'zh' || locale === 'zh-CN' ? 'zh-CN' : locale === 'en' || locale === 'en-US' ? 'en-US' : 'vi-VN';
+  if (nextLocale !== displayLocale) {
+    displayLocale = nextLocale;
+    vndFormatter = new Intl.NumberFormat(displayLocale, currencyOptions('VND'));
+    usdFormatter = new Intl.NumberFormat(displayLocale, currencyOptions('USD'));
+    compactFormatter = new Intl.NumberFormat(displayLocale, { notation: 'compact', maximumFractionDigits: 1 });
+  }
 }
 
 export function getMoneyCurrency() { return displayCurrency; }
@@ -29,7 +42,7 @@ export function formatMoneyInput(value = 0) {
 
 export const formatCompactMoney = (value = 0) => displayCurrency === 'USD'
   ? (usdVndRate ? usdFormatter.format((Number(value) || 0) / usdVndRate) : '— USD')
-  : `${compact.format(Number(value) || 0)} đ`;
+  : `${compactFormatter.format(Number(value) || 0)} ${displayLocale === 'vi-VN' ? 'đ' : '₫'}`;
 
 export const parseMoneyInput = (value, currency = displayCurrency) => {
   const source = String(value ?? '').trim();

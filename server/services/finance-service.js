@@ -3,7 +3,7 @@ import { AppError, conflict, notFound } from '../lib/errors.js';
 import { accountKind, categoryKind, colorValue, monthStart, nonNegativeAmount, optionalDate, optionalText, positiveAmount, requiredText, uuid, validDate, validateEmail } from '../lib/validation.js';
 import { env, hasSmtpConfig } from '../config/env.js';
 import { hashPassword, verifyPassword } from '../lib/security.js';
-import { sendEmailChangeCode } from '../lib/mail.js';
+import { sendEmailChangeAuthorizationEmail, sendEmailChangeCode } from '../lib/mail.js';
 
 const safeInteger = (value, label = 'Số tiền') => {
   const number = Number(value ?? 0);
@@ -20,6 +20,7 @@ function profileUser(row) {
     fullName: row.full_name,
     role: row.role,
     currency: row.currency || 'VND',
+    language: row.ui_language || 'vi',
     emailVerifiedAt: row.email_verified_at,
     avatarUrl: row.has_avatar && avatarVersion ? `/api/settings/profile/avatar?v=${avatarVersion}` : null
   };
@@ -457,28 +458,69 @@ export async function runDueRecurring(db, userId) {
 
 export async function updateProfile(db, userId, payload) {
   const fullName = requiredText(payload.fullName, 'Tên hiển thị', 120);
-  let result;
-  if (Object.hasOwn(payload, 'avatarDataUrl')) {
-    const avatar = avatarBytesFromDataUrl(payload.avatarDataUrl);
-    result = await db.query(
-      `UPDATE users
-       SET full_name = $1,
-           avatar_data = $2,
-           avatar_mime = CASE WHEN $2::bytea IS NULL THEN NULL ELSE 'image/jpeg' END,
-           avatar_updated_at = CASE WHEN $2::bytea IS NULL THEN NULL ELSE now() END
-       WHERE id = $3 AND status = 'active'
-       RETURNING id, email, full_name, role, currency, email_verified_at, (avatar_data IS NOT NULL) AS has_avatar, avatar_updated_at`,
-      [fullName, avatar, userId]
-    );
-  } else {
-    result = await db.query(
-      `UPDATE users SET full_name = $1 WHERE id = $2 AND status = 'active'
-       RETURNING id, email, full_name, role, currency, email_verified_at, (avatar_data IS NOT NULL) AS has_avatar, avatar_updated_at`,
-      [fullName, userId]
-    );
+  const avatar = Object.hasOwn(payload, 'avatarDataUrl') ? avatarBytesFromDataUrl(payload.avatarDataUrl) : undefined;
+  const requestedEmail = Object.hasOwn(payload, 'email') ? validateEmail(payload.email) : null;
+  try {
+    const updated = await inTransaction(db, async (client) => {
+      const current = (await client.query(
+        `SELECT id, email, email_normalized, email_verified_at
+         FROM users WHERE id = $1 AND status = 'active' FOR UPDATE`, [userId]
+      )).rows[0];
+      if (!current) throw notFound('Không tìm thấy tài khoản người dùng.');
+
+      let emailChange = null;
+      if (requestedEmail && requestedEmail.normalized !== current.email_normalized) {
+        if (!current.email_verified_at) {
+          throw new AppError(403, 'EMAIL_CHANGE_AUTH_REQUIRED', 'Hãy xác minh email hiện tại trước khi đổi địa chỉ email.', { newEmail: 'Xác minh email hiện tại trước.' });
+        }
+        const existing = await client.query('SELECT id FROM users WHERE email_normalized = $1 AND id <> $2', [requestedEmail.normalized, userId]);
+        if (existing.rowCount) throw conflict('EMAIL_IN_USE', 'Email này đã được sử dụng bởi một tài khoản khác.', { newEmail: 'Hãy nhập một địa chỉ email khác.' });
+        emailChange = (await client.query(
+          `SELECT c.id AS code_id, a.id AS authorization_id
+             FROM email_change_codes c
+             JOIN email_change_authorizations a ON a.id = c.authorization_id
+            WHERE c.user_id = $1 AND c.pending_email_normalized = $2
+              AND c.verified_at IS NOT NULL AND c.consumed_at IS NULL AND c.revoked_at IS NULL
+              AND a.current_email_normalized = $3 AND a.consumed_at IS NULL AND a.revoked_at IS NULL AND a.expires_at > now()
+            ORDER BY c.verified_at DESC LIMIT 1
+            FOR UPDATE OF c, a`, [userId, requestedEmail.normalized, current.email_normalized]
+        )).rows[0];
+        if (!emailChange) {
+          throw new AppError(403, 'EMAIL_CHANGE_VERIFICATION_REQUIRED', 'Hãy xác minh email mới trước khi lưu hồ sơ.', { newEmail: 'Xác minh email mới trước khi lưu.' });
+        }
+      }
+
+      const values = [fullName];
+      const assignments = ['full_name = $1'];
+      if (requestedEmail && requestedEmail.normalized !== current.email_normalized) {
+        values.push(requestedEmail.email, requestedEmail.normalized);
+        assignments.push(`email = $${values.length - 1}`, `email_normalized = $${values.length}`, 'email_verified_at = now()');
+      }
+      if (Object.hasOwn(payload, 'avatarDataUrl')) {
+        values.push(avatar);
+        assignments.push(`avatar_data = $${values.length}`, `avatar_mime = CASE WHEN $${values.length}::bytea IS NULL THEN NULL ELSE 'image/jpeg' END`, `avatar_updated_at = CASE WHEN $${values.length}::bytea IS NULL THEN NULL ELSE now() END`);
+      }
+      values.push(userId);
+      const result = await client.query(
+        `UPDATE users SET ${assignments.join(', ')}
+          WHERE id = $${values.length} AND status = 'active'
+          RETURNING id, email, full_name, role, currency, ui_language, email_verified_at,
+                    (avatar_data IS NOT NULL) AS has_avatar, avatar_updated_at`, values
+      );
+      if (!result.rowCount) throw notFound('Không tìm thấy tài khoản người dùng.');
+      if (emailChange) {
+        await client.query('UPDATE email_change_codes SET consumed_at = now() WHERE id = $1', [emailChange.code_id]);
+        await client.query('UPDATE email_change_codes SET revoked_at = now() WHERE user_id = $1 AND id <> $2 AND consumed_at IS NULL AND revoked_at IS NULL', [userId, emailChange.code_id]);
+        await client.query('UPDATE email_change_authorizations SET consumed_at = now() WHERE id = $1', [emailChange.authorization_id]);
+        await client.query('UPDATE email_change_authorizations SET revoked_at = now() WHERE user_id = $1 AND id <> $2 AND consumed_at IS NULL AND revoked_at IS NULL', [userId, emailChange.authorization_id]);
+      }
+      return profileUser(result.rows[0]);
+    });
+    return updated;
+  } catch (error) {
+    if (error.code === '23505') throw conflict('EMAIL_UNAVAILABLE', 'Email này đang được sử dụng hoặc có mã xác nhận đang chờ.');
+    throw error;
   }
-  if (!result.rowCount) throw notFound('Không tìm thấy tài khoản người dùng.');
-  return profileUser(result.rows[0]);
 }
 
 export async function updateCurrencyPreference(db, userId, currencyValue) {
@@ -489,9 +531,25 @@ export async function updateCurrencyPreference(db, userId, currencyValue) {
   const result = await db.query(
     `UPDATE users SET currency = $1
       WHERE id = $2 AND status = 'active'
-      RETURNING id, email, full_name, role, currency, email_verified_at,
+      RETURNING id, email, full_name, role, currency, ui_language, email_verified_at,
                 (avatar_data IS NOT NULL) AS has_avatar, avatar_updated_at`,
     [currency, userId]
+  );
+  if (!result.rowCount) throw notFound('Không tìm thấy tài khoản người dùng.');
+  return profileUser(result.rows[0]);
+}
+
+export async function updateUiLanguage(db, userId, languageValue) {
+  const language = typeof languageValue === 'string' ? languageValue.trim().toLowerCase() : '';
+  if (!['vi', 'en', 'zh'].includes(language)) {
+    throw new AppError(400, 'INVALID_LANGUAGE', 'Ngôn ngữ giao diện chỉ hỗ trợ Tiếng Việt, English hoặc 简体中文.', { language: 'Chọn Tiếng Việt, English hoặc 简体中文.' });
+  }
+  const result = await db.query(
+    `UPDATE users SET ui_language = $1
+      WHERE id = $2 AND status = 'active'
+      RETURNING id, email, full_name, role, currency, ui_language, email_verified_at,
+                (avatar_data IS NOT NULL) AS has_avatar, avatar_updated_at`,
+    [language, userId]
   );
   if (!result.rowCount) throw notFound('Không tìm thấy tài khoản người dùng.');
   return profileUser(result.rows[0]);
@@ -504,6 +562,87 @@ export async function getProfileAvatar(db, userId) {
   );
   if (!result.rowCount) throw notFound('Tài khoản chưa có ảnh đại diện.');
   return { data: result.rows[0].avatar_data, mime: result.rows[0].avatar_mime };
+}
+
+export async function sendEmailChangeAuthorizationCode(db, userId) {
+  if (!hasSmtpConfig) throw new AppError(503, 'SMTP_NOT_CONFIGURED', 'SMTP chưa được cấu hình để gửi mã xác nhận email.');
+  const code = String(randomInt(0, 1_000_000)).padStart(6, '0');
+  const codeHash = await hashPassword(code);
+  let issued;
+  try {
+    issued = await inTransaction(db, async (client) => {
+      const user = (await client.query(
+        `SELECT id, email, email_normalized, full_name, email_verified_at
+         FROM users WHERE id = $1 AND status = 'active' FOR UPDATE`, [userId]
+      )).rows[0];
+      if (!user) throw notFound('Không tìm thấy tài khoản người dùng.');
+      if (!user.email_verified_at) throw new AppError(403, 'CURRENT_EMAIL_UNVERIFIED', 'Email hiện tại chưa được xác minh.');
+
+      await client.query('UPDATE email_change_authorization_codes SET revoked_at = now() WHERE user_id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [userId]);
+      await client.query('UPDATE email_change_authorizations SET revoked_at = now() WHERE user_id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [userId]);
+      await client.query('UPDATE email_change_codes SET revoked_at = now() WHERE user_id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [userId]);
+      const result = await client.query(
+        `INSERT INTO email_change_authorization_codes (user_id, current_email_normalized, code_hash, expires_at)
+         VALUES ($1, $2, $3, now() + ($4 * interval '1 minute')) RETURNING id`,
+        [userId, user.email_normalized, codeHash, env.emailOtpTtlMinutes]
+      );
+      return { id: result.rows[0].id, email: user.email, emailNormalized: user.email_normalized, fullName: user.full_name };
+    });
+  } catch (error) {
+    if (error.code === '23505') throw conflict('EMAIL_CHANGE_IN_PROGRESS', 'Đã có yêu cầu đổi email đang chờ. Hãy thử lại sau ít phút.');
+    throw error;
+  }
+  try {
+    await sendEmailChangeAuthorizationEmail(issued.email, issued.fullName, code);
+  } catch {
+    await db.query('UPDATE email_change_authorization_codes SET revoked_at = now() WHERE id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [issued.id]);
+    throw new AppError(503, 'EMAIL_SEND_FAILED', 'Chưa gửi được mã xác nhận. Kiểm tra cấu hình SMTP rồi thử lại.');
+  }
+  return { message: `Mã xác nhận đổi email đã được gửi đến ${issued.email}. Mã có hiệu lực trong ${env.emailOtpTtlMinutes} phút.` };
+}
+
+export async function confirmEmailChangeAuthorizationCode(db, userId, codeValue) {
+  if (typeof codeValue !== 'string' || !/^\d{6}$/.test(codeValue)) {
+    throw new AppError(400, 'INVALID_EMAIL_CODE', 'Mã xác nhận cần gồm đúng 6 chữ số.', { authorizationCode: 'Nhập mã gồm đúng 6 chữ số.' });
+  }
+  const outcome = await inTransaction(db, async (client) => {
+    const user = (await client.query(
+      `SELECT email_normalized, email_verified_at FROM users WHERE id = $1 AND status = 'active' FOR UPDATE`, [userId]
+    )).rows[0];
+    if (!user?.email_verified_at) throw notFound('Không tìm thấy email hiện tại đã xác minh.');
+
+    const existingGrant = (await client.query(
+      `SELECT id FROM email_change_authorizations
+        WHERE user_id = $1 AND current_email_normalized = $2 AND consumed_at IS NULL AND revoked_at IS NULL AND expires_at > now()
+        FOR UPDATE`, [userId, user.email_normalized]
+    )).rows[0];
+    if (existingGrant) return { authorized: true };
+
+    const codeRecord = (await client.query(
+      `SELECT id, code_hash, attempts FROM email_change_authorization_codes
+        WHERE user_id = $1 AND current_email_normalized = $2 AND consumed_at IS NULL AND revoked_at IS NULL AND expires_at > now()
+        FOR UPDATE`, [userId, user.email_normalized]
+    )).rows[0];
+    if (!codeRecord || codeRecord.attempts >= 5) return { invalid: true };
+    if (!await verifyPassword(codeValue, codeRecord.code_hash)) {
+      const attempts = codeRecord.attempts + 1;
+      await client.query(
+        `UPDATE email_change_authorization_codes SET attempts = $2, revoked_at = CASE WHEN $2 >= 5 THEN now() ELSE revoked_at END
+          WHERE id = $1`, [codeRecord.id, attempts]
+      );
+      return { invalid: true };
+    }
+
+    await client.query('UPDATE email_change_authorization_codes SET consumed_at = now() WHERE id = $1', [codeRecord.id]);
+    await client.query('UPDATE email_change_authorizations SET revoked_at = now() WHERE user_id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [userId]);
+    await client.query(
+      `INSERT INTO email_change_authorizations (user_id, current_email_normalized, expires_at)
+       VALUES ($1, $2, now() + interval '15 minutes')`, [userId, user.email_normalized]
+    );
+    return { authorized: true };
+  });
+  if (outcome.invalid) throw new AppError(400, 'INVALID_EMAIL_CODE', 'Mã không đúng, đã hết hạn hoặc đã được sử dụng. Hãy gửi mã mới.', { authorizationCode: 'Kiểm tra mã hoặc yêu cầu gửi mã mới.' });
+  return { authorized: true, message: 'Email hiện tại đã được xác minh. Bạn có thể nhập địa chỉ email mới.' };
 }
 
 export async function sendProfileEmailCode(db, userId, emailValue) {
@@ -519,7 +658,15 @@ export async function sendProfileEmailCode(db, userId, emailValue) {
          FROM users WHERE id = $1 AND status = 'active' FOR UPDATE`, [userId]
       )).rows[0];
       if (!user) throw notFound('Không tìm thấy tài khoản người dùng.');
-      if (user.email_normalized === normalized && user.email_verified_at) return { alreadyVerified: true };
+      if (!user.email_verified_at) throw new AppError(403, 'CURRENT_EMAIL_UNVERIFIED', 'Email hiện tại chưa được xác minh.');
+      if (user.email_normalized === normalized) throw new AppError(400, 'SAME_EMAIL', 'Email mới cần khác email hiện tại.', { newEmail: 'Nhập email khác với email hiện tại.' });
+
+      const authorization = (await client.query(
+        `SELECT id FROM email_change_authorizations
+          WHERE user_id = $1 AND current_email_normalized = $2 AND consumed_at IS NULL AND revoked_at IS NULL AND expires_at > now()
+          FOR UPDATE`, [userId, user.email_normalized]
+      )).rows[0];
+      if (!authorization) throw new AppError(403, 'EMAIL_CHANGE_AUTH_REQUIRED', 'Hãy xác minh email hiện tại trước khi tiếp tục.', { newEmail: 'Xác minh email hiện tại trước.' });
 
       const existingEmail = await client.query('SELECT id FROM users WHERE email_normalized = $1 AND id <> $2', [normalized, userId]);
       if (existingEmail.rowCount) return { emailInUse: true };
@@ -527,26 +674,25 @@ export async function sendProfileEmailCode(db, userId, emailValue) {
       await client.query('UPDATE email_change_codes SET revoked_at = now() WHERE consumed_at IS NULL AND revoked_at IS NULL AND expires_at <= now()');
       const reserved = await client.query(
         `SELECT user_id FROM email_change_codes
-         WHERE pending_email_normalized = $1 AND consumed_at IS NULL AND revoked_at IS NULL AND expires_at > now()
-         FOR UPDATE`, [normalized]
+          WHERE pending_email_normalized = $1 AND consumed_at IS NULL AND revoked_at IS NULL AND expires_at > now()
+          FOR UPDATE`, [normalized]
       );
       if (reserved.rowCount && reserved.rows[0].user_id !== userId) return { emailInUse: true };
 
       await client.query('UPDATE email_change_codes SET revoked_at = now() WHERE user_id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [userId]);
       const result = await client.query(
-        `INSERT INTO email_change_codes (user_id, pending_email, pending_email_normalized, code_hash, expires_at)
-         VALUES ($1, $2, $3, $4, now() + ($5 * interval '1 minute')) RETURNING id`,
-        [userId, email, normalized, codeHash, env.emailOtpTtlMinutes]
+        `INSERT INTO email_change_codes (user_id, pending_email, pending_email_normalized, code_hash, expires_at, authorization_id)
+         VALUES ($1, $2, $3, $4, now() + ($5 * interval '1 minute'), $6) RETURNING id`,
+        [userId, email, normalized, codeHash, env.emailOtpTtlMinutes, authorization.id]
       );
-      return { id: result.rows[0].id, fullName: user.full_name };
+      return { id: result.rows[0].id, fullName: user.full_name, authorizationId: authorization.id };
     });
   } catch (error) {
     if (error.code === '23505') throw conflict('EMAIL_UNAVAILABLE', 'Email này đang được sử dụng hoặc có mã xác nhận đang chờ.');
     throw error;
   }
 
-  if (issued.alreadyVerified) return { alreadyVerified: true, message: 'Email này đã được xác nhận.' };
-  if (issued.emailInUse) throw conflict('EMAIL_IN_USE', 'Email này đã được sử dụng bởi một tài khoản khác.', { email: 'Hãy nhập một địa chỉ email khác.' });
+  if (issued.emailInUse) throw conflict('EMAIL_IN_USE', 'Email này đã được sử dụng bởi một tài khoản khác.', { newEmail: 'Hãy nhập một địa chỉ email khác.' });
   try {
     await sendEmailChangeCode(email, issued.fullName, code);
   } catch {
@@ -557,45 +703,55 @@ export async function sendProfileEmailCode(db, userId, emailValue) {
 }
 
 export async function confirmProfileEmailCode(db, userId, emailValue, codeValue) {
-  const { email, normalized } = validateEmail(emailValue);
+  const { normalized } = validateEmail(emailValue);
   if (typeof codeValue !== 'string' || !/^\d{6}$/.test(codeValue)) {
-    throw new AppError(400, 'INVALID_EMAIL_CODE', 'Mã xác nhận cần gồm đúng 6 chữ số.', { emailCode: 'Nhập mã gồm đúng 6 chữ số.' });
+    throw new AppError(400, 'INVALID_EMAIL_CODE', 'Mã xác nhận cần gồm đúng 6 chữ số.', { newEmailCode: 'Nhập mã gồm đúng 6 chữ số.' });
   }
   const outcome = await inTransaction(db, async (client) => {
+    const user = (await client.query(
+      `SELECT email_normalized FROM users WHERE id = $1 AND status = 'active' FOR UPDATE`, [userId]
+    )).rows[0];
+    if (!user) throw notFound('Không tìm thấy tài khoản người dùng.');
     const codeRecord = (await client.query(
-      `SELECT id, code_hash, attempts FROM email_change_codes
-       WHERE user_id = $1 AND pending_email_normalized = $2 AND consumed_at IS NULL AND revoked_at IS NULL AND expires_at > now()
-       FOR UPDATE`, [userId, normalized]
+      `SELECT c.id, c.code_hash, c.attempts, c.verified_at, c.pending_email
+         FROM email_change_codes c
+         JOIN email_change_authorizations a ON a.id = c.authorization_id
+        WHERE c.user_id = $1 AND c.pending_email_normalized = $2
+          AND c.consumed_at IS NULL AND c.revoked_at IS NULL AND c.expires_at > now()
+          AND a.current_email_normalized = $3 AND a.consumed_at IS NULL AND a.revoked_at IS NULL AND a.expires_at > now()
+        ORDER BY c.created_at DESC LIMIT 1
+        FOR UPDATE OF c, a`, [userId, normalized, user.email_normalized]
     )).rows[0];
     if (!codeRecord || codeRecord.attempts >= 5) return { invalid: true };
+    if (codeRecord.verified_at) return { verified: true, email: codeRecord.pending_email };
     if (!await verifyPassword(codeValue, codeRecord.code_hash)) {
       const attempts = codeRecord.attempts + 1;
       await client.query(
         `UPDATE email_change_codes SET attempts = $2, revoked_at = CASE WHEN $2 >= 5 THEN now() ELSE revoked_at END
-         WHERE id = $1`, [codeRecord.id, attempts]
+          WHERE id = $1`, [codeRecord.id, attempts]
       );
       return { invalid: true };
     }
-
     const existing = await client.query('SELECT id FROM users WHERE email_normalized = $1 AND id <> $2', [normalized, userId]);
     if (existing.rowCount) {
       await client.query('UPDATE email_change_codes SET revoked_at = now() WHERE id = $1', [codeRecord.id]);
       return { emailInUse: true };
     }
-    const updated = await client.query(
-      `UPDATE users SET email = $1, email_normalized = $2, email_verified_at = now()
-       WHERE id = $3 AND status = 'active'
-       RETURNING id, email, full_name, role, email_verified_at, (avatar_data IS NOT NULL) AS has_avatar, avatar_updated_at`,
-      [email, normalized, userId]
-    );
-    if (!updated.rowCount) throw notFound('Không tìm thấy tài khoản người dùng.');
-    await client.query('UPDATE email_change_codes SET consumed_at = now() WHERE id = $1', [codeRecord.id]);
-    await client.query('UPDATE email_change_codes SET revoked_at = now() WHERE user_id = $1 AND id <> $2 AND consumed_at IS NULL AND revoked_at IS NULL', [userId, codeRecord.id]);
-    return { user: profileUser(updated.rows[0]) };
+    await client.query('UPDATE email_change_codes SET verified_at = now() WHERE id = $1', [codeRecord.id]);
+    return { verified: true, email: codeRecord.pending_email };
   });
-  if (outcome.invalid) throw new AppError(400, 'INVALID_EMAIL_CODE', 'Mã không đúng, đã hết hạn hoặc đã được sử dụng. Hãy gửi mã mới.', { emailCode: 'Kiểm tra mã hoặc yêu cầu gửi mã mới.' });
-  if (outcome.emailInUse) throw conflict('EMAIL_IN_USE', 'Email này đã được sử dụng bởi một tài khoản khác.', { email: 'Hãy nhập một địa chỉ email khác.' });
-  return { user: outcome.user, message: 'Email đã được xác nhận thành công.' };
+  if (outcome.invalid) throw new AppError(400, 'INVALID_EMAIL_CODE', 'Mã không đúng, đã hết hạn hoặc đã được sử dụng. Hãy gửi mã mới.', { newEmailCode: 'Kiểm tra mã hoặc yêu cầu gửi mã mới.' });
+  if (outcome.emailInUse) throw conflict('EMAIL_IN_USE', 'Email này đã được sử dụng bởi một tài khoản khác.', { newEmail: 'Hãy nhập một địa chỉ email khác.' });
+  return { verified: true, email: outcome.email, message: 'Email mới đã được xác minh. Bấm Lưu hồ sơ để áp dụng thay đổi.' };
+}
+
+export async function cancelProfileEmailChange(db, userId) {
+  await inTransaction(db, async (client) => {
+    await client.query('UPDATE email_change_codes SET revoked_at = now() WHERE user_id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [userId]);
+    await client.query('UPDATE email_change_authorization_codes SET revoked_at = now() WHERE user_id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [userId]);
+    await client.query('UPDATE email_change_authorizations SET revoked_at = now() WHERE user_id = $1 AND consumed_at IS NULL AND revoked_at IS NULL', [userId]);
+  });
+  return { cancelled: true };
 }
 
 export async function getTransactions(db, userId, query) {

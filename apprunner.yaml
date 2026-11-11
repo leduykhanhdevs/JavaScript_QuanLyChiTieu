@@ -1,0 +1,14 @@
+version: 1.0
+runtime: nodejs22
+build:
+  commands:
+    build:
+      - npm ci --omit=dev
+run:
+  runtime-version: "22"
+  pre-run:
+    - npm run db:migrate
+  command: npm start
+  network:
+    port: 3000
+    env: PORT

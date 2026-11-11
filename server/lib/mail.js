@@ -68,6 +68,22 @@ export async function sendPasswordResetEmail(email, name, token) {
   });
 }
 
+export async function sendEmailChangeAuthorizationEmail(email, name, code) {
+  const expiry = Number(env.emailOtpTtlMinutes) || 10;
+  const greeting = `Chào ${String(name || 'bạn').trim()},`;
+  const safeCode = escapeHtml(code);
+  const text = `${greeting}\n\nBạn vừa yêu cầu đổi email tài khoản Ví Mình. Nhập mã xác nhận ${code} trong ứng dụng để cho phép bước đổi email. Mã có hiệu lực trong ${expiry} phút và chỉ dùng một lần. Email tài khoản chưa thay đổi ở bước này. Nếu không phải bạn, hãy bỏ qua thư và không chia sẻ mã với bất kỳ ai.`;
+  const html = `<!doctype html><html lang="vi"><meta charset="utf-8"><body style="margin:0;padding:28px 14px;background:#f2f6fc;color:#15233b;font-family:Arial,Helvetica,sans-serif"><table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center"><table role="presentation" width="560" cellspacing="0" cellpadding="0" style="max-width:560px;background:#fff;border:1px solid #e5ebf5;border-radius:16px"><tr><td style="padding:28px 32px"><strong style="font-size:20px">Ví Mình</strong><p style="margin:18px 0 8px;color:#26354d;font-weight:700">${escapeHtml(greeting)}</p><p style="margin:0;color:#53647e;line-height:1.6">Bạn vừa yêu cầu đổi email tài khoản. Nhập mã này để xác nhận bạn đang sở hữu email hiện tại. Email tài khoản chưa thay đổi ở bước này.</p><div style="margin:22px 0;padding:18px;text-align:center;background:#eff6ff;border-radius:12px;color:#1e3a8a;font-size:32px;font-weight:700;letter-spacing:9px">${safeCode}</div><p style="color:#53647e">Mã có hiệu lực trong <strong>${expiry} phút</strong> và chỉ sử dụng một lần.</p><p style="margin-bottom:0;color:#71829e;font-size:12px">Nếu không phải bạn, hãy bỏ qua thư. Không chia sẻ mã xác nhận với bất kỳ ai.</p></td></tr></table></td></tr></table></body></html>`;
+  return getTransporter().sendMail({
+    from: { name: env.smtp.fromName, address: env.smtp.fromEmail },
+    to: email,
+    subject: 'Xác nhận yêu cầu đổi email Ví Mình',
+    text,
+    html,
+    attachments: [{ filename: 'brand-mark.svg', path: brandMarkPath, cid: 'vi-minh-brand-mark', contentType: 'image/svg+xml', contentDisposition: 'inline' }]
+  });
+}
+
 export async function sendEmailChangeCode(email, name, code) {
   const expiry = Number(env.emailOtpTtlMinutes) || 10;
   const greeting = `Chào ${String(name || 'bạn').trim()},`;

@@ -14,6 +14,7 @@ import { applyBankHubAttempt, applyBankHubReadiness, getBankLinkRequest, refresh
 import { adminPathForView, adminUi, adminViewFromPath, changeAdminFilter, handleAdminAction, handleAdminAgentInput, loadAdminView, renderAdminApp, resetAdminUi, submitAdminAgent, submitAdminForm, submitAdminSearch } from './features/admin-view.js?v=20261111-agent-export-refresh-v2';
 import { handleAgentAction, handleAgentEscape, handleAgentInput, handleAgentSubmit, renderAgentWidget, resetAgentSession } from './features/ai-agent.js?v=20261111-agent-export-refresh-v2';
 import { recognizeReceipt, releaseReceiptWorker, validateReceiptImage } from './features/receipt-scanner.js?v=20261028-receipt-category-v1';
+import { applyTranslations, observeTranslations } from './i18n.js?v=20261111-language-support-v1';
 
 let authScreen = 'login';
 let authNotice = null;
@@ -113,14 +114,6 @@ function refreshProfileAvatarPreview() {
   }
 }
 
-function setProfileEmailFeedback(message, type = 'info') {
-  const feedback = $('#modal [data-profile-email-feedback]');
-  if (!feedback) return;
-  feedback.hidden = !message;
-  feedback.className = `notice notice-${type} profile-email-feedback`;
-  feedback.textContent = message;
-}
-
 async function avatarDataUrl(file) {
   if (!file) return undefined;
   if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
@@ -178,6 +171,7 @@ function render() {
   if (!state.user) {
     resetAgentSession();
     root.innerHTML = renderAuth(authScreen, authNotice, pendingEmail, resetToken, verificationExpiresAt);
+    applyTranslations(document, 'vi');
     enhanceCustomSelects(root);
     const authForm = $('#app form');
     if (authForm) showFieldErrors(authForm, authErrors);
@@ -185,12 +179,15 @@ function render() {
     else if (verificationTimer) { clearInterval(verificationTimer); verificationTimer = null; }
     return;
   }
-  setMoneyDisplay(state.user.currency || 'VND', state.fxRates?.usdVnd);
+  const language = state.user.language || 'vi';
+  document.documentElement.lang = language === 'zh' ? 'zh-CN' : language;
+  setMoneyDisplay(state.user.currency || 'VND', state.fxRates?.usdVnd, language);
   if ((state.view === 'settings' || state.user.currency === 'USD') && !state.fxRates && !state.fxRateLoading && !state.fxRateError) {
     void refreshFxRates({ quiet: true });
   }
   if (state.view.startsWith('admin-') && state.user.role === 'admin') {
     root.innerHTML = `${renderAdminApp(state)}${renderModal(state)}`;
+    applyTranslations(root, language);
     enhanceCustomSelects(root);
     const confirmDialog = $('#admin-confirm-dialog', root);
     if (confirmDialog && !confirmDialog.open) confirmDialog.showModal();
@@ -204,6 +201,7 @@ function render() {
     return;
   }
   root.innerHTML = `${renderApp(state)}${renderModal(state)}${renderAgentWidget(state)}`;
+  applyTranslations(root, language);
   enhanceCustomSelects(root);
   if (state.modal) {
     const modal = $('#modal', root);
@@ -235,7 +233,7 @@ async function syncSnapshot({ silent = false } = {}) {
   try {
     const snapshot = await get('/api/bootstrap');
     setSnapshot(snapshot);
-    setMoneyDisplay(state.user?.currency || 'VND', state.fxRates?.usdVnd);
+    setMoneyDisplay(state.user?.currency || 'VND', state.fxRates?.usdVnd, state.user?.language || 'vi');
     render();
     return true;
   } catch (error) {
@@ -260,7 +258,7 @@ async function refreshFxRates({ quiet = false, renderAfter = true } = {}) {
     if (!quiet) toast(error.message || 'Chưa tải được tỷ giá USD/VND.', 'error');
   } finally {
     state.fxRateLoading = false;
-    setMoneyDisplay(state.user?.currency || 'VND', state.fxRates?.usdVnd);
+    setMoneyDisplay(state.user?.currency || 'VND', state.fxRates?.usdVnd, state.user?.language || 'vi');
     if (renderAfter) render();
   }
   return state.fxRates;
@@ -292,12 +290,32 @@ async function changeCurrencyPreference(currency) {
     }
     state.user = result.user;
     savePreferences({ currency: result.user.currency });
-    setMoneyDisplay(result.user.currency, state.fxRates?.usdVnd);
+    setMoneyDisplay(result.user.currency, state.fxRates?.usdVnd, result.user.language || 'vi');
     render();
     toast(currency === 'USD' ? 'Đã đổi đơn vị hiển thị sang USD.' : 'Đã đổi đơn vị hiển thị sang VND.', 'success');
     await syncSnapshot({ silent: true });
   } catch (error) {
     toast(error.message || 'Chưa lưu được đơn vị tiền tệ.', 'error');
+  }
+}
+
+async function changeUiLanguage(select) {
+  const language = select.value;
+  const previousLanguage = state.user?.language || 'vi';
+  if (!['vi', 'en', 'zh'].includes(language) || language === previousLanguage) return;
+  select.disabled = true;
+  try {
+    const result = await patch('/api/settings/preferences', { language });
+    state.user = result.user;
+    savePreferences({ language: result.user.language || language });
+    render();
+    toast('Đã cập nhật ngôn ngữ giao diện.', 'success');
+    await syncSnapshot({ silent: true });
+  } catch (error) {
+    if (select.isConnected) select.value = previousLanguage;
+    toast(error.message || 'Chưa lưu được ngôn ngữ giao diện.', 'error');
+  } finally {
+    if (select.isConnected) select.disabled = false;
   }
 }
 
@@ -308,7 +326,7 @@ function updateFxConverter() {
   const amount = Number(input.value);
   if (!Number.isFinite(amount) || amount < 0) { output.textContent = '—'; return; }
   const converted = state.fxReverse ? amount * state.fxRates.vndUsd : amount * state.fxRates.usdVnd;
-  output.textContent = new Intl.NumberFormat(state.fxReverse ? 'en-US' : 'vi-VN', {
+  output.textContent = new Intl.NumberFormat(document.documentElement.lang || 'vi-VN', {
     maximumFractionDigits: state.fxReverse ? 2 : 0
   }).format(converted);
 }
@@ -567,7 +585,7 @@ function transactionListMarkup(rows) {
     const description = category ? 'Các khoản thu hoặc chi thuộc danh mục này sẽ xuất hiện tại đây.' : 'Hãy thay đổi bộ lọc hoặc ghi nhận giao dịch mới.';
     return `<div class="empty-state"><div><div class="empty-illustration" aria-hidden="true">${icon('search', 28)}</div><h3>${title}</h3><p>${description}</p><button class="button button-primary" data-action="new-transaction"><span class="button-icon" aria-hidden="true">${icon('plus', 17)}</span>Thêm giao dịch</button></div></div>`;
   }
-  const formatDate = (date) => new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(`${date}T00:00:00`));
+  const formatDate = (date) => new Intl.DateTimeFormat(document.documentElement.lang || 'vi-VN', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(`${date}T00:00:00`));
   return `<div class="transaction-table-wrap"><table class="transaction-table"><thead><tr><th>Khoản mục</th><th>Ngày</th><th>Loại</th><th style="text-align:right">Số tiền</th><th></th></tr></thead><tbody>${rows.map((item) => `<tr><td><div class="transaction-main"><span class="row-icon ${item.kind}">${icon(item.kind === 'income' ? 'income' : 'expense', 18)}</span><span><strong>${escapeHtml(item.note || item.categoryName)}</strong><small>${escapeHtml(item.categoryName)} · ${escapeHtml(item.accountName)}</small></span></div></td><td>${formatDate(item.date)}</td><td>${item.kind === 'income' ? 'Khoản thu' : 'Khoản chi'}</td><td class="amount-cell ${item.kind}">${item.kind === 'income' ? '+' : '−'}${formatMoney(item.amount)}</td><td><div class="table-actions"><button class="icon-button" aria-label="Xem chi tiết" data-action="transaction-detail" data-id="${item.id}">${icon('search', 16)}</button><button class="icon-button" aria-label="Chỉnh sửa" data-action="edit-transaction" data-id="${item.id}">${icon('pencil', 16)}</button><button class="icon-button" aria-label="Xóa" data-action="delete-transaction" data-id="${item.id}">${icon('trash', 16)}</button></div></td></tr>`).join('')}</tbody></table></div>`;
 }
 
@@ -750,6 +768,10 @@ async function handleAction(button) {
   if (action === 'goal-deposit' || action === 'goal-withdraw') { openModal('goal-movement', { goalId: id, direction: action === 'goal-deposit' ? 'deposit' : 'withdraw' }); return; }
   if (action === 'new-transfer') { openModal('transfer'); return; }
   if (action === 'edit-profile') { openModal('profile'); return; }
+  if (action === 'start-profile-email-change') { startProfileEmailChange(); return; }
+  if (action === 'send-email-change-authorization') { await sendEmailChangeAuthorization(button); return; }
+  if (action === 'confirm-email-change-authorization') { await confirmEmailChangeAuthorization(button); return; }
+  if (action === 'cancel-profile-email-change') { await cancelProfileEmailChange(button); return; }
   if (action === 'send-profile-email-code') { await sendProfileEmailCode(button); return; }
   if (action === 'confirm-profile-email-code') { await confirmProfileEmailCode(button); return; }
   if (action === 'remove-profile-avatar') {
@@ -817,26 +839,82 @@ async function signOut() {
   if (requestFailed) toast('Máy chủ chưa xác nhận đăng xuất.', 'error');
 }
 
+function profileDraftFrom(form) {
+  return {
+    ...state.modal.data,
+    fullName: form?.elements.fullName?.value ?? state.modal.data.fullName,
+    pendingEmail: form?.elements.newEmail?.value?.trim() ?? state.modal.data.pendingEmail ?? ''
+  };
+}
+
+function showProfileEmailFlow(focusName = '') {
+  render();
+  if (focusName) $('#modal [name="' + focusName + '"]')?.focus();
+}
+
+function startProfileEmailChange() {
+  const form = $('#modal form[data-form="profile"]');
+  if (!form || !state.modal) return;
+  state.modal.data = {
+    ...profileDraftFrom(form),
+    emailChangeStarted: true,
+    authorizationCodeSent: false,
+    emailChangeAuthorized: false,
+    pendingEmail: '',
+    newEmailCodeSent: false,
+    newEmailVerified: false
+  };
+  showProfileEmailFlow();
+}
+
+async function sendEmailChangeAuthorization(button) {
+  const form = $('#modal form[data-form="profile"]');
+  if (!form || !state.modal) return;
+  setButtonBusy(button, true, 'Đang gửi…');
+  try {
+    const result = await post('/api/settings/profile/email-change/authorization', {});
+    state.modal.data = { ...profileDraftFrom(form), emailChangeStarted: true, authorizationCodeSent: true, emailChangeAuthorized: false, newEmailCodeSent: false, newEmailVerified: false };
+    showProfileEmailFlow('authorizationCode');
+    toast(result.message || 'Mã xác nhận đã được gửi đến email hiện tại.', 'success');
+  } catch (error) {
+    if (error.fields) showFieldErrors(form, error.fields);
+    toast(error.message || 'Chưa gửi được mã xác nhận.', 'error');
+  } finally { setButtonBusy(button, false); }
+}
+
+async function confirmEmailChangeAuthorization(button) {
+  const form = $('#modal form[data-form="profile"]');
+  const code = form?.elements.authorizationCode?.value.trim();
+  if (!form || !state.modal) return;
+  setButtonBusy(button, true, 'Đang xác nhận…');
+  try {
+    const result = await post('/api/settings/profile/email-change/authorization/confirm', { code });
+    state.modal.data = { ...profileDraftFrom(form), emailChangeStarted: true, authorizationCodeSent: true, emailChangeAuthorized: true, pendingEmail: '', newEmailCodeSent: false, newEmailVerified: false };
+    showProfileEmailFlow('newEmail');
+    toast(result.message || 'Email hiện tại đã được xác minh.', 'success');
+  } catch (error) {
+    if (error.fields) showFieldErrors(form, error.fields);
+    toast(error.message || 'Mã xác nhận chưa đúng.', 'error');
+  } finally { setButtonBusy(button, false); }
+}
+
 async function sendProfileEmailCode(button) {
   const form = $('#modal form[data-form="profile"]');
-  if (!form) return;
-  const emailInput = form.elements.email;
-  const email = emailInput.value.trim();
+  if (!form || !state.modal) return;
+  const emailInput = form.elements.newEmail;
+  const email = emailInput?.value.trim() || '';
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    showFieldErrors(form, { email: 'Nhập địa chỉ email hợp lệ.' });
-    emailInput.focus();
+    showFieldErrors(form, { newEmail: 'Nhập địa chỉ email hợp lệ.' });
+    emailInput?.focus();
     return;
   }
   showFieldErrors(form, {});
   setButtonBusy(button, true, 'Đang gửi…');
   try {
     const result = await post('/api/settings/profile/email-verification', { email });
-    const alreadyVerified = result.alreadyVerified === true;
-    state.modal.data = { ...state.modal.data, email, emailVerified: alreadyVerified, emailOtpSent: !alreadyVerified, pendingEmail: alreadyVerified ? '' : email };
-    const codeField = $('#modal [data-profile-email-code-field]');
-    if (codeField) codeField.hidden = alreadyVerified;
-    setProfileEmailFeedback(result.message || (alreadyVerified ? 'Email đã được xác nhận.' : 'Mã đã được gửi. Kiểm tra hộp thư đến và thư rác.'), alreadyVerified ? 'success' : 'info');
-    toast(result.message || 'Mã xác nhận đã được gửi.', 'success');
+    state.modal.data = { ...profileDraftFrom(form), emailChangeStarted: true, emailChangeAuthorized: true, pendingEmail: email, newEmailCodeSent: true, newEmailVerified: false };
+    showProfileEmailFlow('newEmailCode');
+    toast(result.message || 'Mã xác nhận đã được gửi đến email mới.', 'success');
   } catch (error) {
     if (error.fields) showFieldErrors(form, error.fields);
     toast(error.message || 'Chưa gửi được mã xác nhận.', 'error');
@@ -845,26 +923,31 @@ async function sendProfileEmailCode(button) {
 
 async function confirmProfileEmailCode(button) {
   const form = $('#modal form[data-form="profile"]');
-  if (!form) return;
-  const email = form.elements.email.value.trim();
-  const code = form.elements.emailCode.value.trim();
+  if (!form || !state.modal) return;
+  const email = form.elements.newEmail?.value.trim() || '';
+  const code = form.elements.newEmailCode?.value.trim() || '';
   setButtonBusy(button, true, 'Đang xác nhận…');
   try {
     const result = await post('/api/settings/profile/email-verification/confirm', { email, code });
-    state.user = result.user;
-    state.modal.data = { ...state.modal.data, email: result.user.email, emailVerified: true, emailOtpSent: false, pendingEmail: '' };
-    form.elements.email.value = result.user.email;
-    form.elements.emailCode.value = '';
-    const codeField = $('#modal [data-profile-email-code-field]');
-    if (codeField) codeField.hidden = true;
-    showFieldErrors(form, {});
-    setProfileEmailFeedback(result.message || 'Email đã được xác nhận thành công.', 'success');
-    const emailOnPage = $('#settings-profile .settings-email-row > span:first-child');
-    if (emailOnPage) emailOnPage.textContent = result.user.email;
-    toast(result.message || 'Email đã được xác nhận thành công.', 'success');
+    state.modal.data = { ...profileDraftFrom(form), emailChangeStarted: true, emailChangeAuthorized: true, pendingEmail: result.email || email, newEmailCodeSent: true, newEmailVerified: true };
+    showProfileEmailFlow();
+    toast(result.message || 'Email mới đã được xác minh. Bấm Lưu hồ sơ để áp dụng.', 'success');
   } catch (error) {
     if (error.fields) showFieldErrors(form, error.fields);
     toast(error.message || 'Mã xác nhận chưa đúng.', 'error');
+  } finally { setButtonBusy(button, false); }
+}
+
+async function cancelProfileEmailChange(button) {
+  const form = $('#modal form[data-form="profile"]');
+  if (!form || !state.modal) return;
+  setButtonBusy(button, true, 'Đang hủy…');
+  try {
+    await post('/api/settings/profile/email-change/cancel', {});
+    state.modal.data = { ...profileDraftFrom(form), emailChangeStarted: false, authorizationCodeSent: false, emailChangeAuthorized: false, pendingEmail: '', newEmailCodeSent: false, newEmailVerified: false };
+    showProfileEmailFlow();
+  } catch (error) {
+    toast(error.message || 'Chưa hủy được yêu cầu đổi email.', 'error');
   } finally { setButtonBusy(button, false); }
 }
 
@@ -980,12 +1063,12 @@ async function submitModal(form) {
   else if (type === 'transfer') { path = '/api/transfers'; success = 'Đã chuyển tiền.'; }
   else if (type === 'goal-movement') { path = `/api/savings-goals/${form.dataset.goalId}/contributions`; payload.direction = form.dataset.direction; success = payload.direction === 'deposit' ? 'Đã nạp tiền vào mục tiêu.' : 'Đã rút tiền mục tiêu.'; }
   else if (type === 'profile') {
-    const email = String(values.email || '').trim().toLowerCase();
-    if (email !== String(state.user?.email || '').trim().toLowerCase()) {
-      showFieldErrors(form, { email: 'Hãy gửi mã và xác minh email mới trước khi lưu hồ sơ.' });
-      return;
-    }
     payload = { fullName: values.fullName };
+    const pendingEmail = String(state.modal?.data?.pendingEmail || '').trim();
+    if (state.modal?.data?.newEmailVerified && pendingEmail
+      && pendingEmail.toLowerCase() !== String(state.user?.email || '').trim().toLowerCase()) {
+      payload.email = pendingEmail;
+    }
     if (profileAvatarFile) {
       try { payload.avatarDataUrl = await avatarDataUrl(profileAvatarFile); }
       catch (error) { showFieldErrors(form, { avatar: error.message || 'Ảnh đại diện không hợp lệ.' }); return; }
@@ -1156,34 +1239,31 @@ document.addEventListener('input', (event) => {
   if (target.matches('[data-admin-agent-input]')) { handleAdminAgentInput(target); return; }
   if (target.matches('[data-agent-input]')) { handleAgentInput(target); return; }
   if (!(target instanceof HTMLInputElement || target instanceof HTMLSelectElement)) return;
-  if (target instanceof HTMLInputElement && target.name === 'emailCode') {
-    target.value = target.value.replace(/\D/g, '').slice(0, 6);
-    return;
-  }
   if (target instanceof HTMLInputElement && target.name === 'verificationCode') {
     target.value = target.value.replace(/\D/g, '').slice(0, 6);
     return;
   }
-  if (target instanceof HTMLInputElement && target.name === 'email' && target.form?.dataset.form === 'profile') {
+  if (target instanceof HTMLInputElement && ['authorizationCode', 'newEmailCode'].includes(target.name)) {
+    target.value = target.value.replace(/\D/g, '').slice(0, 6);
+    return;
+  }
+  if (target instanceof HTMLInputElement && target.name === 'newEmail' && target.form?.dataset.form === 'profile' && state.modal?.data) {
     const email = target.value.trim();
-    const isCurrentEmail = email.toLowerCase() === String(state.user?.email || '').toLowerCase();
-    state.modal.data = { ...state.modal.data, email: target.value, emailVerified: isCurrentEmail };
-    const codeField = $('#modal [data-profile-email-code-field]');
-    const codeInput = target.form.elements.emailCode;
-    if (isCurrentEmail) {
-      state.modal.data.emailOtpSent = false;
-      state.modal.data.pendingEmail = '';
-      if (codeField) codeField.hidden = true;
+    const changedAfterSend = state.modal.data.pendingEmail && email.toLowerCase() !== state.modal.data.pendingEmail.trim().toLowerCase();
+    if (changedAfterSend) {
+      state.modal.data = { ...state.modal.data, pendingEmail: email, newEmailCodeSent: false, newEmailVerified: false };
+      const codeField = $('#modal [data-new-email-code-field]');
+      const codeInput = target.form.elements.newEmailCode;
+      const feedback = $('#modal [data-email-code-feedback]');
+      const verified = $('#modal [data-email-verified-notice]');
+      const sendButton = $('#modal [data-action="send-profile-email-code"]');
+      if (codeField) codeField.remove();
       if (codeInput) codeInput.value = '';
-      setProfileEmailFeedback('Email đã được xác nhận.', 'success');
+      if (feedback) feedback.remove();
+      if (verified) verified.remove();
+      if (sendButton) sendButton.textContent = 'Gửi mã đến email mới';
     } else {
-      if (state.modal.data.pendingEmail && email.toLowerCase() !== state.modal.data.pendingEmail.trim().toLowerCase()) {
-        state.modal.data.emailOtpSent = false;
-        state.modal.data.pendingEmail = '';
-        if (codeField) codeField.hidden = true;
-        if (codeInput) codeInput.value = '';
-      }
-      setProfileEmailFeedback('Email mới cần được xác minh bằng mã 6 chữ số trước khi lưu.', 'info');
+      state.modal.data = { ...state.modal.data, pendingEmail: email };
     }
     return;
   }
@@ -1234,6 +1314,10 @@ document.addEventListener('input', (event) => {
 
 document.addEventListener('change', async (event) => {
   const target = event.target;
+  if (target instanceof HTMLSelectElement && target.id === 'preference-language') {
+    await changeUiLanguage(target);
+    return;
+  }
   if (target instanceof HTMLInputElement && target.id === 'receipt-image') {
     const file = target.files?.[0];
     if (!file) return;
@@ -1331,4 +1415,5 @@ document.addEventListener('popstate', async () => {
   render();
 });
 
+observeTranslations(document.body, () => state.user?.language || 'vi');
 start();

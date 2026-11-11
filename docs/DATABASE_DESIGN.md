@@ -1,6 +1,6 @@
 # Thiết kế cơ sở dữ liệu — PostgreSQL
 
-Phần mở rộng role, dashboard thống kê Admin và nhật ký quản trị được đặc tả riêng tại [ADMIN_DATABASE_DESIGN.md](ADMIN_DATABASE_DESIGN.md). Migration 004 ghi nhận chấp thuận Điều khoản/Thông báo quyền riêng tư. Migration 005 thêm ảnh đại diện và OTP đổi email; migration 006 siết constraint hồ sơ. Migration 007 thêm consent riêng và attempt Hosted Link sandbox cho SePay Bank Hub; migration 008 bổ sung OTP xác minh email đăng ký; migration 009 bổ sung bộ vận hành Admin; migration 010 cho phép tùy chọn hiển thị USD và lưu lịch sử tỷ giá USD/VND.
+Phần mở rộng role, dashboard thống kê Admin và nhật ký quản trị được đặc tả riêng tại [ADMIN_DATABASE_DESIGN.md](ADMIN_DATABASE_DESIGN.md). Migration 004 ghi nhận chấp thuận Điều khoản/Thông báo quyền riêng tư. Migration 005 thêm ảnh đại diện và OTP đổi email; migration 006 siết constraint hồ sơ. Migration 007 thêm consent riêng và attempt Hosted Link sandbox cho SePay Bank Hub; migration 008 bổ sung OTP xác minh email đăng ký; migration 009 bổ sung bộ vận hành Admin; migration 010 cho phép tùy chọn hiển thị USD và lưu lịch sử tỷ giá USD/VND; migration 011 lưu ngôn ngữ giao diện và dữ liệu cho quy trình đổi email hai bước.
 
 Mô hình giao dịch nhập và phân loại P2 đầy đủ được đề xuất trong mục 3 bên dưới và [BANK_INTEGRATION_PLAN.md](BANK_INTEGRATION_PLAN.md). Mốc đang triển khai chọn SePay Bank Hub sandbox cho bước mở Hosted Link và xác nhận liên kết; chưa có import/sync giao dịch. Settings có catalog tĩnh 10 ngân hàng Bank Hub được công bố; backend chỉ nhận mã trong allowlist và từ chối ngân hàng không có tài khoản mẫu sandbox.
 
@@ -121,6 +121,7 @@ erDiagram
 | `avatar_updated_at` | Thời điểm cập nhật ảnh; dùng tạo URL cache-busting, ảnh không lưu vào LocalStorage |
 | `status` | `pending_email`, `active`, `disabled`; active bắt buộc đã verify |
 | `currency` | Tùy chọn hiển thị `VND` hoặc `USD`; mặc định `VND`; thay đổi bởi migration 010 |
+| `ui_language` | Ngôn ngữ giao diện `vi`, `en` hoặc `zh`; mặc định `vi`; thay đổi bởi migration 011 và API tùy chọn tài khoản |
 | `timezone` | Mặc định `Asia/Ho_Chi_Minh` |
 
 ### `fx_rate_history` (migration 010)
@@ -154,8 +155,15 @@ erDiagram
 
 - Mỗi hàng gắn một `user_id`, email đích đã nhập và chuẩn hóa, hash scrypt có salt của mã 6 chữ số, thời hạn, số lần thử, thời điểm dùng hoặc thu hồi.
 - Mã gốc chỉ được gửi qua SMTP, không trả về API, LocalStorage hay log. Mã hết hạn sau 10 phút mặc định (`EMAIL_OTP_TTL_MINUTES`, cấu hình hợp lệ 1–30 phút), chỉ dùng một lần và bị vô hiệu sau tối đa 5 lần nhập sai.
-- Partial unique indexes giới hạn một mã đang hiệu lực theo user và email đích. Khi xác minh đúng, server kiểm tra lại email chưa được dùng rồi cập nhật email, chuẩn hóa và `email_verified_at` trong cùng transaction.
+- Mã xác minh địa chỉ mới tham chiếu `authorization_id`; xác minh OTP chỉ đánh dấu mã mới đã được xác nhận, chưa thay email tài khoản. `updateProfile` chỉ thay địa chỉ sau khi người dùng bấm lưu và server kiểm tra lại mã, grant, email chưa được dùng trong cùng transaction.
 - Nếu gửi email thất bại, mã bị thu hồi; gửi mã mới thu hồi mã đang chờ trước đó. Các endpoint yêu cầu session và có giới hạn tốc độ ở API.
+
+### `email_change_authorization_codes` và `email_change_authorizations` (migration 011)
+
+- Bước đầu gửi OTP 6 số đã băm tới email hiện tại đã xác minh. Bảng mã lưu email hiện tại chuẩn hóa, hash scrypt, hạn dùng, số lần thử, thời điểm dùng/thu hồi; chỉ có một mã đang hiệu lực cho mỗi user.
+- OTP đúng được dùng một lần để tạo grant 15 phút trong `email_change_authorizations`, ràng buộc với email hiện tại. Grant chỉ cho phép gửi và xác nhận OTP ở email mới; grant không tự cập nhật email người dùng.
+- Khi lưu hồ sơ, transaction khóa user, kiểm tra email đích chưa được dùng, grant còn hiệu lực và mã email mới đã xác minh; sau đó đổi email, đánh dấu xác minh và tiêu thụ grant/mã nguyên tử. Hủy luồng hoặc gửi OTP hiện tại mới sẽ thu hồi yêu cầu đang chờ.
+- OTP/grant thô không trả về API, LocalStorage hay log. Các bảng có FK theo user và constraint expiry/attempt/terminal-state; endpoint có rate limit riêng.
 
 ### `user_consents`
 
@@ -333,7 +341,12 @@ balance(A,T) = opening_balance(A)
 - `server/db/migrations/002_updated_at_triggers.sql`: trigger chuẩn hóa `updated_at` (cập nhật bởi DB) và hỗ trợ việc thêm constraint trigger nếu cần về sau.
 - `server/db/migrations/003_admin_role_audit.sql`: role Admin và audit log; đã áp dụng theo trạng thái dự án.
 - `server/db/migrations/004_legal_consents.sql`: bảng chấp thuận Điều khoản/Thông báo quyền riêng tư.
+- `server/db/migrations/005_profile_avatar_email_otp.sql` và `006_profile_constraint_hardening.sql`: ảnh đại diện, đổi email có OTP và constraint hồ sơ.
 - `server/db/migrations/007_bank_hub_link_flow.sql`: chấp thuận kết nối ngân hàng riêng và attempt SePay Hosted Link sandbox; chưa thêm linked accounts/feed/sync, không sửa migrations 001–006.
+- `server/db/migrations/008_registration_email_otp.sql`: OTP đăng ký.
+- `server/db/migrations/009_admin_operations_suite.sql`: công cụ vận hành Admin.
+- `server/db/migrations/010_currency_and_fx_history.sql`: tùy chọn VND/USD và lịch sử tỷ giá.
+- `server/db/migrations/011_ui_language_and_two_step_email_change.sql`: ngôn ngữ `users.ui_language` và bước xác minh email hiện tại/grant đổi email.
 - Các bảng P2 còn lại (bank connections, linked accounts, sync runs, feed giao dịch, phân loại) vẫn là thiết kế mục tiêu; chỉ tạo migration mới sau khi chốt API sync, consent thu thập giao dịch, retention và luồng mapping tài khoản.
 - Mỗi migration chạy trong transaction; không sửa migration đã áp dụng ở môi trường có dữ liệu, tạo migration version mới.
 - `server/db/seed.sql`: seed categories mặc định cho một UUID user đã tồn tại, gọi bằng psql với biến `user_id`; không tạo tài khoản/password giả định và không seed dữ liệu tài chính cá nhân.

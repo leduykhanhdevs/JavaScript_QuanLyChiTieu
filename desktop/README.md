@@ -11,6 +11,7 @@
 ## Phạm vi
 
 - Cửa sổ khay Windows để ghi nhanh khoản thu/chi, xem tổng tài sản gồm số dư ví mục tiêu, mục tiêu tiết kiệm và năm giao dịch mới nhất.
+- Dùng cùng biểu tượng chuẩn `public/assets/brand-mark.svg` với favicon website; ngôn ngữ theo tùy chọn tài khoản Tiếng Việt, English hoặc 简体中文.
 - Tạo/sửa/lưu trữ mục tiêu và nạp/rút mục tiêu qua các API `/api/savings-goals` hiện có.
 - Dropdown tài khoản/danh mục được dựng bằng JavaScript thuần để có cùng cách hiển thị, hỗ trợ bàn phím và trạng thái rỗng.
 - Dữ liệu đọc từ `/api/auth/me` và `/api/bootstrap`; giao dịch mới gửi qua `POST /api/transactions`.

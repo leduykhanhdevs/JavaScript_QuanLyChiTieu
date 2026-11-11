@@ -23,6 +23,7 @@ export function createDropdown(root, { placeholder = 'Chọn một mục', empty
     if (!selected) return;
     input.value = selected.id;
     label.textContent = selected.name;
+    label.setAttribute('data-no-translate', '');
     root.dataset.selectedLabel = selected.name;
     for (const option of listbox.querySelectorAll('[role="option"]')) {
       option.setAttribute('aria-selected', String(option.dataset.value === selected.id));
@@ -37,6 +38,7 @@ export function createDropdown(root, { placeholder = 'Chọn một mục', empty
     items = [...nextItems];
     input.value = '';
     label.textContent = placeholder;
+    label.removeAttribute('data-no-translate');
     root.classList.remove('has-value');
     listbox.replaceChildren();
 
@@ -58,6 +60,7 @@ export function createDropdown(root, { placeholder = 'Chọn một mục', empty
       option.setAttribute('role', 'option');
       option.setAttribute('aria-selected', 'false');
       option.dataset.value = item.id;
+      option.setAttribute('data-no-translate', '');
       option.textContent = item.name;
       option.addEventListener('click', () => choose(item.id));
       listbox.append(option);
@@ -143,6 +146,7 @@ export function createDropdown(root, { placeholder = 'Chọn một mục', empty
     clear() {
       input.value = '';
       label.textContent = placeholder;
+      label.removeAttribute('data-no-translate');
       root.classList.remove('has-value');
       for (const option of listbox.querySelectorAll('[role="option"]')) option.setAttribute('aria-selected', 'false');
     },

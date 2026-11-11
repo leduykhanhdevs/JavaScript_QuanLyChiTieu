@@ -26,7 +26,7 @@ export const state = {
 
 export function hydrateUser(user) {
   state.user = user;
-  state.preferences = { ...readPreferences(user.id), currency: user.currency || 'VND' };
+  state.preferences = { ...readPreferences(user.id), currency: user.currency || 'VND', language: user.language || 'vi' };
   state.fxRates = null;
   state.fxRateError = null;
   state.fxRateLoading = false;
@@ -41,7 +41,7 @@ export function setSnapshot(snapshot) {
   const { user: nextUser, ...collections } = snapshot;
   if (nextUser) {
     state.user = nextUser;
-    if (nextUser.currency) savePreferences({ currency: nextUser.currency });
+    savePreferences({ ...(nextUser.currency ? { currency: nextUser.currency } : {}), ...(nextUser.language ? { language: nextUser.language } : {}) });
   }
   state.snapshot = { ...state.snapshot, ...collections };
   state.offline = false;

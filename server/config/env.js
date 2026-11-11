@@ -16,6 +16,7 @@ export const env = Object.freeze({
   sessionCookieName: process.env.SESSION_COOKIE_NAME || 'qlct_session',
   sessionTtlHours: Number(process.env.SESSION_TTL_HOURS || 168),
   appBaseUrl: process.env.APP_BASE_URL || 'http://localhost:3000',
+  edgeProxySecret: process.env.EDGE_PROXY_SECRET || '',
   emailTokenTtlMinutes: Number(process.env.EMAIL_TOKEN_TTL_MINUTES || 30),
   emailOtpTtlMinutes: Number(process.env.EMAIL_OTP_TTL_MINUTES || 10),
   passwordResetTtlMinutes: Number(process.env.PASSWORD_RESET_TTL_MINUTES || 30),
@@ -53,4 +54,10 @@ export function validateRuntimeConfig() {
   if (!Number.isInteger(env.port) || env.port < 1 || env.port > 65535) throw new Error('PORT không hợp lệ.');
   if (!Number.isInteger(env.sessionTtlHours) || env.sessionTtlHours < 1) throw new Error('SESSION_TTL_HOURS không hợp lệ.');
   if (!Number.isInteger(env.emailOtpTtlMinutes) || env.emailOtpTtlMinutes < 1 || env.emailOtpTtlMinutes > 30) throw new Error('EMAIL_OTP_TTL_MINUTES cần là số nguyên từ 1 đến 30.');
+  if (isProduction) {
+    let appUrl;
+    try { appUrl = new URL(env.appBaseUrl); } catch { throw new Error('APP_BASE_URL không hợp lệ.'); }
+    if (appUrl.protocol !== 'https:') throw new Error('APP_BASE_URL phải dùng HTTPS khi chạy production.');
+    if (!env.edgeProxySecret) throw new Error('EDGE_PROXY_SECRET là bắt buộc khi API được phục vụ sau Cloudflare.');
+  }
 }
