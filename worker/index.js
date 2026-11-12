@@ -7,6 +7,7 @@ globalThis.__VI_MINH_REPORT_FONTS = {
   bold: reportAssets.boldFont
 };
 globalThis.__VI_MINH_BRAND_MARK = reportAssets.brandMark;
+globalThis.__VI_MINH_WORKER_RUNTIME = true;
 
 let runtimePromise;
 

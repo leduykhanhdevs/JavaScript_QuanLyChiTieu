@@ -5,6 +5,7 @@
 - Cloudflare Pages phục vụ frontend thuần trong `public/`.
 - Pages Function tại `functions/api/[[path]].js` chuyển tiếp `/api/*` tới API Worker qua HTTPS, thêm secret dùng chung và IP client do Cloudflare cung cấp.
 - API Worker dùng `cloudflare:node` để chuyển request vào Node.js HTTP server hiện có. Local Node và Worker gọi chung router/nghiệp vụ trong `server/app.js`.
+- Node local gửi email bằng Nodemailer. Cloudflare Worker gửi SMTP qua `cloudflare:sockets`, hỗ trợ implicit TLS hoặc STARTTLS; cấu hình hiện tại dùng cổng 587 với STARTTLS.
 - `new_module_registry` được bật cùng `nodejs_compat` vì PDFKit dùng `import.meta.url`; Cloudflare cho phép bật cờ này trước ngày mặc định 2026-11-17. Khi cập nhật compatibility date hoặc Wrangler, cần chạy lại dry-run và smoke check.
 - `pg` kết nối PostgreSQL Neon qua binding Hyperdrive `HYPERDRIVE`. Hyperdrive quản lý pool kết nối ở phía Cloudflare.
 - Migration chạy từ Node.js trực tiếp tới Neon, không chạy qua Hyperdrive: script đang giữ khóa migration bằng session-level advisory lock, tính năng Hyperdrive không hỗ trợ.
@@ -75,7 +76,7 @@
 
 - Cloudflare Workers Free hiện áp dụng giới hạn 100.000 request/ngày và 10 ms CPU/request. Băm mật khẩu bằng scrypt và kết xuất ExcelJS/PDFKit là các luồng có thể vượt 10 ms; không giảm tham số băm hoặc cắt báo cáo để né giới hạn. Cần smoke test trên Cloudflare thật; nếu các luồng này vượt ngưỡng, Worker cần gói CPU cao hơn để dùng ổn định.
 - Bộ giới hạn đăng nhập hiện tại là `Map` trong bộ nhớ của từng isolate; đây không phải bộ đếm dùng chung giữa các isolate. Cần bổ sung rate-limit binding hoặc kho dùng chung trước khi mở rộng ra lượng truy cập công khai.
-- SMTP đi ra qua TCP/TLS ở port 587; port 25 bị Cloudflare chặn. Cần xác minh gửi/nhận email thật trên Worker sau khi đặt SMTP secrets.
+- SMTP đi ra qua TCP/TLS ở port 587; Cloudflare chặn cổng 25. Worker đã gửi thử OTP thật và relay SMTP chấp nhận thư; việc thư đến inbox và người dùng hoàn tất xác minh vẫn cần kiểm tra ở tài khoản nhận.
 - Theo thông tin Neon công bố ngày 2026-10-02, gói Free có tối đa 100 project, mỗi project 100 CU-hour/tháng và 1 GB lưu trữ; quota có thể đổi, cần xem [thông tin gói Free của Neon](https://neon.com/blog/neon-free-plan-1-gb-per-project) trước khi triển khai.
 - Theo [giới hạn Workers hiện hành](https://developers.cloudflare.com/workers/platform/limits/), Free có 100.000 request/ngày và 10 ms CPU mỗi request. Scrypt và xuất Excel/PDF có thể vượt ngưỡng; cần runtime smoke test trên Cloudflare thật.
 - `wrangler deploy --dry-run` chỉ kiểm tra bundle, không thay thế việc deploy và xác minh health check, database, OTP, phiên đăng nhập và xuất báo cáo.
@@ -86,8 +87,8 @@
 - Cloudflare Hyperdrive `vi-minh-neon` (`61a6778821414a298e51f0e1428eaffe`) trỏ tới Neon, giới hạn 5 kết nối gốc và tắt query cache để tránh đọc số dư cũ.
 - API Worker `vi-minh-api` đã deploy tại `https://vi-minh-api.khanhdevs19.workers.dev`. `/healthz` trả HTTP 200 và database `connected`.
 - Pages project `vi-minh-leduykhanh` đã deploy tại `https://vi-minh-leduykhanh.pages.dev` (deployment hiện tại: `https://b869f08b.vi-minh-leduykhanh.pages.dev`). Trang `/` trả HTTP 200. `/api/auth/me` qua Pages trả 401 khi chưa đăng nhập; gọi trực tiếp Worker trả 403 do thiếu shared proxy secret, xác nhận proxy gate đang hoạt động.
-- Worker secrets gồm `EDGE_PROXY_SECRET` được sinh ngẫu nhiên và các trường SMTP lấy từ `.env` local; Pages có secret `EDGE_PROXY_SECRET` và `WORKER_API_ORIGIN`. Wrangler liệt kê tên secret nhưng không đọc lại giá trị. `.env` không bị sửa và không có secret nào được ghi vào Git. Chưa gửi email kiểm chứng.
+- Worker secrets gồm `EDGE_PROXY_SECRET` được sinh ngẫu nhiên và các trường SMTP lấy từ `.env` local; Pages có secret `EDGE_PROXY_SECRET` và `WORKER_API_ORIGIN`. Wrangler liệt kê tên secret nhưng không đọc lại giá trị. `.env` không bị sửa và không có secret nào được ghi vào Git. Worker resend OTP trả HTTP 200; SMTP relay chấp nhận thư. Chưa xác nhận inbox nhận thư hoặc xác minh tài khoản.
 - Pages được deploy bằng Direct Upload, chưa gắn Git provider; workflow GitHub Actions vẫn khóa bằng `CLOUDFLARE_WORKER_DEPLOY_ENABLED` và chưa được bật. Chưa cấu hình domain riêng.
-- `npm run worker:dry-run` đạt với Hyperdrive ID thật (bundle 3,800.89 KiB; gzip 883.63 KiB). Chưa smoke test đăng ký/OTP, SMTP thực, xuất Excel/PDF hoặc Cron trên Worker.
+- `npm run worker:dry-run` đạt với Hyperdrive ID thật (bundle 3,810.80 KiB; gzip 886.36 KiB). Worker SMTP đã deploy và resend OTP qua Pages nhận HTTP 200; SMTP relay chấp nhận thư. Chưa xác nhận inbox nhận thư, trạng thái xác minh tài khoản, xuất Excel/PDF hoặc Cron trên Worker.
 
 Cloudflare Free hiện giới hạn Workers ở 100.000 request/ngày và 10 ms CPU cho mỗi request/Cron; Hyperdrive có giới hạn 100.000 câu lệnh database/ngày. Các bước xác thực dùng scrypt và xuất Excel/PDF có thể vượt CPU quota, nên chỉ các endpoint health/proxy đã được xác nhận trong lần deploy này. Xem [giới hạn Workers](https://developers.cloudflare.com/workers/platform/limits/) và [giá/giới hạn Hyperdrive](https://developers.cloudflare.com/hyperdrive/platform/pricing/).
