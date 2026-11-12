@@ -92,3 +92,11 @@
 - `npm run worker:dry-run` đạt với Hyperdrive ID thật (bundle 3,810.80 KiB; gzip 886.36 KiB). Worker SMTP đã deploy và resend OTP qua Pages nhận HTTP 200; xác minh OTP cùng trạng thái Admin đã được đọc lại từ Neon. Chưa kiểm tra xuất Excel/PDF hoặc Cron trên Worker.
 
 Cloudflare Free hiện giới hạn Workers ở 100.000 request/ngày và 10 ms CPU cho mỗi request/Cron; Hyperdrive có giới hạn 100.000 câu lệnh database/ngày. OTP đã chạy end-to-end một lần; các luồng scrypt khác, xuất Excel/PDF và Cron vẫn cần kiểm tra riêng vì có thể vượt CPU quota. Xem [giới hạn Workers](https://developers.cloudflare.com/workers/platform/limits/) và [giá/giới hạn Hyperdrive](https://developers.cloudflare.com/hyperdrive/platform/pricing/).
+
+## Cập nhật quản lý tài khoản (2026-11-12)
+
+- Worker vi-minh-api deploy phiên bản 7949325f-df71-42d7-9a17-f945051f3efc; secret ACCOUNT_DETAILS_ENCRYPTION_KEY đã được cấu hình. Giá trị khóa nằm trong .env bị ignore và không được commit.
+- Pages vi-minh-leduykhanh đã Direct Upload bản giao diện tại https://87eee43a.vi-minh-leduykhanh.pages.dev; URL chính vẫn là https://vi-minh-leduykhanh.pages.dev.
+- Neon migrations 013–016 đã được đọc lại. /healthz trả 200 và database=connected; Pages trả 200, còn /api/auth/me trả 401 khi chưa đăng nhập.
+
+- 2026-11-12 UI refinement: Pages Direct Upload 41f8ef3f.vi-minh-leduykhanh.pages.dev; homepage returned HTTP 200 and serves account-safety-v2 assets.

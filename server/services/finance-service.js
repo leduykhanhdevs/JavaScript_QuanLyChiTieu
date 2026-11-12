@@ -1,4 +1,4 @@
-import { randomInt } from 'node:crypto';
+import { createCipheriv, randomBytes, randomInt } from 'node:crypto';
 import { AppError, conflict, notFound } from '../lib/errors.js';
 import { accountKind, categoryKind, colorValue, monthStart, nonNegativeAmount, optionalDate, optionalText, positiveAmount, requiredText, uuid, validDate, validateEmail } from '../lib/validation.js';
 import { env, hasSmtpConfig } from '../config/env.js';
@@ -92,19 +92,25 @@ async function assertNoNegativeBalances(client, userId, accountIds) {
   if (!ids.length) return;
   const accounts = await lockAccounts(client, userId, ids, { active: false });
   const events = await client.query(
-    `SELECT account_id, transaction_date AS event_date, id::text AS event_id,
-            CASE WHEN kind = 'income' THEN amount ELSE -amount END AS delta
-       FROM transactions WHERE user_id = $1 AND account_id = ANY($2::uuid[])
-     UNION ALL
-     SELECT target_account_id AS account_id, transfer_date AS event_date, id::text AS event_id, amount AS delta
-       FROM transfers WHERE user_id = $1 AND target_account_id = ANY($2::uuid[])
-     UNION ALL
-     SELECT source_account_id AS account_id, transfer_date AS event_date, id::text AS event_id, -amount AS delta
-       FROM transfers WHERE user_id = $1 AND source_account_id = ANY($2::uuid[])
-     ORDER BY account_id, event_date, event_id`, [userId, ids]
+    `SELECT account_id, event_date, SUM(delta)::text AS delta
+       FROM (
+         SELECT account_id, transaction_date AS event_date,
+                CASE WHEN kind = 'income' THEN amount ELSE -amount END AS delta
+           FROM transactions WHERE user_id = $1 AND account_id = ANY($2::uuid[])
+         UNION ALL
+         SELECT target_account_id AS account_id, transfer_date AS event_date, amount AS delta
+           FROM transfers WHERE user_id = $1 AND target_account_id = ANY($2::uuid[])
+         UNION ALL
+         SELECT source_account_id AS account_id, transfer_date AS event_date, -amount AS delta
+           FROM transfers WHERE user_id = $1 AND source_account_id = ANY($2::uuid[])
+       ) AS ledger_events
+      GROUP BY account_id, event_date
+      ORDER BY account_id, event_date`, [userId, ids]
   );
   const opening = new Map(accounts.map((row) => [row.id, safeInteger(row.opening_balance, 'Số dư ban đầu')]));
   for (const event of events.rows) {
+    // Giao dịch chỉ có ngày, không có giờ: cộng gộp trong ngày để UUID không quyết định
+    // giả tạo khoản thu hay chi nào diễn ra trước.
     const balance = opening.get(event.account_id) + safeInteger(event.delta);
     if (balance < 0) throw conflict('INSUFFICIENT_BALANCE', 'Thao tác này làm số dư một tài khoản bị âm. Hãy kiểm tra giao dịch hoặc chọn tài khoản khác.');
     opening.set(event.account_id, balance);
@@ -113,7 +119,13 @@ async function assertNoNegativeBalances(client, userId, accountIds) {
 
 async function accountBalances(db, userId) {
   const [accountsResult, transactionResult, transferResult] = await Promise.all([
-    db.query('SELECT id, user_id, name, kind, opening_balance, icon_key, color, is_archived, created_at FROM accounts WHERE user_id = $1 ORDER BY is_archived, created_at, name', [userId]),
+    db.query(`SELECT a.id, a.user_id, a.name, a.kind, a.opening_balance, a.icon_key, a.color,
+                     a.is_default, a.is_archived, a.institution_name, a.account_number_last4, a.created_at,
+                     (EXISTS (SELECT 1 FROM transactions t WHERE t.user_id = a.user_id AND t.account_id = a.id)
+                       OR EXISTS (SELECT 1 FROM transfers tr WHERE tr.user_id = a.user_id AND (tr.source_account_id = a.id OR tr.target_account_id = a.id))
+                       OR EXISTS (SELECT 1 FROM recurring_rules rr WHERE rr.user_id = a.user_id AND rr.account_id = a.id)
+                       OR EXISTS (SELECT 1 FROM savings_goals sg WHERE sg.user_id = a.user_id AND sg.account_id = a.id)) AS has_history
+                FROM accounts a WHERE a.user_id = $1 ORDER BY a.is_archived, a.created_at, a.name`, [userId]),
     db.query(`SELECT account_id, SUM(CASE WHEN kind = 'income' THEN amount ELSE -amount END)::text AS net
               FROM transactions WHERE user_id = $1 AND transaction_date <= $2 GROUP BY account_id`, [userId, today()]),
     db.query(`SELECT account_id, SUM(delta)::text AS net FROM (
@@ -128,7 +140,10 @@ async function accountBalances(db, userId) {
     id: row.id, userId: row.user_id, name: row.name, kind: row.kind,
     openingBalance: safeInteger(row.opening_balance),
     balance: safeInteger(row.opening_balance) + (transactionNet.get(row.id) || 0) + (transferNet.get(row.id) || 0),
-    iconKey: row.icon_key, color: row.color, isArchived: row.is_archived, createdAt: row.created_at
+    iconKey: row.icon_key, color: row.color, isDefault: row.is_default,
+    isArchived: row.is_archived, institutionName: row.institution_name || '',
+    accountNumberLast4: row.account_number_last4 || null, hasHistory: row.has_history,
+    canDelete: !row.is_default && !row.has_history, createdAt: row.created_at
   }));
 }
 
@@ -186,32 +201,107 @@ export async function getBootstrap(db, user) {
   return { user, ...(await userData(db, user.id)), syncedAt: new Date().toISOString() };
 }
 
+function accountDetailsKey() {
+  const value = env.accountDetailsEncryptionKey;
+  if (!/^[a-f0-9]{64}$/i.test(value)) {
+    throw new AppError(503, 'ACCOUNT_NUMBER_ENCRYPTION_UNAVAILABLE', 'Chức năng lưu số tài khoản chưa được cấu hình bảo mật.');
+  }
+  return Buffer.from(value, 'hex');
+}
+
+function encryptAccountNumber(value) {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const normalized = value.replace(/[\s-]/g, '');
+  if (!/^\d{6,34}$/.test(normalized)) {
+    throw new AppError(400, 'VALIDATION_ERROR', 'Số tài khoản cần có từ 6 đến 34 chữ số.');
+  }
+  const iv = randomBytes(12);
+  const cipher = createCipheriv('aes-256-gcm', accountDetailsKey(), iv);
+  const encrypted = Buffer.concat([cipher.update(normalized, 'utf8'), cipher.final()]);
+  return {
+    ciphertext: Buffer.concat([iv, cipher.getAuthTag(), encrypted]),
+    last4: normalized.slice(-4),
+    keyVersion: 1
+  };
+}
+
 export async function createAccount(db, userId, payload) {
   const name = requiredText(payload.name, 'Tên tài khoản', 80);
   const kind = accountKind(payload.kind);
   const opening = nonNegativeAmount(payload.openingBalance);
   const color = colorValue(payload.color);
-  const result = await db.query('INSERT INTO accounts (user_id, name, kind, opening_balance, icon_key, color) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id', [userId, name, kind, opening, optionalText(payload.iconKey, 40), color]);
-  return { id: result.rows[0].id };
+  const institutionName = ['bank', 'e_wallet'].includes(kind) ? requiredText(payload.institutionName, kind === 'bank' ? 'Tên ngân hàng' : 'Tên ví điện tử', 80) : null;
+  const accountNumber = ['bank', 'e_wallet'].includes(kind) ? encryptAccountNumber(payload.accountNumber) : null;
+  const result = await db.query(`INSERT INTO accounts
+    (user_id, name, kind, opening_balance, icon_key, color, institution_name,
+     account_number_ciphertext, account_number_last4, account_number_key_version)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
+  [userId, name, kind, opening, optionalText(payload.iconKey, 40), color, institutionName,
+    accountNumber?.ciphertext || null, accountNumber?.last4 || null, accountNumber?.keyVersion || null]);
+  return { id: result.rows[0].id, institutionName: institutionName || '', accountNumberLast4: accountNumber?.last4 || null, isDefault: false, hasHistory: false, canDelete: true };
 }
 
 export async function updateAccount(db, userId, idValue, payload, archive = false) {
   const id = uuid(idValue, 'Tài khoản');
   return inTransaction(db, async (client) => {
-    const account = (await client.query('SELECT id, kind FROM accounts WHERE id = $1 AND user_id = $2 FOR UPDATE', [id, userId])).rows[0];
+    const account = (await client.query('SELECT id, kind, is_default, institution_name, account_number_last4 FROM accounts WHERE id = $1 AND user_id = $2 FOR UPDATE', [id, userId])).rows[0];
     if (!account) throw notFound('Không tìm thấy tài khoản.');
     if (account.kind === 'goal') throw new AppError(409, 'GOAL_ACCOUNT_MANAGED', 'Ví mục tiêu được quản lý từ màn hình Mục tiêu.');
     if (archive) {
+      if (account.is_default) throw conflict('DEFAULT_ACCOUNT_PROTECTED', 'Ví Tiền mặt mặc định không thể lưu trữ.');
       const goal = await client.query("SELECT 1 FROM savings_goals WHERE user_id = $1 AND account_id = $2 AND status <> 'archived'", [userId, id]);
       if (goal.rowCount) throw conflict('ACCOUNT_HAS_GOAL', 'Hãy lưu trữ mục tiêu trước khi lưu trữ ví này.');
+      const pausedRules = await client.query('UPDATE recurring_rules SET is_active = false WHERE user_id = $1 AND account_id = $2 AND is_active = true', [userId, id]);
       await client.query('UPDATE accounts SET is_archived = true WHERE id = $1 AND user_id = $2', [id, userId]);
-      return { id, isArchived: true };
+      return { id, isArchived: true, pausedRecurringRules: pausedRules.rowCount };
     }
     const name = requiredText(payload.name, 'Tên tài khoản', 80);
     const opening = nonNegativeAmount(payload.openingBalance);
-    await client.query('UPDATE accounts SET name = $1, opening_balance = $2, color = $3, icon_key = $4 WHERE id = $5 AND user_id = $6', [name, opening, colorValue(payload.color), optionalText(payload.iconKey, 40), id, userId]);
+    const institutionName = account.kind === 'cash'
+      ? null
+      : payload.institutionName === undefined
+        ? account.institution_name
+        : requiredText(payload.institutionName, account.kind === 'bank' ? 'Tên ngân hàng' : 'Tên ví điện tử', 80);
+    const accountNumber = account.kind === 'cash' ? null : encryptAccountNumber(payload.accountNumber);
+    const clearAccountNumber = payload.clearAccountNumber === true;
+    if (clearAccountNumber && accountNumber) throw new AppError(400, 'VALIDATION_ERROR', 'Chọn xóa số tài khoản hoặc nhập số mới.');
+    await client.query(`UPDATE accounts
+                           SET name = $1, opening_balance = $2, color = $3, icon_key = $4,
+                               institution_name = $5,
+                               account_number_ciphertext = CASE WHEN $6 THEN NULL WHEN $7::bytea IS NOT NULL THEN $7 ELSE account_number_ciphertext END,
+                               account_number_last4 = CASE WHEN $6 THEN NULL WHEN $8::varchar IS NOT NULL THEN $8 ELSE account_number_last4 END,
+                               account_number_key_version = CASE WHEN $6 THEN NULL WHEN $9::smallint IS NOT NULL THEN $9 ELSE account_number_key_version END
+                         WHERE id = $10 AND user_id = $11`,
+    [name, opening, colorValue(payload.color), optionalText(payload.iconKey, 40), institutionName,
+      clearAccountNumber, accountNumber?.ciphertext || null, accountNumber?.last4 || null, accountNumber?.keyVersion || null, id, userId]);
     await assertNoNegativeBalances(client, userId, [id]);
-    return { id };
+    const references = await accountHasReferences(client, userId, id);
+    return { id, institutionName: institutionName || '', accountNumberLast4: clearAccountNumber ? null : accountNumber?.last4 || account.account_number_last4 || null,
+      isDefault: account.is_default, hasHistory: references, canDelete: !account.is_default && !references };
+  });
+}
+
+async function accountHasReferences(client, userId, id) {
+  const result = await client.query(`SELECT
+    EXISTS (SELECT 1 FROM transactions WHERE user_id = $1 AND account_id = $2)
+    OR EXISTS (SELECT 1 FROM transfers WHERE user_id = $1 AND (source_account_id = $2 OR target_account_id = $2))
+    OR EXISTS (SELECT 1 FROM recurring_rules WHERE user_id = $1 AND account_id = $2)
+    OR EXISTS (SELECT 1 FROM savings_goals WHERE user_id = $1 AND account_id = $2) AS has_references`, [userId, id]);
+  return result.rows[0].has_references;
+}
+
+export async function deleteAccountPermanently(db, userId, idValue) {
+  const id = uuid(idValue, 'Tài khoản');
+  return inTransaction(db, async (client) => {
+    const account = (await client.query('SELECT id, kind, is_default FROM accounts WHERE id = $1 AND user_id = $2 FOR UPDATE', [id, userId])).rows[0];
+    if (!account) throw notFound('Không tìm thấy tài khoản.');
+    if (account.is_default) throw conflict('DEFAULT_ACCOUNT_PROTECTED', 'Ví Tiền mặt mặc định không thể xóa.');
+    if (account.kind === 'goal') throw conflict('GOAL_ACCOUNT_MANAGED', 'Ví mục tiêu được quản lý từ màn hình Mục tiêu.');
+    if (await accountHasReferences(client, userId, id)) {
+      throw conflict('ACCOUNT_HAS_HISTORY', 'Tài khoản đã có lịch sử hoặc dữ liệu liên quan. Hãy lưu trữ tài khoản để giữ nguyên dữ liệu.');
+    }
+    await client.query('DELETE FROM accounts WHERE id = $1 AND user_id = $2', [id, userId]);
+    return { id, deleted: true };
   });
 }
 

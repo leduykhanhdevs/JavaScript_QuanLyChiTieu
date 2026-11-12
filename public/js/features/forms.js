@@ -70,11 +70,21 @@ function modalForm(state, modal) {
     case 'receipt-scan': return receiptScanForm(state, data);
     case 'account': {
       const kinds = [{ id: 'cash', name: 'Tiền mặt' }, { id: 'bank', name: 'Ngân hàng' }, { id: 'e_wallet', name: 'Ví điện tử' }];
-      return `<form data-form="account" data-id="${escapeHtml(data.id || '')}" novalidate><div class="form-grid">
+      const kind = data.kind || 'cash';
+      const institutionLabel = kind === 'bank' ? 'Tên ngân hàng' : 'Tên ví điện tử';
+      return `<form data-form="account" data-id="${escapeHtml(data.id || '')}" data-kind="${escapeHtml(kind)}" novalidate><div class="form-grid">
         ${field('Tên tài khoản', 'name', textInput('name', data.name || '', { maxLength: 80, placeholder: 'Ví dụ: Tiền mặt' }), { required: true })}
-        ${field('Loại tài khoản', 'kind', `<select id="field-kind" name="kind" required ${data.id ? 'disabled' : ''}>${kinds.map((row) => `<option value="${row.id}" ${row.id === (data.kind || 'cash') ? 'selected' : ''}>${row.name}</option>`).join('')}</select>`, { required: true })}
-        ${field(moneyLabel(state, 'Số dư ban đầu'), 'openingBalance', moneyInput(state, 'openingBalance', data.openingBalance ?? 0, { min: 0 }), { required: true, help: 'Số dư hiện tại được tính từ số dư này và sổ giao dịch.' })}
+        ${field('Loại tài khoản', 'kind', `<select id="field-kind" name="kind" required ${data.id ? 'disabled' : ''}>${kinds.map((row) => `<option value="${row.id}" ${row.id === kind ? 'selected' : ''}>${row.name}</option>`).join('')}</select>`, { required: true })}
+        ${field(moneyLabel(state, 'Số dư ban đầu'), 'openingBalance', moneyInput(state, 'openingBalance', data.openingBalance ?? 0, { min: 0 }), { required: true })}
         ${field('Màu nhận diện', 'color', `<input id="field-color" name="color" type="color" value="${escapeHtml(data.color || '#2563EB')}">`)}
+        <div class="form-grid account-institution-fields" id="account-institution-fields" ${kind === 'cash' ? 'hidden' : ''}>
+          ${field(institutionLabel, 'institutionName', `<input id="field-institutionName" name="institutionName" type="text" value="${escapeHtml(data.institutionName || '')}" maxlength="80" placeholder="Tự nhập tên">`, { required: true })}
+          ${field('Số tài khoản / số ví', 'accountNumber', `<input id="field-accountNumber" name="accountNumber" type="text" inputmode="numeric" autocomplete="off" maxlength="40" placeholder="${data.accountNumberLast4 ? 'Để trống để giữ nguyên' : 'Nhập số tài khoản hoặc số ví'}">`)}
+          ${data.accountNumberLast4 ? `<div class="form-field full"><span class="form-help" data-no-translate>Đã lưu số kết thúc bằng •••• ${escapeHtml(data.accountNumberLast4)}</span></div>` : ''}
+          ${data.accountNumberLast4 ? `<div class="form-field full"><label class="account-clear-number"><input type="checkbox" name="clearAccountNumber" value="true"> Xóa số tài khoản đã lưu</label></div>` : ''}
+          <div class="form-field full"><div class="notice notice-info account-data-note">Số tài khoản được mã hóa khi lưu; chỉ 4 số cuối hiển thị lại. Chỉ lưu thông tin nhận diện thủ công, không kết nối ngân hàng/ví và không yêu cầu mật khẩu hay OTP.</div></div>
+        </div>
+        ${data.id ? `<div class="form-field full account-protection-note">${data.isDefault ? 'Đây là ví Tiền mặt mặc định. Không thể xóa hoặc lưu trữ.' : data.canDelete ? 'Tài khoản chưa có dữ liệu liên quan; có thể xóa hẳn.' : 'Tài khoản đã có lịch sử hoặc dữ liệu liên quan. Xóa hẳn sẽ bị khóa; lưu trữ sẽ giữ nguyên giao dịch và báo cáo cũ.'}</div>` : ''}
       </div></form>`;
     }
     case 'category': {
@@ -159,7 +169,7 @@ function modalForm(state, modal) {
     case 'logout-confirm':
       return `<div class="logout-confirmation"><span class="logout-confirmation-icon">${icon('logout', 22)}</span><div><strong>Bạn có chắc muốn đăng xuất?</strong><p>Phiên làm việc trên thiết bị này sẽ kết thúc và cache của tài khoản hiện tại sẽ được xóa.</p></div></div>`;
     case 'delete':
-      return `<form data-form="delete" data-entity="${escapeHtml(data.entity)}" data-id="${escapeHtml(data.id)}"><p>Bạn có chắc muốn ${data.archive ? 'lưu trữ' : 'xóa'} <strong>${escapeHtml(data.title || 'mục này')}</strong>?</p><p class="form-help">${escapeHtml(data.message || 'Thao tác này sẽ cập nhật dữ liệu trong tài khoản của bạn.')}</p></form>`;
+      return `<form data-form="delete" data-entity="${escapeHtml(data.entity)}" data-id="${escapeHtml(data.id)}" data-permanent="${data.permanent ? 'true' : 'false'}"><p>Bạn có chắc muốn ${data.archive ? 'lưu trữ' : 'xóa'} <strong>${escapeHtml(data.title || 'mục này')}</strong>?</p><p class="form-help">${escapeHtml(data.message || 'Thao tác này sẽ cập nhật dữ liệu trong tài khoản của bạn.')}</p></form>`;
     case 'transaction-detail': {
       const row = state.snapshot.transactions.find((item) => item.id === data.id);
       if (!row) return `<div class="empty-state"><div><h3>Không tìm thấy giao dịch</h3></div></div>`;
@@ -194,5 +204,6 @@ export function renderModal(state) {
   const subtitle = type === 'transaction' ? 'Nhập thông tin khoản thu hoặc chi.' : type === 'receipt-scan' ? 'Nhận diện tại thiết bị rồi xác nhận trước khi ghi sổ.' : type === 'logout-confirm' ? 'Hành động này sẽ kết thúc phiên hiện tại.' : 'Các trường có dấu * là bắt buộc.';
   const confirmationAction = type === 'logout-confirm' ? 'confirm-logout' : 'confirm-delete';
   const confirmationLabel = type === 'logout-confirm' ? 'Đăng xuất' : data.archive ? 'Lưu trữ' : 'Xóa';
-  return `<dialog class="modal" id="modal" aria-labelledby="modal-title"><div class="modal-header"><div><h2 id="modal-title">${escapeHtml(title)}</h2><p>${subtitle}</p></div><button type="button" class="icon-button" data-action="close-modal" aria-label="Đóng">${icon('close', 18)}</button></div><div class="modal-body">${modalForm(state, state.modal)}</div><div class="modal-footer"><button type="button" class="button button-secondary" data-action="close-modal">${readOnly ? 'Đóng' : 'Hủy'}</button>${readOnly ? `<button type="button" class="button button-secondary" data-action="edit-transaction" data-id="${escapeHtml(data.id)}">Chỉnh sửa</button>` : ''}${destructive ? `<button type="button" class="button button-danger" data-action="${confirmationAction}">${confirmationLabel}</button>` : !readOnly ? `<button type="button" class="button button-primary" data-action="submit-modal">${data.id ? 'Lưu thay đổi' : type === 'goal-movement' ? 'Xác nhận chuyển' : type === 'receipt-scan' ? 'Lưu giao dịch' : 'Lưu'}</button>` : ''}</div></dialog>`;
+  const accountActions = type === 'account' && data.id ? `<button type="button" class="button button-danger" data-action="delete-account-permanently" data-id="${escapeHtml(data.id)}" ${data.isDefault || data.canDelete !== true ? 'disabled title="Tài khoản mặc định hoặc đã có dữ liệu liên quan"' : ''}>Xóa tài khoản</button>${data.isDefault ? '' : `<button type="button" class="button button-secondary" data-action="archive-account" data-id="${escapeHtml(data.id)}">Lưu trữ</button>`}` : '';
+  return `<dialog class="modal" id="modal" aria-labelledby="modal-title"><div class="modal-header"><div><h2 id="modal-title">${escapeHtml(title)}</h2><p>${subtitle}</p></div><button type="button" class="icon-button" data-action="close-modal" aria-label="Đóng">${icon('close', 18)}</button></div><div class="modal-body">${modalForm(state, state.modal)}</div><div class="modal-footer"><button type="button" class="button button-secondary" data-action="close-modal">${readOnly ? 'Đóng' : 'Hủy'}</button>${readOnly ? `<button type="button" class="button button-secondary" data-action="edit-transaction" data-id="${escapeHtml(data.id)}">Chỉnh sửa</button>` : ''}${accountActions}${destructive ? `<button type="button" class="button button-danger" data-action="${confirmationAction}">${confirmationLabel}</button>` : !readOnly ? `<button type="button" class="button button-primary" data-action="submit-modal">${data.id ? 'Lưu thay đổi' : type === 'goal-movement' ? 'Xác nhận chuyển' : type === 'receipt-scan' ? 'Lưu giao dịch' : 'Lưu'}</button>` : ''}</div></dialog>`;
 }

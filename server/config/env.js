@@ -21,6 +21,7 @@ export const env = Object.freeze({
   emailOtpTtlMinutes: Number(process.env.EMAIL_OTP_TTL_MINUTES || 10),
   passwordResetTtlMinutes: Number(process.env.PASSWORD_RESET_TTL_MINUTES || 30),
   currencyApiKey: process.env.CURRENCYAPI_API_KEY || '',
+  accountDetailsEncryptionKey: process.env.ACCOUNT_DETAILS_ENCRYPTION_KEY || '',
   smtp: {
     host: process.env.SMTP_HOST || '',
     port: Number(process.env.SMTP_PORT || 587),

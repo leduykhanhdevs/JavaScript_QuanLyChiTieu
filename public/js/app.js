@@ -1,12 +1,12 @@
 import { api, get, post, patch, remove, ApiError } from './api/client.js';
-import { renderApp } from './features/pages.js?v=20261111-help-bank-miniapp-v1';
+import { renderApp } from './features/pages.js?v=20261112-account-safety-v1';
 import { renderAuth } from './features/auth-view.js?v=20261028-auth-banner-v1';
-import { renderModal } from './features/forms.js';
+import { renderModal } from './features/forms.js?v=20261112-account-safety-v2';
 import { toast } from './components/toast.js';
 import { icon } from './components/icons.js';
 import { enhanceCustomSelects, syncCustomSelect } from './components/custom-select.js?v=20261015-icon-system';
 import { $, escapeHtml, initials, setButtonBusy } from './utils/dom.js';
-import { hydrateUser, setSnapshot, state, clearUserData, applyLocalMutation, savePreferences } from './state/store.js?v=20261105-admin-suite-v1';
+import { hydrateUser, setSnapshot, state, clearUserData, applyLocalMutation, savePreferences } from './state/store.js?v=20261112-account-safety-v1';
 import { validateFields, showFieldErrors, hasErrors } from './utils/validation.js?v=20261015-icon-system';
 import { formatMoney, formatMoneyInput, setMoneyDisplay } from './utils/money.js';
 import { filterTransactions } from './utils/finance-stats.js';
@@ -14,7 +14,7 @@ import { applyBankHubAttempt, applyBankHubReadiness, getBankLinkRequest, refresh
 import { adminPathForView, adminUi, adminViewFromPath, changeAdminFilter, handleAdminAction, handleAdminAgentInput, loadAdminView, renderAdminApp, resetAdminUi, submitAdminAgent, submitAdminForm, submitAdminSearch } from './features/admin-view.js?v=20261111-agent-export-refresh-v2';
 import { handleAgentAction, handleAgentEscape, handleAgentInput, handleAgentSubmit, renderAgentWidget, resetAgentSession } from './features/ai-agent.js?v=20261111-agent-export-refresh-v2';
 import { recognizeReceipt, releaseReceiptWorker, validateReceiptImage } from './features/receipt-scanner.js?v=20261028-receipt-category-v1';
-import { applyTranslations, observeTranslations } from './i18n.js?v=20261111-language-support-v1';
+import { applyTranslations, observeTranslations } from './i18n.js?v=20261112-account-safety-v1';
 
 let authScreen = 'login';
 let authNotice = null;
@@ -537,7 +537,7 @@ function recurringById(id) { return state.snapshot.recurringRules.find((item) =>
 function goalById(id) { return state.snapshot.goals.find((item) => item.id === id); }
 
 async function performMutation(path, method, payload, { success = 'Đã lưu thay đổi.', close = true } = {}) {
-  const result = await api(path, { method, body: method === 'DELETE' ? undefined : payload });
+  const result = await api(path, { method, body: method === 'DELETE' && payload?.permanent !== true ? undefined : payload });
   applyLocalMutation(path, method, payload || {}, result);
   state.offline = false;
   if (path === '/api/settings/profile' && result.user) {
@@ -603,8 +603,8 @@ function updateCategorySelect(form, kind) {
   syncCustomSelect(select);
 }
 
-function openDelete(entity, id, title, { archive = false, message = '' } = {}) {
-  openModal('delete', { entity, id, title, archive, message });
+function openDelete(entity, id, title, { archive = false, permanent = false, message = '' } = {}) {
+  openModal('delete', { entity, id, title, archive, permanent, message });
 }
 
 async function handleAction(button) {
@@ -736,7 +736,8 @@ async function handleAction(button) {
   if (action === 'delete-transaction') { const row = transactionById(id); if (row) openDelete('transactions', id, row.note || row.categoryName, { message: 'Xóa giao dịch có thể làm thay đổi số dư lịch sử. Thao tác sẽ bị từ chối nếu làm tài khoản âm.' }); return; }
   if (action === 'new-account') { openModal('account'); return; }
   if (action === 'edit-account') { const row = accountById(id); if (row) openModal('account', row); return; }
-  if (action === 'archive-account') { const row = accountById(id); if (row) openDelete('accounts', id, row.name, { archive: true, message: 'Tài khoản được lưu trữ và ẩn khỏi các biểu mẫu mới. Lịch sử cũ vẫn được giữ.' }); return; }
+  if (action === 'archive-account') { const row = accountById(id); if (row) openDelete('accounts', id, row.name, { archive: true, message: 'Tài khoản được lưu trữ và ẩn khỏi biểu mẫu mới. Lịch sử được giữ; giao dịch định kỳ gắn với tài khoản sẽ được tạm dừng.' }); return; }
+  if (action === 'delete-account-permanently') { const row = accountById(id); if (row) openDelete('accounts', id, row.name, { permanent: true, message: 'Chỉ tài khoản chưa có giao dịch, chuyển khoản, mục tiêu hoặc giao dịch định kỳ mới xóa được. Dữ liệu đã liên kết phải được lưu trữ để giữ nguyên lịch sử.' }); return; }
   if (action === 'new-category') { openModal('category', agentFormPrefill(action, readAgentActionContext(button))); return; }
   if (action === 'edit-category') { const row = categoryById(id); if (row) openModal('category', row); return; }
   if (action === 'archive-category') { const row = categoryById(id); if (row) openDelete('categories', id, row.name, { archive: true, message: 'Danh mục được lưu trữ. Các giao dịch và báo cáo cũ vẫn được giữ.' }); return; }
@@ -812,6 +813,7 @@ async function confirmDelete(button) {
   if (!form) return;
   const { entity, id } = form.dataset;
   const archive = state.modal?.data?.archive;
+  const permanent = form.dataset.permanent === 'true';
   const path = entity === 'transactions' ? `/api/transactions/${id}`
     : entity === 'accounts' ? `/api/accounts/${id}`
       : entity === 'categories' ? `/api/categories/${id}`
@@ -820,7 +822,7 @@ async function confirmDelete(button) {
   if (!path) return;
   setButtonBusy(button, true, archive ? 'Đang lưu trữ…' : 'Đang xóa…');
   try {
-    await performMutation(path, 'DELETE', {}, { success: archive ? 'Đã lưu trữ dữ liệu.' : 'Đã xóa dữ liệu.' });
+    await performMutation(path, 'DELETE', permanent ? { permanent: true } : {}, { success: archive ? 'Đã lưu trữ dữ liệu.' : 'Đã xóa dữ liệu.' });
   } catch (error) { toast(error.message, 'error'); setButtonBusy(button, false); }
 }
 
@@ -974,6 +976,12 @@ function validateBusinessForm(form, values, errors) {
   if (form.dataset.form === 'transfer' && values.sourceAccountId && values.sourceAccountId === values.targetAccountId) errors.targetAccountId = 'Hãy chọn hai tài khoản khác nhau.';
   if (form.dataset.form === 'recurring' && values.endOn && values.startOn && values.endOn < values.startOn) errors.endOn = 'Ngày kết thúc không được trước ngày bắt đầu.';
   if (form.dataset.form === 'budget' && !/^\d{4}-\d{2}$/.test(values.periodStart || '')) errors.periodStart = 'Chọn tháng hợp lệ.';
+  if (form.dataset.form === 'account') {
+    const kind = values.kind || form.dataset.kind;
+    if (['bank', 'e_wallet'].includes(kind) && !String(values.institutionName || '').trim()) errors.institutionName = 'Nhập tên ngân hàng hoặc ví điện tử.';
+    if (values.accountNumber && !/^\d{6,34}$/.test(String(values.accountNumber).replace(/[\s-]/g, ''))) errors.accountNumber = 'Số tài khoản cần có từ 6 đến 34 chữ số.';
+    if (values.clearAccountNumber && values.accountNumber) errors.accountNumber = 'Chọn xóa số đã lưu hoặc nhập số mới.';
+  }
 }
 
 async function submitAuth(form) {
@@ -1314,6 +1322,20 @@ document.addEventListener('input', (event) => {
 
 document.addEventListener('change', async (event) => {
   const target = event.target;
+  if (target instanceof HTMLSelectElement && target.id === 'field-kind' && target.closest('form[data-form="account"]')) {
+    const form = target.closest('form[data-form="account"]');
+    form.dataset.kind = target.value;
+    const metadata = form.querySelector('#account-institution-fields');
+    if (metadata) metadata.hidden = target.value === 'cash';
+    const institutionLabel = form.querySelector('label[for="field-institutionName"]');
+    if (institutionLabel?.firstChild) institutionLabel.firstChild.textContent = target.value === 'bank' ? 'Tên ngân hàng' : 'Tên ví điện tử';
+    return;
+  }
+  if (target instanceof HTMLInputElement && target.name === 'clearAccountNumber') {
+    const input = target.form?.elements.namedItem('accountNumber');
+    if (input instanceof HTMLInputElement) input.disabled = target.checked;
+    return;
+  }
   if (target instanceof HTMLSelectElement && target.id === 'preference-language') {
     await changeUiLanguage(target);
     return;

@@ -386,6 +386,18 @@ a:hover { text-decoration: underline; }
 .category-empty[hidden] { display: none; }
 .category-empty { min-height: 175px; }
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.form-grid.account-institution-fields { grid-column: 1 / -1; }
+.form-grid.account-institution-fields[hidden] { display: none; }
+.account-institution-fields #field-institutionName,
+.account-institution-fields #field-accountNumber { height: 44px; min-height: 44px; }
+form[data-form="account"] #field-color { height: 44px; min-height: 44px; padding: 6px 10px; align-self: start; }
+.account-institution { margin-top: -3px; color: var(--ink-500); font-size: 12px; }
+.account-default-badge { display: inline-flex; width: fit-content; margin-top: 10px; padding: 5px 9px; border-radius: 999px; background: var(--blue-50); color: var(--blue-700); font-size: 11px; font-weight: 700; }
+.account-default-badge[hidden] { display: none; }
+.account-kind .account-default-badge { margin: 0 0 0 4px; padding: 4px 7px; font-size: 10px; }
+.account-protection-note { color: var(--ink-500); font-size: 12px; }
+.account-clear-number { display: flex; align-items: center; gap: 8px; }
+.account-clear-number input { width: 16px; min-height: 16px; margin: 0; }
 .form-field { min-width: 0; display: grid; gap: 6px; }
 .form-field.full { grid-column: 1 / -1; }
 .form-field label { color: var(--ink-800); font-size: 12px; font-weight: 700; }
@@ -456,6 +468,8 @@ a:hover { text-decoration: underline; }
 .auth-form-wrap .form-field input { min-height: 48px; padding: 11px 13px; border-color: var(--ink-200); border-radius: 12px; background: #fff; font-size: 13px; }
 .auth-password-control { position: relative; min-width: 0; }
 .auth-form-wrap .auth-password-control input { padding-right: 48px; }
+.auth-form-wrap .auth-password-control input[type="password"]::-ms-reveal,
+.auth-form-wrap .auth-password-control input[type="password"]::-ms-clear { display: none; }
 .auth-password-toggle { position: absolute; top: 50%; right: 7px; display: grid; width: 36px; height: 36px; place-items: center; padding: 0; transform: translateY(-50%); border: 0; border-radius: 9px; background: transparent; color: var(--ink-500); cursor: pointer; }
 .auth-password-toggle:hover { background: transparent; color: var(--ink-500); }
 .auth-password-toggle:focus-visible { outline: 3px solid rgb(96 165 250 / 36%); outline-offset: 1px; }

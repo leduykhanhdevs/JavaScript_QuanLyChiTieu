@@ -1,6 +1,6 @@
 import { AppError, notFound } from '../lib/errors.js';
 import { objectBody, uuid } from '../lib/validation.js';
-import { cancelProfileEmailChange, confirmEmailChangeAuthorizationCode, confirmProfileEmailCode, createAccount, createBudget, createCategory, createGoal, createSupportTicket, createTransfer, deleteRecurringRule, deleteTransaction, getBootstrap, getProfileAvatar, getReportData, getTransactions, goalMovement, runDueRecurring, saveRecurringRule, saveTransaction, sendEmailChangeAuthorizationCode, sendProfileEmailCode, updateAccount, updateBudget, updateCategory, updateCurrencyPreference, updateGoal, updateProfile, updateUiLanguage } from '../services/finance-service.js';
+import { cancelProfileEmailChange, confirmEmailChangeAuthorizationCode, confirmProfileEmailCode, createAccount, createBudget, createCategory, createGoal, createSupportTicket, createTransfer, deleteAccountPermanently, deleteRecurringRule, deleteTransaction, getBootstrap, getProfileAvatar, getReportData, getTransactions, goalMovement, runDueRecurring, saveRecurringRule, saveTransaction, sendEmailChangeAuthorizationCode, sendProfileEmailCode, updateAccount, updateBudget, updateCategory, updateCurrencyPreference, updateGoal, updateProfile, updateUiLanguage } from '../services/finance-service.js';
 import { sendBuffer } from '../lib/http.js';
 import { createUserExport } from '../services/export-service.js';
 import { convertMoneyFieldsToVnd, getFxRateSummary, requireUsableFxRate } from '../services/fx-rate-service.js';
@@ -51,7 +51,9 @@ export async function handleFinanceRoute(ctx) {
   if (req.method === 'POST' && pathname === '/api/accounts') return [201, await createAccount(db, user.id, await convertMoneyFieldsToVnd(db, body(), ['openingBalance'], { allowZero: ['openingBalance'] }))];
   const accountId = matchId(pathname, '/api/accounts');
   if (accountId && req.method === 'PATCH') return [200, await updateAccount(db, user.id, accountId, await convertMoneyFieldsToVnd(db, body(), ['openingBalance'], { allowZero: ['openingBalance'] }))];
-  if (accountId && req.method === 'DELETE') return [200, await updateAccount(db, user.id, accountId, {}, true)];
+  if (accountId && req.method === 'DELETE') return [200, body().permanent === true
+    ? await deleteAccountPermanently(db, user.id, accountId)
+    : await updateAccount(db, user.id, accountId, {}, true)];
 
   if (req.method === 'GET' && pathname === '/api/categories') return [200, { categories: (await getBootstrap(db, user)).categories }];
   if (req.method === 'POST' && pathname === '/api/categories') return [201, await createCategory(db, user.id, body())];

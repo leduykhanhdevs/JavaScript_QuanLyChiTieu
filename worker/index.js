@@ -33,6 +33,7 @@ function configureRuntime(bindings) {
     SMTP_FROM_NAME: bindings.SMTP_FROM_NAME,
     SMTP_FROM_EMAIL: bindings.SMTP_FROM_EMAIL,
     CURRENCYAPI_API_KEY: bindings.CURRENCYAPI_API_KEY,
+    ACCOUNT_DETAILS_ENCRYPTION_KEY: bindings.ACCOUNT_DETAILS_ENCRYPTION_KEY,
     SEPAY_BANKHUB_CLIENT_ID: bindings.SEPAY_BANKHUB_CLIENT_ID,
     SEPAY_BANKHUB_CLIENT_SECRET: bindings.SEPAY_BANKHUB_CLIENT_SECRET,
     SEPAY_BANKHUB_COMPANY_XID: bindings.SEPAY_BANKHUB_COMPANY_XID,
@@ -56,8 +57,8 @@ async function getRuntime(bindings) {
       import('../server/db/pool.js'),
       import('../server/jobs.js')
     ]).then(([appModule, databaseModule, jobsModule]) => ({
-      nodeHandler: httpServerHandler(appModule.createAppServer()),
-      pool: databaseModule.pool,
+      nodeHandler: httpServerHandler(appModule.createAppServer({ acquireDatabase: databaseModule.acquireWorkerDatabase })),
+      acquireDatabase: databaseModule.acquireWorkerDatabase,
       runWorkerScheduledJob: jobsModule.runWorkerScheduledJob
     }));
   }
@@ -85,7 +86,9 @@ export default {
   scheduled(controller, bindings, context) {
     context.waitUntil((async () => {
       const runtime = await getRuntime(bindings);
-      await runtime.runWorkerScheduledJob(controller.cron, runtime.pool);
+      const lease = await runtime.acquireDatabase();
+      try { await runtime.runWorkerScheduledJob(controller.cron, lease.db); }
+      finally { await lease.release(); }
     })().catch((error) => console.error('[worker] Cron thất bại:', error.message)));
   }
 };

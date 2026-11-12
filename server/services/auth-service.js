@@ -60,21 +60,25 @@ async function deliverRegistrationCode(user, code) {
 }
 
 async function seedNewAccount(client, userId) {
-  let templates = DEFAULT_CATEGORIES;
+  const templates = new Map(
+    DEFAULT_CATEGORIES.map(([name, kind, icon, color]) => [
+      `${kind}:${name.trim().toLocaleLowerCase('vi')}`,
+      [name, kind, icon, color]
+    ])
+  );
   try {
     const dbTemplates = await client.query(
       'SELECT name, kind, icon_key, color FROM default_category_templates WHERE is_enabled = true ORDER BY sort_order ASC, name ASC'
     );
-    if (dbTemplates.rowCount > 0) {
-      templates = dbTemplates.rows.map((row) => [row.name, row.kind, row.icon_key, row.color]);
+    for (const row of dbTemplates.rows) {
+      const key = `${row.kind}:${row.name.trim().toLocaleLowerCase('vi')}`;
+      if (!templates.has(key)) templates.set(key, [row.name, row.kind, row.icon_key, row.color]);
     }
-  } catch {
-    templates = DEFAULT_CATEGORIES;
-  }
-  for (const [name, kind, icon, color] of templates) {
+  } catch {}
+  for (const [name, kind, icon, color] of templates.values()) {
     await client.query('INSERT INTO categories (user_id, name, kind, icon_key, color, is_default) VALUES ($1, $2, $3, $4, $5, true) ON CONFLICT DO NOTHING', [userId, name, kind, icon, color]);
   }
-  await client.query("INSERT INTO accounts (user_id, name, kind, opening_balance, icon_key, color) VALUES ($1, 'Tiền mặt', 'cash', 0, 'wallet', '#2563EB') ON CONFLICT DO NOTHING", [userId]);
+  await client.query("INSERT INTO accounts (user_id, name, kind, opening_balance, icon_key, color, is_default) VALUES ($1, 'Tiền mặt', 'cash', 0, 'wallet', '#2563EB', true) ON CONFLICT DO NOTHING", [userId]);
 }
 
 async function activatePendingUser(client, userId) {

@@ -48,7 +48,7 @@ function securityHeaders() {
   };
 }
 
-function checkRateLimit(pathname, ip) {
+async function checkRateLimit(pathname, ip, db) {
   const rule = RATE_LIMITS.get(pathname);
   if (!rule) return;
   const [limit, duration] = rule;
@@ -59,7 +59,7 @@ function checkRateLimit(pathname, ip) {
   record.count += 1;
   attempts.set(key, record);
   if (record.count > limit) {
-    void recordSecurityEvent(pool, { eventType: 'rate_limited', email: null, ip, routePath: pathname });
+    await recordSecurityEvent(db, { eventType: 'rate_limited', email: null, ip, routePath: pathname });
     throw new AppError(429, 'RATE_LIMITED', 'Bạn thử quá nhiều lần. Hãy đợi một lúc rồi thử lại.');
   }
   if (attempts.size > 5_000) for (const [savedKey, value] of attempts) if (value.resetAt <= now) attempts.delete(savedKey);
@@ -110,12 +110,17 @@ async function sendStatic(pathname, res) {
   } catch { return false; }
 }
 
-async function handler(req, res) {
+async function handler(req, res, acquireDatabase) {
+  let databaseLease;
+  const getDatabase = async () => {
+    if (!databaseLease) databaseLease = await acquireDatabase();
+    return databaseLease.db;
+  };
   Object.entries(securityHeaders()).forEach(([name, value]) => res.setHeader(name, value));
   try {
     const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     if (url.pathname === '/healthz' && req.method === 'GET') {
-      try { await pool.query('SELECT 1'); return sendJson(res, 200, { status: 'ok', database: 'connected' }); }
+      try { await (await getDatabase()).query('SELECT 1'); return sendJson(res, 200, { status: 'ok', database: 'connected' }); }
       catch { return sendJson(res, 503, { status: 'degraded', database: 'unavailable' }); }
     }
     if (!url.pathname.startsWith('/api/')) {
@@ -124,23 +129,24 @@ async function handler(req, res) {
     }
     if (!hasValidEdgeProxySecret(req)) throw new AppError(403, 'EDGE_PROXY_REQUIRED', 'Yêu cầu API phải đi qua Cloudflare.');
     checkOrigin(req);
-    checkRateLimit(url.pathname, requestClientIp(req));
+    const db = await getDatabase();
+    await checkRateLimit(url.pathname, requestClientIp(req), db);
     const body = ['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method) ? await readJson(req) : {};
     let user = null;
     if (url.pathname === '/api/auth/me' || (url.pathname.startsWith('/api/') && !url.pathname.startsWith('/api/auth/'))) {
       const sessionToken = readCookie(req.headers.cookie);
-      if (sessionToken) user = await authenticate(pool, sessionToken);
+      if (sessionToken) user = await authenticate(db, sessionToken);
     }
     if (['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method)
       && !url.pathname.startsWith('/api/auth/')
       && !url.pathname.startsWith('/api/admin')
       && user?.role !== 'admin') {
-      const maint = await pool.query("SELECT enabled FROM app_settings WHERE key = 'maintenance_mode'").catch(() => ({ rows: [] }));
+      const maint = await db.query("SELECT enabled FROM app_settings WHERE key = 'maintenance_mode'").catch(() => ({ rows: [] }));
       if (maint.rows[0]?.enabled === true) {
         throw new AppError(503, 'MAINTENANCE_MODE', 'Hệ thống đang trong chế độ bảo trì định kỳ. Các thao tác ghi tạm thời gián đoạn, vui lòng thử lại sau.');
       }
     }
-    const ctx = { req, res, url, body, db: pool, user, responseHeaders: {} };
+    const ctx = { req, res, url, body, db, user, responseHeaders: {} };
     let response = await handleAuthRoute(ctx);
     if (response === true) return;
     if (!response) response = await handleAdminRoute(ctx);
@@ -157,11 +163,16 @@ async function handler(req, res) {
     if (safeDatabaseError) return sendError(res, safeDatabaseError);
     if (['ECONNREFUSED', 'ENOTFOUND', 'ETIMEDOUT', '28P01', '3D000'].includes(error.code)) return sendError(res, new AppError(503, 'DATABASE_UNAVAILABLE', 'Không kết nối được PostgreSQL. Kiểm tra dịch vụ và cấu hình DATABASE_* trong .env.'));
     return sendError(res, error);
+  } finally {
+    if (databaseLease) {
+      try { await databaseLease.release(); }
+      catch (error) { console.error('[db] Không đóng được kết nối của request:', error.message); }
+    }
   }
 }
 
-export function createAppServer() {
-  const server = createServer(handler);
+export function createAppServer({ acquireDatabase = async () => ({ db: pool, release: async () => {} }) } = {}) {
+  const server = createServer((req, res) => handler(req, res, acquireDatabase));
   server.requestTimeout = 30_000;
   server.headersTimeout = 35_000;
   server.keepAliveTimeout = 5_000;

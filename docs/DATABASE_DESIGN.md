@@ -190,7 +190,7 @@ Mỗi lần đăng ký/đăng nhập thành công tạo một bản ghi cho từ
 - `kind` là `income` hoặc `expense`; category không thể bị giao dịch loại còn lại sử dụng nhờ composite FK.
 - Tên, màu, icon, cờ `is_default`, `is_archived`; unique active `(user_id, kind, lower(name))`.
 - Giao dịch/budget hiện có ngăn xóa cứng do FK; API thay bằng archive.
-- Danh mục mặc định được seed theo từng user mới, không dùng một bản ghi chia sẻ giữa user.
+- Danh mục mặc định được seed riêng theo từng user, không dùng một bản ghi chia sẻ. Migration 012 backfill bộ 13 danh mục chuẩn cho mọi user hiện có; seeder đăng ký luôn thêm đủ bộ chuẩn cho user mới và cộng thêm các template Admin đang bật.
 
 ### `recurring_rules`
 
@@ -347,6 +347,7 @@ balance(A,T) = opening_balance(A)
 - `server/db/migrations/009_admin_operations_suite.sql`: công cụ vận hành Admin.
 - `server/db/migrations/010_currency_and_fx_history.sql`: tùy chọn VND/USD và lịch sử tỷ giá.
 - `server/db/migrations/011_ui_language_and_two_step_email_change.sql`: ngôn ngữ `users.ui_language` và bước xác minh email hiện tại/grant đổi email.
+- `server/db/migrations/012_seed_default_categories_for_all_users.sql`: bật lại 13 template danh mục giống localhost, backfill cho user hiện có và giữ các danh mục người dùng đã tạo/lưu trữ.
 - Các bảng P2 còn lại (bank connections, linked accounts, sync runs, feed giao dịch, phân loại) vẫn là thiết kế mục tiêu; chỉ tạo migration mới sau khi chốt API sync, consent thu thập giao dịch, retention và luồng mapping tài khoản.
 - Mỗi migration chạy trong transaction; không sửa migration đã áp dụng ở môi trường có dữ liệu, tạo migration version mới.
 - `server/db/seed.sql`: seed categories mặc định cho một UUID user đã tồn tại, gọi bằng psql với biến `user_id`; không tạo tài khoản/password giả định và không seed dữ liệu tài chính cá nhân.
@@ -389,9 +390,13 @@ Các mục 1–10 được kiểm bằng DDL trực tiếp; mục 11 thuộc ser
 - `updated_at` trigger đã được kiểm tra. Seed thêm 13 category mặc định cho user tồn tại; lần chạy thứ hai thêm 0 dòng; user UUID không tồn tại bị từ chối.
 - Node API hiện đã được triển khai; 26 kiểm tra tích hợp trên PostgreSQL cô lập đã qua, gồm hai mutation cạnh tranh và rollback khi số dư âm. Migration chạy lại cũng bỏ qua đúng các phiên bản đã áp dụng.
 - Lượt chạy ban đầu trên PostgreSQL local đã bỏ qua migrations 001–003 và áp dụng `004_legal_consents.sql`. Sau đó migrations 005–006 cũng đã áp dụng; snapshot ngày 16/10/2026 có 1 tài khoản active, 0 Admin và 2 bản ghi chấp thuận.
+- 2026-11-12: migration 012 đã áp dụng trên Neon. Readback xác nhận cả 13 template chuẩn bật và mọi user hiện có đều có danh mục tương ứng đang hoạt động; danh mục riêng không bị xóa hay đổi.
 - SMTP verify/reset email và các auth/consent form chưa được nghiệm thu trực tiếp trên trình duyệt bằng email thật.
 
+## Bổ sung quản lý tài khoản (2026-11-12)
 
-
-
-
+- Migration 013 thêm cờ is_default và chỉ mục một ví mặc định mỗi user; ví Tiền mặt mặc định không thể xóa cứng hoặc lưu trữ.
+- Migration 014 thêm institution_name, ciphertext, account_number_last4 và account_number_key_version. Số ngân hàng/ví được mã hóa AES-256-GCM bằng khóa 32 byte cấu hình ngoài DB; API và LocalStorage chỉ nhận bốn số cuối.
+- Migration 015–016 hoàn tất sổ phiên bản cho các migration 013–015 mà không sửa migration đã áp dụng. Runner đọc đủ phiên bản 013–016 sau khi triển khai.
+- Xóa cứng chỉ cho phép khi không có giao dịch, chuyển khoản, quy tắc định kỳ hoặc mục tiêu tham chiếu. Tài khoản có liên kết được lưu trữ; lịch sử thu/chi và báo cáo cũ giữ nguyên, quy tắc định kỳ đang bật được tạm dừng.
+- institution_name và số tài khoản là thông tin nhận diện người dùng tự nhập, không phải kết nối ngân hàng hay ví điện tử.

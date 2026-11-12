@@ -12,7 +12,7 @@
 | Màn hình tối thiểu: chủ/list/detail/add/edit/info/manage | Bảng màn hình auth, dashboard, CRUD nghiệp vụ, chi tiết, thông tin | Đi theo navigation; mọi thao tác có route/màn hình/response | Đủ |
 | DOM: nội dung động, render, class, ẩn/hiện, tạo/xóa node | Frontend dùng DOM API và các module `features/`, `components/` | Renderer dựng 10 trang, 11 modal, 7 trạng thái auth | Đã kiểm tra render; tương tác trình duyệt còn cần demo |
 | Event click/submit/input/change/hover/keyboard phù hợp | Event delegation, form submit, bộ lọc, dialog và Escape | Kiểm tra qua code/render; thao tác submit CRUD thực tế trong trình duyệt còn mở | Có xử lý trong source; chưa nghiệm thu e2e trình duyệt |
-| Array/Object, CRUD | CRUD giao dịch/tài khoản/danh mục/ngân sách và state arrays | 26 kiểm tra API bao gồm create/read/update/delete các nghiệp vụ chính | API/DB đã kiểm chứng trên DB cô lập; UI CRUD còn cần demo |
+| Array/Object, CRUD | CRUD giao dịch/tài khoản/danh mục/ngân sách và state arrays; 13 danh mục mặc định được seed riêng theo user | 26 kiểm tra API bao gồm create/read/update/delete các nghiệp vụ chính; migration 012 backfill user hiện có | API/DB đã kiểm chứng trên DB cô lập; UI CRUD còn cần demo |
 | Search/filter/sort; phương thức mảng bắt buộc | Giao dịch có search/filter/sort; source sử dụng các phương thức trong đề | Kiểm tra source; truy vấn API nằm trong 26 luồng DB | Có triển khai; thao tác bộ lọc trên UI cần demo |
 | Form/validation | Validation client/server theo loại nghiệp vụ | API checks xác nhận điều kiện số tiền, loại, quyền sở hữu và số dư | Server validation đã kiểm chứng; form trực tiếp còn cần demo |
 | Chấp thuận điều khoản và xử lý dữ liệu trước auth | Hai checkbox riêng ở đăng nhập/đăng ký; kiểm tra client/server, lưu version, source, thời điểm trong `user_consents` | Thử bỏ trống, gửi sai phiên bản và đọc lại migration/API | Có trong source và migration 004; UI thật và hành vi API cần được demo cùng auth |
@@ -77,7 +77,7 @@ Khi đối chiếu lại, phát hiện dashboard cá nhân không thay thế đ�
 
 ## 6. Kết luận review
 
-**Plan, schema, review, Admin source/API/UI, avatar, OTP đổi email hai bước, tùy chọn ngôn ngữ và xác nhận đăng xuất đã được triển khai; migrations 001–011 đã áp dụng.** Layout Admin đã được duyệt. Ma trận vẫn phân biệt phần đã triển khai với phần chưa demo: DB có 1 user active nhưng chưa có Admin, do đó chưa khẳng định đã kiểm chứng luồng role Admin thật. Figma MCP bị giới hạn lượt đọc trong lượt triển khai; source UI đối chiếu với SVG vector đã lưu.
+**Plan, schema, review, Admin source/API/UI, avatar, OTP đổi email hai bước, tùy chọn ngôn ngữ và xác nhận đăng xuất đã được triển khai; migrations 001–012 đã áp dụng trên Neon.** Layout Admin đã được duyệt. Ma trận vẫn phân biệt phần đã triển khai với phần chưa demo: luồng CRUD danh mục vẫn cần kiểm tra trực tiếp trên trình duyệt.
 
 ## 7. Trạng thái implementation và bằng chứng
 
@@ -86,7 +86,7 @@ Khi đối chiếu lại, phát hiện dashboard cá nhân không thay thế đ�
 - `node --check` đạt trên 27 module JavaScript; renderer đạt 10 trang, 11 modal và 7 trạng thái auth.
 - `npm audit --omit=dev` báo 0 lỗ hổng đã biết.
 - Server mở trang đăng nhập tại `http://localhost:3000`; ảnh kiểm tra trực tiếp xác nhận giao diện desktop hiển thị. Trình duyệt có autofill, không coi nội dung đó là fixture hay bằng chứng login thành công.
-- Admin source/API/UI đã được triển khai; `schema_migrations` hiện ghi nhận migrations `001`–`011`; truy vấn chỉ lấy số lượng cho dữ liệu môi trường và thấy DB có 1 user active, 0 audit log, 0 Admin.
+- Tại snapshot triển khai Admin ban đầu, `schema_migrations` ghi nhận migrations `001`–`011`; trạng thái này được cập nhật trong mục 17 sau khi bootstrap Admin và áp dụng migration mới.
 - Còn mở: xác nhận đúng tài khoản active rồi bootstrap Admin; demo 401/403, khóa/mở và audit bằng tài khoản Admin thật; kiểm tra trực quan Admin ở desktop/tablet/mobile. Mẫu email đã cập nhật nhưng chưa gửi SMTP thật; SMTP, LocalStorage reload, link/nút và CRUD tổng thể vẫn cần nghiệm thu riêng.
 
 ## 9. Tự review điều khoản và chấp thuận
@@ -170,7 +170,7 @@ Khi đối chiếu lại, phát hiện dashboard cá nhân không thay thế đ�
 
 ## 17. Triển khai Neon + Cloudflare thực tế (2026-11-12; cập nhật các bước chờ trong mục 16)
 
-- Neon project `vi-minh` (`icy-flower-28555258`) dùng PostgreSQL 17 tại `aws-ap-southeast-1`, database `vi_minh`. Đã áp dụng migrations `001`–`011`; đọc lại schema xác nhận đủ 11 phiên bản. Ban đầu database trống; hiện có một tài khoản `active`, email đã xác minh và role `admin`; chưa có giao dịch và không sao chép dữ liệu tài chính local.
+- Neon project `vi-minh` (`icy-flower-28555258`) dùng PostgreSQL 17 tại `aws-ap-southeast-1`, database `vi_minh`. Đã áp dụng migrations `001`–`012`; đọc lại schema xác nhận đủ 12 phiên bản. Database có một tài khoản `active`, email đã xác minh và role `admin`; chưa có giao dịch và không sao chép dữ liệu tài chính local.
 - Cloudflare Hyperdrive `vi-minh-neon` (`61a6778821414a298e51f0e1428eaffe`) giới hạn 5 kết nối gốc và tắt query cache. `wrangler.toml` đã có binding ID thật và origin Pages.
 - API Worker đã deploy tại `https://vi-minh-api.khanhdevs19.workers.dev`; `/healthz` trả HTTP 200 và database `connected`. Gọi trực tiếp `/api/auth/me` trả 403 khi thiếu proxy header.
 - Cloudflare Pages project `vi-minh-leduykhanh` phục vụ `https://vi-minh-leduykhanh.pages.dev`; deployment Direct Upload hiện tại là `https://b869f08b.vi-minh-leduykhanh.pages.dev`. Trang chủ trả HTTP 200; `/api/auth/me` qua Pages trả 401 đúng với người dùng chưa đăng nhập, xác nhận Pages Function proxy và shared-secret gate.
@@ -178,3 +178,18 @@ Khi đối chiếu lại, phát hiện dashboard cá nhân không thay thế đ�
 - Cloudflare agent setup đã cài 22 skills vào `C:\Users\leduy\.agents\skills`, thêm Cloudflare HTTP MCP cạnh Neon trong `.codex/config.toml`, cài `cf` CLI `1.0.0-beta.30`, và thêm quy tắc ưu tiên `cf` vào hướng dẫn Codex cấp người dùng. Cần reload/restart Codex để nạp MCP. Wrangler OAuth và `cf auth whoami` đều xác nhận đã đăng nhập.
 - Dự án deploy bằng Wrangler vì repo đã có `wrangler.toml`. Pages đang dùng Direct Upload, chưa kết nối Git provider; workflow Worker trên GitHub vẫn bị khóa sau biến `CLOUDFLARE_WORKER_DEPLOY_ENABLED`. Chưa có domain riêng.
 - Phạm vi xác minh bổ sung: `npm run worker:dry-run` thành công, Worker đã deploy, `/healthz` và Neon hoạt động, resend OTP qua Pages trả HTTP 200, SMTP relay chấp nhận thư, mã xác minh được người dùng nhập thành công, và Neon đọc lại `status=active`, `role=admin`, `verified=true`. Chưa xác minh xuất báo cáo hoặc Cron trên runtime cloud. Cloudflare Free hiện giới hạn 100.000 request Worker/ngày, 10 ms CPU mỗi request/Cron và 100.000 truy vấn database Hyperdrive/ngày; scrypt và xuất Excel/PDF có thể vượt ngưỡng CPU. Nguồn: [giới hạn Workers](https://developers.cloudflare.com/workers/platform/limits/), [giá và giới hạn Hyperdrive](https://developers.cloudflare.com/hyperdrive/platform/pricing/).
+- 2026-11-12: migration 012 chạy trên Neon bằng kết nối trực tiếp. Readback xác nhận đủ 12 migration, 13/13 template đang bật, user hiện có đủ 13 danh mục chuẩn đang hoạt động và không thiếu cặp user/template. Seeder backend luôn bổ sung bộ 13 chuẩn cho tài khoản mới, đồng thời giữ các template Admin bổ sung đang bật. `npm run worker:dry-run` thành công; Worker version `b29b70f4-34ba-43fc-b676-e8ac3b24cef2` đã deploy và `/healthz` trả HTTP 200 với PostgreSQL connected.
+- Ảnh trang Danh mục đã báo API chưa phản hồi. Dữ liệu Neon của user hiện có đủ 13 danh mục chuẩn; health Worker hiện trả 200. Chưa xác minh lại phiên đăng nhập trên trình duyệt, nên cảnh báo theo phiên trong ảnh chưa được coi là đã sửa chỉ nhờ seed dữ liệu.
+
+## 18. Quản lý và bảo vệ tài khoản (2026-11-12)
+
+- UI/source được triển khai theo layout đã duyệt, giữ HTML/CSS/JavaScript thuần. Form ngân hàng/ví có gợi ý tổ chức, nhập số tùy chọn, chỉ hiển thị bốn số cuối; không thu thập mật khẩu/OTP và không tự kết nối provider.
+- Tài khoản chưa có tham chiếu mới được xóa cứng; backend kiểm tra lại bằng transaction. Tài khoản đã có giao dịch/chuyển khoản/mục tiêu/quy tắc định kỳ chỉ được lưu trữ, giữ lịch sử và tạm dừng quy tắc định kỳ. Ví Tiền mặt mặc định bị chặn xóa/lưu trữ ở cả UI và API.
+- Migrations 013–014 đã chạy trước trên nhánh Neon tạm rồi trên main; migrations 015–016 hoàn tất ledger. Readback Neon: 4/4 phiên bản có trong schema_migrations, không user nào thiếu ví mặc định, chưa có số tài khoản cũ được mã hóa.
+- node --check trên các module đã sửa, git diff --check và npm run worker:dry-run đạt. Worker 7949325f-df71-42d7-9a17-f945051f3efc và Pages 87eee43a.vi-minh-leduykhanh.pages.dev đã deploy; health Worker trả 200/DB connected, Pages trả 200, /api/auth/me trả 401 đúng khi chưa đăng nhập.
+- Chưa nghiệm thu CRUD tài khoản bằng phiên người dùng đăng nhập trên trình duyệt; endpoint smoke-check không thay thế UAT UI. Đối chiếu docs/ASSIGNMENT_REQUIREMENTS.md: LocalStorage theo user vẫn chỉ cập nhật sau API thành công, và frontend vẫn dùng JavaScript thuần; phần mã hóa metadata là mở rộng backend.
+
+### Form tài khoản — chỉnh sửa sau triển khai (2026-11-12)
+
+- Tên ngân hàng/ví đổi sang nhập tự do; các ô tên và số tài khoản đặt cao 44px; bỏ help text dưới số dư và gộp thông tin mã hóa vào notice xanh.
+- Pages direct upload mới: 41f8ef3f.vi-minh-leduykhanh.pages.dev, HTTP 200. HTML xác nhận query version account-safety-v2. Chưa kiểm tra trực quan form trong phiên đăng nhập.

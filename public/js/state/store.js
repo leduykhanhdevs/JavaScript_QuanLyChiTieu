@@ -126,11 +126,33 @@ export function applyLocalMutation(path, method, payload, result) {
       budget.remaining = budget.limitAmount - budget.spent;
     });
   } else if (entity === 'accounts') {
-    if (method === 'DELETE') data.accounts = data.accounts.map((item) => item.id === editId ? { ...item, isArchived: true } : item);
+    if (method === 'DELETE') data.accounts = payload.permanent
+      ? data.accounts.filter((item) => item.id !== editId)
+      : data.accounts.map((item) => item.id === editId ? { ...item, isArchived: true } : item);
+    if (method === 'DELETE' && !payload.permanent) {
+      data.recurringRules = data.recurringRules.map((item) => item.accountId === editId ? { ...item, isActive: false } : item);
+    }
     else {
       const current = data.accounts.find((item) => item.id === (id || editId));
       const openingBalance = Number(payload.openingBalance || 0);
-      const row = { id: id || editId, name: payload.name, kind: payload.kind || current?.kind || 'cash', openingBalance, balance: current ? current.balance + openingBalance - current.openingBalance : openingBalance, iconKey: payload.iconKey || 'wallet', color: payload.color || '#2563EB', isArchived: false, createdAt: stamped };
+      const row = {
+        id: id || editId,
+        name: payload.name,
+        kind: payload.kind || current?.kind || 'cash',
+        openingBalance,
+        balance: current ? current.balance + openingBalance - current.openingBalance : openingBalance,
+        iconKey: payload.iconKey || 'wallet',
+        color: payload.color || '#2563EB',
+        institutionName: result.institutionName ?? payload.institutionName ?? current?.institutionName ?? '',
+        accountNumberLast4: Object.hasOwn(result, 'accountNumberLast4')
+          ? result.accountNumberLast4
+          : payload.clearAccountNumber ? null : current?.accountNumberLast4 || null,
+        isDefault: result.isDefault ?? current?.isDefault ?? false,
+        hasHistory: result.hasHistory ?? current?.hasHistory ?? false,
+        canDelete: result.canDelete ?? current?.canDelete ?? false,
+        isArchived: false,
+        createdAt: stamped
+      };
       const index = data.accounts.findIndex((item) => item.id === row.id);
       data.accounts = index >= 0 ? data.accounts.map((item, at) => at === index ? { ...item, ...row } : item) : [...data.accounts, row];
     }
