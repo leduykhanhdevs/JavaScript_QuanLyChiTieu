@@ -1,9 +1,9 @@
 export async function onRequest({ request, env }) {
   let backendOrigin;
   try {
-    backendOrigin = new URL(env.AWS_API_ORIGIN || '');
+    backendOrigin = new URL(env.WORKER_API_ORIGIN || '');
   } catch {
-    return jsonError(503, 'AWS_API_ORIGIN chưa được cấu hình.');
+    return jsonError(503, 'WORKER_API_ORIGIN chưa được cấu hình.');
   }
 
   const proxySecret = env.EDGE_PROXY_SECRET;
@@ -20,6 +20,8 @@ export async function onRequest({ request, env }) {
   headers.delete('content-length');
   headers.delete('connection');
   headers.delete('transfer-encoding');
+  headers.delete('x-edge-proxy-secret');
+  headers.delete('x-edge-client-ip');
   for (const [name] of headers) {
     if (name.toLowerCase().startsWith('cf-')) headers.delete(name);
   }
@@ -45,7 +47,7 @@ export async function onRequest({ request, env }) {
       headers: responseHeaders
     });
   } catch {
-    return jsonError(502, 'Không kết nối được backend AWS.');
+    return jsonError(502, 'Không kết nối được API Worker.');
   }
 }
 

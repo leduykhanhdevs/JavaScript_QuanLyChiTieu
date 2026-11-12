@@ -7,8 +7,9 @@ import { getAdminAnalytics, getAdminOverview, getAdminExportAuditLogs, getAdminE
 import { requireUsableFxRate } from './fx-rate-service.js';
 
 const MAX_EXPORT_ROWS = 5_000;
-const REGULAR_FONT = fileURLToPath(new URL('../../public/assets/fonts/BeVietnamPro-Regular.ttf', import.meta.url));
-const BOLD_FONT = fileURLToPath(new URL('../../public/assets/fonts/BeVietnamPro-Bold.ttf', import.meta.url));
+const workerFonts = globalThis.__VI_MINH_REPORT_FONTS;
+const REGULAR_FONT = workerFonts?.regular || fileURLToPath(new URL('../../public/assets/fonts/BeVietnamPro-Regular.ttf', import.meta.url));
+const BOLD_FONT = workerFonts?.bold || fileURLToPath(new URL('../../public/assets/fonts/BeVietnamPro-Bold.ttf', import.meta.url));
 
 function todayInVietnam() {
   return new Intl.DateTimeFormat('en-CA', {

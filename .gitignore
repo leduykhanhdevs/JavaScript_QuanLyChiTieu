@@ -2,10 +2,15 @@ node_modules/
 .env
 .env.*
 !.env.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
 *.log
 npm-debug.log*
 coverage/
 dist/
 tmp/
+.wrangler/
+worker/assets/
 .DS_Store
 Thumbs.db

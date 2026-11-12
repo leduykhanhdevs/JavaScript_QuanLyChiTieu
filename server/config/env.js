@@ -1,11 +1,10 @@
-import 'dotenv/config';
-
 const bool = (value, fallback = false) => value == null || value === '' ? fallback : value.toLowerCase() === 'true';
 
 export const env = Object.freeze({
   nodeEnv: process.env.NODE_ENV || 'development',
   port: Number(process.env.PORT || 3000),
   database: {
+    url: process.env.DATABASE_URL || '',
     host: process.env.DATABASE_HOST || '127.0.0.1',
     port: Number(process.env.DATABASE_PORT || 5432),
     name: process.env.DATABASE_NAME || 'quan_ly_chi_tieu_dev',
@@ -16,6 +15,7 @@ export const env = Object.freeze({
   sessionCookieName: process.env.SESSION_COOKIE_NAME || 'qlct_session',
   sessionTtlHours: Number(process.env.SESSION_TTL_HOURS || 168),
   appBaseUrl: process.env.APP_BASE_URL || 'http://localhost:3000',
+  serveStatic: bool(process.env.SERVE_STATIC, true),
   edgeProxySecret: process.env.EDGE_PROXY_SECRET || '',
   emailTokenTtlMinutes: Number(process.env.EMAIL_TOKEN_TTL_MINUTES || 30),
   emailOtpTtlMinutes: Number(process.env.EMAIL_OTP_TTL_MINUTES || 10),

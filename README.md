@@ -41,7 +41,7 @@ Dự án được xây dựng bám sát 100% các tiêu chí khắt khe của Đ
 | **Xử lý Mảng & Đối tượng (Array/Object)** | Khai thác triệt để các phương thức hiện đại: `map()`, `filter()`, `reduce()`, `find()`, `findIndex()`, `some()`, `every()`, `sort()`, `Object.entries()`, `Object.values()`. |
 | **Cơ chế LocalStorage & State Management** | Quản lý trạng thái bằng kiến trúc Store phản ứng (Reactive Store). Cache LocalStorage được phân chia theo namespace từng người dùng (`vi-minh:v1:user:<uuid>`), phục hồi tức thì khi F5 hoặc mở lại trình duyệt, tuân thủ nguyên tắc không lưu mật khẩu/token nhạy cảm. |
 | **Kiến trúc Module ES Modules** | Chia tách mã nguồn rõ ràng theo trách nhiệm: `api/`, `components/`, `features/`, `state/`, `utils/`, mã nguồn trong sáng, dễ thuyết trình và chỉnh sửa trực tiếp khi bảo vệ đồ án. |
-| **Backend & Cơ sở dữ liệu chuẩn** | Backend viết bằng **Node.js Native HTTP Server** (không Express), cơ sở dữ liệu quan hệ **PostgreSQL 18** chuẩn ACID, hệ thống xác thực Cookie HttpOnly, mã hóa mật khẩu và gửi OTP xác thực qua email SMTP thật. |
+| **Backend & Cơ sở dữ liệu chuẩn** | Backend dùng **Node.js Native HTTP Server** (không Express); khi deploy, Cloudflare Worker bọc cùng HTTP server bằng adapter tương thích Node. PostgreSQL là nguồn dữ liệu chuẩn, dự kiến host trên Neon và kết nối qua Hyperdrive; local vẫn chạy bằng Node.js. |
 
 ---
 
@@ -55,8 +55,9 @@ Dự án được xây dựng bám sát 100% các tiêu chí khắt khe của Đ
 - **Biểu đồ & Đồ họa:** Native SVG generation engine.
 
 ### 3.2. Backend
-- **Nền tảng máy chủ:** Node.js v20+ với module chuẩn `node:http`, `node:fs`, `node:crypto`.
-- **Cơ sở dữ liệu:** PostgreSQL 18 qua driver `pg` (Connection Pooling).
+- **Server local:** Node.js v20+ với module chuẩn `node:http`, `node:fs`, `node:crypto`.
+- **Server cloud:** Cloudflare Workers với `nodejs_compat` và `cloudflare:node` HTTP adapter; Worker chỉ nhận API, Cloudflare Pages phục vụ frontend.
+- **Cơ sở dữ liệu:** PostgreSQL qua driver `pg`; Neon là database cloud, Hyperdrive là lớp kết nối/pooling. Migration chạy bằng Node.js trực tiếp tới Neon.
 - **Bảo mật & Phiên:** HttpOnly, SameSite=Lax/Strict Session Cookie; SHA-256 Hashing cho phiên và mã xác thực; AES-256-GCM cho dữ liệu nhạy cảm.
 - **Gửi Email SMTP:** Nodemailer (Gửi mã OTP 6 số xác minh tài khoản và đặt lại mật khẩu).
 - **Xuất dữ liệu báo cáo:** ExcelJS (báo cáo .xlsx nhiều sheet kèm thống kê) và PDFKit (báo cáo .pdf bảng biểu tự phân trang).
@@ -68,6 +69,8 @@ Dự án được xây dựng bám sát 100% các tiêu chí khắt khe của Đ
 ```
 JavaScript_QuanLyChiTieu/
 ├── .env.example                      # Cấu hình biến môi trường mẫu
+├── .dev.vars.example                 # Biến mẫu cho Wrangler local
+├── wrangler.toml                     # Cloudflare Worker, Hyperdrive và Cron
 ├── AGENTS.md                         # Quy tắc và hướng dẫn kỹ thuật đồ án
 ├── API_DOCUMENT.md                   # Tài liệu đặc tả toàn bộ RESTful API
 ├── database.md                       # Tài liệu thiết kế CSDL PostgreSQL chi tiết
@@ -82,6 +85,7 @@ JavaScript_QuanLyChiTieu/
 │   ├── ASSIGNMENT_REQUIREMENTS.md    # Bóc tách yêu cầu đề tài môn học
 │   ├── BANK_INTEGRATION_PLAN.md      # Kế hoạch tích hợp ngân hàng (P2)
 │   ├── DATABASE_DESIGN.md            # Thiết kế cơ sở dữ liệu ban đầu
+│   ├── DEPLOYMENT_CLOUDFLARE_NEON.md # Hướng dẫn Cloudflare Pages/Workers + Neon
 │   ├── LEGAL_CONSENT.md              # Quy chuẩn Điều khoản & Quyền riêng tư
 │   └── SMART_FINANCE_PLAN.md         # Đặc tả chức năng Tài chính thông minh & OCR
 │
@@ -105,18 +109,28 @@ JavaScript_QuanLyChiTieu/
 │   │   └── utils/                    # Các hàm tiện ích (dates.js, money.js, smart-finance.js,...)
 │   └── vendor/                       # Thư viện Tesseract.js & dữ liệu ngôn ngữ tiếng Việt offline
 │
-└── server/                           # Backend Node.js Native HTTP Server
-    ├── app.js                        # Máy chủ HTTP, Routing, Rate Limit & Security Headers
+├── worker/                           # Entry point và tài sản Worker
+│   ├── index.js                      # Adapter Cloudflare cho HTTP server hiện có
+│   └── report-assets.js              # Font và logo được đóng gói cho Worker
+│
+└── server/                           # Nghiệp vụ và API dùng chung cho Node/Worker
+    ├── app.js                        # HTTP handler, routing, rate limit và security headers
+    ├── local.js                      # Khởi chạy server local, timer và graceful shutdown
+    ├── jobs.js                       # Tác vụ bảo trì dùng chung cho local/Cron
     ├── config/                       # Cấu hình môi trường (env.js, legal.js)
     ├── db/                           # Database Pool, Seed, Scripts
     │   ├── pool.js                   # Kết nối PostgreSQL Client Pool
     │   ├── migrate.js                # Bộ thực thi Database Migrations tự động
     │   ├── promote-admin.js          # CLI phân quyền Admin cho tài khoản
-    │   └── migrations/               # Các tệp SQL Migration (001 -> 008)
+    │   └── migrations/               # Các tệp SQL Migration (001 -> 011)
     ├── lib/                          # Tiện ích máy chủ (http.js, security.js, errors.js, validation.js, mail.js)
     ├── routes/                       # Định tuyến API (auth, finance, admin, bank-hub)
     └── services/                     # Tầng nghiệp vụ xử lý logic (auth, finance, admin, export)
 ```
+
+### Tài liệu triển khai Cloudflare + Neon
+
+Hướng dẫn tạo Neon database, Hyperdrive, đặt secrets và cấu hình Pages nằm trong [`docs/DEPLOYMENT_CLOUDFLARE_NEON.md`](docs/DEPLOYMENT_CLOUDFLARE_NEON.md). Workers Free có giới hạn CPU có thể ảnh hưởng đến đăng nhập và kết xuất Excel/PDF; bundle thành công không chứng minh các luồng đó chạy trong giới hạn production.
 
 ---
 

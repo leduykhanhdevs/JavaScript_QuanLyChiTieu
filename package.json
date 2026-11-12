@@ -6,11 +6,17 @@
   "main": "desktop/main.cjs",
   "description": "Website quản lý chi tiêu cá nhân dùng JavaScript thuần và PostgreSQL",
   "scripts": {
-    "start": "node server/app.js",
-    "dev": "node --watch server/app.js",
+    "start": "node server/local.js",
+    "dev": "node --watch server/local.js",
     "desktop": "electron .",
     "db:migrate": "node server/db/migrate.js",
-    "db:promote-admin": "node server/db/promote-admin.js"
+    "db:promote-admin": "node --import dotenv/config server/db/promote-admin.js",
+    "preworker:dev": "node scripts/prepare-worker-assets.js",
+    "worker:dev": "wrangler dev",
+    "preworker:deploy": "node scripts/prepare-worker-assets.js",
+    "worker:deploy": "wrangler deploy",
+    "preworker:dry-run": "node scripts/prepare-worker-assets.js",
+    "worker:dry-run": "wrangler deploy --dry-run --outdir tmp/worker-bundle"
   },
   "engines": {
     "node": ">=20"
@@ -24,6 +30,7 @@
     "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
-    "electron": "^45.3.0"
+    "electron": "^45.3.0",
+    "wrangler": "^4.0.0"
   }
 }

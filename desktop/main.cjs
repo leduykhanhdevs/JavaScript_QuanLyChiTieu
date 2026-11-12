@@ -72,7 +72,7 @@ async function ensureServer() {
   if (initial.responding) throw new Error('Máy chủ Ví Mình đang chạy nhưng PostgreSQL chưa sẵn sàng.');
 
   const nodeCommand = process.env.NODE_BINARY || 'node';
-  serverProcess = spawn(nodeCommand, [path.join(projectRoot, 'server', 'app.js')], {
+  serverProcess = spawn(nodeCommand, [path.join(projectRoot, 'server', 'local.js')], {
     cwd: projectRoot,
     env: process.env,
     windowsHide: true,

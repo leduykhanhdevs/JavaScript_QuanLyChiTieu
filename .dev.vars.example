@@ -1,0 +1,6 @@
+NODE_ENV=development
+APP_BASE_URL=http://localhost:8787
+EDGE_PROXY_SECRET=replace-with-a-random-local-secret
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_FROM_NAME=Ví Mình

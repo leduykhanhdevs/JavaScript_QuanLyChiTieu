@@ -6,7 +6,7 @@
 2. Khởi động PostgreSQL và điền cấu hình local trong `.env` (không commit file này).
 3. Chạy `npm run desktop` từ thư mục gốc dự án.
 
-Ứng dụng kiểm tra `/healthz` trước khi mở. Nếu website local chưa chạy, mini app tự khởi động `server/app.js` và chỉ dừng tiến trình đó khi thoát. Nếu website đã chạy, mini app dùng lại tiến trình hiện có. Mini app và website mở bằng trình duyệt mặc định có phiên đăng nhập riêng; nếu trình duyệt chưa đăng nhập, hãy đăng nhập một lần tại đó.
+Ứng dụng kiểm tra `/healthz` trước khi mở. Nếu website local chưa chạy, mini app tự khởi động `server/local.js` và chỉ dừng tiến trình đó khi thoát. Nếu website đã chạy, mini app dùng lại tiến trình hiện có. Mini app và website mở bằng trình duyệt mặc định có phiên đăng nhập riêng; nếu trình duyệt chưa đăng nhập, hãy đăng nhập một lần tại đó.
 
 ## Phạm vi
 

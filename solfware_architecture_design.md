@@ -399,37 +399,33 @@ graph LR
 
 ```mermaid
 flowchart TD
-    subgraph HostServer ["Máy Chủ Ứng Dụng (Node.js & PostgreSQL)"]
-        NodeApp["Node.js Process (server/app.js) - Port 3000"]
-        StaticFiles["Thư mục public/ (HTML, CSS, JS, Assets, WASM)"]
-        PostgresDB[("PostgreSQL Server - Port 5432<br/>Database: quan_ly_chi_tieu_dev")]
-        DotEnv[("Tệp Biến Môi Trường (.env)")]
-    end
-
-    subgraph ExternalServices ["Dịch Vụ Mở Rộng Ngoài"]
-        SMTPServer["Máy Chủ Email SMTP (Gmail / Ethereal)"]
-        BankHub["SePay Bank Hub Sandbox (Tùy chọn Phase 2)"]
-        CurrencyAPI["CurrencyAPI Free (USD/VND, cập nhật hằng ngày)"]
-    end
-
-    DotEnv --> NodeApp
-    NodeApp --> StaticFiles
-    NodeApp <== "TCP Pool Kẹp Chặt" ==> PostgresDB
-    NodeApp -->|Gửi Email OTP| SMTPServer
-    NodeApp -.->|Hosted Link Sandbox| BankHub
-    NodeApp -->|GET latest USD/VND bằng key ở backend| CurrencyAPI
-    NodeApp -->|Lưu tỷ giá dùng chung| PostgresDB
+    Browser["Trình duyệt"] --> Pages["Cloudflare Pages<br/>public/ + Functions API proxy"]
+    Pages -->|HTTPS /api/* + EDGE_PROXY_SECRET| Worker["Cloudflare Worker<br/>worker/index.js"]
+    Worker --> Adapter["cloudflare:node<br/>httpServerHandler"]
+    Adapter --> App["server/app.js<br/>HTTP handler + nghiệp vụ"]
+    Worker -->|HYPERDRIVE binding| Hyperdrive["Cloudflare Hyperdrive"]
+    Hyperdrive --> Neon[("Neon PostgreSQL")]
+    Worker -.->|Cron 5 phút / mỗi ngày| Jobs["server/jobs.js"]
+    Jobs --> Neon
+    App --> SMTP["SMTP qua TCP/TLS"]
+    App -.-> BankHub["SePay Bank Hub Sandbox<br/>(chưa bật nếu thiếu onboarding)"]
+    App --> CurrencyAPI["CurrencyAPI Free"]
+    Developer --> Local["server/local.js<br/>Node.js local"]
+    Local --> App
+    Local --> LocalDB[("PostgreSQL local")]
 ```
 
-### Quy Trình Vận Hành & Khởi Động:
-1. Nạp và kiểm tra tính hợp lệ của biến môi trường (`validateRuntimeConfig`).
-2. Khởi tạo kết nối hồ bơi PostgreSQL (`pool.js`).
-3. Chạy tự động các migrations chưa áp dụng qua script `npm run db:migrate`.
-4. Lắng nghe yêu cầu HTTP tại cổng cấu hình (mặc định `3000`).
-5. Cung cấp cơ chế đóng máy chủ an toàn (Graceful Shutdown) khi nhận tín hiệu `SIGINT` / `SIGTERM`, tự động đóng các kết nối PostgreSQL trước khi thoát tiến trình.
+### Quy Trình Vận Hành & Khởi Động
+
+- **Local:** `npm start` nạp `.env`, tạo PostgreSQL pool và khởi chạy `server/local.js` trên cổng cấu hình (mặc định `3000`). Khi dừng tiến trình, server đóng pool PostgreSQL an toàn.
+- **Cloud:** Pages phục vụ static assets; Pages Function thêm secret rồi chuyển API tới Worker. Worker nhận binding Hyperdrive trước khi nạp `server/app.js`, vì vậy module nghiệp vụ đọc đúng cấu hình runtime.
+- **Database:** `npm run db:migrate` chạy migration bằng connection string trực tiếp tới Neon. Không dùng Hyperdrive cho migration vì script giữ session-level advisory lock.
+- **Tác vụ nền:** local chạy timer trong `server/local.js`; Worker chạy dọn Hosted Link mỗi 5 phút và tải lịch sử FX hằng ngày bằng Cron Trigger.
+- **Báo cáo:** font PDF và logo email được đưa vào Worker bundle dưới dạng Data modules; website tĩnh không được Worker API phục vụ.
+- **Giới hạn vận hành:** Workers Free giới hạn CPU 10 ms/request; cần smoke test scrypt và ExcelJS/PDFKit trên Worker thật. Không giảm độ mạnh hash để vượt giới hạn; nếu vượt, cần runtime/gói CPU cao hơn.
 
 ### Tiền tệ hiển thị
 
 - `users.currency` lưu tùy chọn giao diện `VND`/`USD`; tiền trong ledger vẫn là số nguyên VND.
-- `server/services/fx-rate-service.js` lấy/cached tỷ giá USD/VND ở backend, lưu lịch sử trong `fx_rate_history`, và quy đổi payload USD trước các mutation tài chính. API key đến từ `.env` và không được gửi xuống browser.
+- `server/services/fx-rate-service.js` lấy/cached tỷ giá USD/VND ở backend, lưu lịch sử trong `fx_rate_history`, và quy đổi payload USD trước các mutation tài chính. API key đến từ `.env` local hoặc Worker secret và không được gửi xuống browser.
 - Frontend đổi cách nhập/hiển thị và dựng đồ thị tỷ giá bằng SVG thuần. CurrencyAPI Free cập nhật hằng ngày, vì vậy số liệu là tỷ giá tham khảo theo ngày, không phải realtime. Tham chiếu: [CurrencyAPI latest endpoint](https://currencyapi.com/docs/latest/).

@@ -1,0 +1,23 @@
+name = "vi-minh-api"
+main = "worker/index.js"
+compatibility_date = "2026-11-11"
+compatibility_flags = ["nodejs_compat", "nodejs_compat_populate_process_env", "new_module_registry"]
+workers_dev = true
+upload_source_maps = true
+
+[vars]
+NODE_ENV = "production"
+PORT = "3000"
+SERVE_STATIC = "false"
+APP_BASE_URL = "https://vi-minh-leduykhanh.pages.dev"
+SMTP_PORT = "587"
+SMTP_SECURE = "false"
+SMTP_FROM_NAME = "Ví Mình"
+
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+# Cloudflare Hyperdrive config for the Neon database.
+id = "61a6778821414a298e51f0e1428eaffe"
+
+[triggers]
+crons = ["*/5 * * * *", "0 0 * * *"]

@@ -1,10 +1,10 @@
-import { createReadStream, existsSync } from 'node:fs';
+import { createReadStream } from 'node:fs';
 import { timingSafeEqual } from 'node:crypto';
 import { stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
+import { dirname } from 'node:path';
 import { env, hasCurrencyApiConfig, validateRuntimeConfig } from './config/env.js';
 import { pool } from './db/pool.js';
 import { sendError, sendJson, readJson } from './lib/http.js';
@@ -17,11 +17,11 @@ import { handleAdminRoute } from './routes/admin-routes.js';
 import { handleFinanceRoute } from './routes/finance-routes.js';
 import { handleBankHubRoute } from './routes/bank-hub-routes.js';
 import { recordSecurityEvent } from './services/admin-service.js';
-import { refreshLatestFxRate } from './services/fx-rate-service.js';
 
 validateRuntimeConfig();
-const currentDir = dirname(fileURLToPath(import.meta.url));
-const publicDir = resolve(currentDir, '../public');
+const publicDir = env.serveStatic
+  ? resolve(dirname(fileURLToPath(import.meta.url)), '../public')
+  : '';
 const MIME_TYPES = new Map([
   ['.html', 'text/html; charset=utf-8'], ['.css', 'text/css; charset=utf-8'], ['.js', 'text/javascript; charset=utf-8'],
   ['.svg', 'image/svg+xml'], ['.png', 'image/png'], ['.webp', 'image/webp'], ['.ico', 'image/x-icon'], ['.ttf', 'font/ttf'],
@@ -119,7 +119,7 @@ async function handler(req, res) {
       catch { return sendJson(res, 503, { status: 'degraded', database: 'unavailable' }); }
     }
     if (!url.pathname.startsWith('/api/')) {
-      if (await sendStatic(url.pathname, res)) return;
+      if (env.serveStatic && await sendStatic(url.pathname, res)) return;
       return sendJson(res, 404, { error: { code: 'NOT_FOUND', message: 'Không tìm thấy trang.' } });
     }
     if (!hasValidEdgeProxySecret(req)) throw new AppError(403, 'EDGE_PROXY_REQUIRED', 'Yêu cầu API phải đi qua Cloudflare.');
@@ -160,31 +160,10 @@ async function handler(req, res) {
   }
 }
 
-const server = createServer(handler);
-server.requestTimeout = 30_000;
-server.headersTimeout = 35_000;
-server.keepAliveTimeout = 5_000;
-const bankAttemptCleanupTimer = setInterval(() => {
-  pool.query(
-    `UPDATE bank_link_attempts
-     SET status = 'expired', launch_token_hash = NULL,
-         link_token_ciphertext = NULL, hosted_link_url_ciphertext = NULL
-     WHERE status IN ('ready', 'launched') AND expires_at <= now()`
-  ).catch(() => {});
-}, 5 * 60_000);
-bankAttemptCleanupTimer.unref();
-server.listen(env.port, () => {
-  console.log(`Ví Mình đang chạy tại ${env.appBaseUrl} (HTTP port ${env.port}).`);
-  if (!existsSync(join(publicDir, 'index.html'))) console.warn('Chưa tìm thấy public/index.html.');
-});
-
-if (hasCurrencyApiConfig) {
-  const refreshFxHistory = () => refreshLatestFxRate(pool).catch(() => {});
-  void refreshFxHistory();
-  const fxHistoryTimer = setInterval(refreshFxHistory, 24 * 60 * 60 * 1000);
-  fxHistoryTimer.unref();
-}
-
-for (const signal of ['SIGINT', 'SIGTERM']) {
-  process.on(signal, () => server.close(async () => { await pool.end(); process.exit(0); }));
+export function createAppServer() {
+  const server = createServer(handler);
+  server.requestTimeout = 30_000;
+  server.headersTimeout = 35_000;
+  server.keepAliveTimeout = 5_000;
+  return server;
 }

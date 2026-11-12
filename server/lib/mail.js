@@ -4,7 +4,8 @@ import { env, hasSmtpConfig } from '../config/env.js';
 import { AppError } from './errors.js';
 
 let transporter;
-const brandMarkPath = fileURLToPath(new URL('../../public/assets/brand-mark.svg', import.meta.url));
+const workerBrandMark = globalThis.__VI_MINH_BRAND_MARK;
+const brandMarkPath = workerBrandMark ? null : fileURLToPath(new URL('../../public/assets/brand-mark.svg', import.meta.url));
 
 function getTransporter() {
   if (!hasSmtpConfig) throw new AppError(503, 'SMTP_NOT_CONFIGURED', 'SMTP chưa được cấu hình. Hãy điền thông tin SMTP trong .env để gửi email.');
@@ -33,7 +34,13 @@ export async function sendVerificationEmail(email, name, token) {
     subject: 'Xác minh email Ví Mình',
     text,
     html,
-    attachments: [{ filename: 'brand-mark.svg', path: brandMarkPath, cid: 'vi-minh-brand-mark', contentType: 'image/svg+xml', contentDisposition: 'inline' }]
+    attachments: [{
+      filename: 'brand-mark.svg',
+      ...(workerBrandMark ? { content: workerBrandMark } : { path: brandMarkPath }),
+      cid: 'vi-minh-brand-mark',
+      contentType: 'image/svg+xml',
+      contentDisposition: 'inline'
+    }]
   });
 }
 
